@@ -1,0 +1,17 @@
+{
+  "name": "Baraka Francis Nampellah",
+  "shortName": "Baraka Nampellah",
+  "initials": "BN",
+  "role": "Full-Stack Software Engineer",
+  "location": "Dar es Salaam, Tanzania",
+  "cvUrl": "/Baraka-Nampellah-CV.pdf",
+  "email": "Bnampellah1@gmail.com",
+  "phone": "+255 742 147 567",
+  "github": "https://github.com/Francisnampellah",
+  "githubHandle": "@Francisnampellah",
+  "linkedin": "https://www.linkedin.com/in/baraka-nampellah-b1700b144/",
+  "website": "https://baraka-nampellah.dev",
+  "tagline": "Scalable backends · Mobile apps · AI-ready systems",
+  "intro": "Shipping microservices, Flutter & React Native apps, and web platforms end to end — currently building livestock-tracking and retail systems while going deeper on automation and agentic AI.",
+  "stackJson": "[\"TypeScript\",\"NestJS\",\"Django\",\"React\",\"Flutter\",\"Postgres\",\"Docker\",\"AWS\"]"
+}

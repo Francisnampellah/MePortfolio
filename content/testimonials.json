@@ -1,0 +1,20 @@
+[
+  {
+    "initials": "FM",
+    "name": "Florence Mushi",
+    "title": "Manager, SmartINNO",
+    "quote": "Baraka shipped reliable microservices and kept our sprints on track as Scrum Master. Dependable, organized, and technically sharp."
+  },
+  {
+    "initials": "DM",
+    "name": "Donald Mwakatoga",
+    "title": "Full-Stack Dev, Amani Land",
+    "quote": "A great engineer to build alongside — clean APIs, solid mobile work, and genuinely easy to collaborate with."
+  },
+  {
+    "initials": "GS",
+    "name": "Godfrey Sunday",
+    "title": "Telecom Engineer, TTCL",
+    "quote": "Strong fundamentals and a fast learner. He delivers quality work under real-world constraints."
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "no": "01",
+    "title": "Mnyama Check",
+    "role": "lead mobile",
+    "tags": ["Mobile"],
+    "desc": "Flutter app for livestock health tracking — subscriptions, notifications, and a refreshed UI for field use.",
+    "problem": "Animal health tracked on paper.",
+    "outcome": "200+ profiles synced",
+    "tech": ["Flutter", "REST", "Notifications"],
+    "github": "https://github.com/Francisnampellah",
+    "demo": "#"
+  },
+  {
+    "no": "02",
+    "title": "Mnyama Collector",
+    "role": "developer",
+    "tags": ["Mobile", "AI"],
+    "desc": "Companion app for field teams to collect and log animal disease data, structured for AI model training.",
+    "problem": "No structured data for AI.",
+    "outcome": "AI-ready datasets",
+    "tech": ["Flutter", "REST", "Data capture"],
+    "github": "https://github.com/Francisnampellah",
+    "demo": "#"
+  },
+  {
+    "no": "03",
+    "title": "Agrovet POS",
+    "role": "developer",
+    "tags": ["Full-Stack"],
+    "desc": "In-app inventory + point-of-sale system handling stock, sales, and payment flows for agrovet outlets.",
+    "problem": "Sales tracked manually.",
+    "outcome": "Piloting 5 outlets",
+    "tech": ["Flutter", "REST", "Payments"],
+    "github": "https://github.com/Francisnampellah",
+    "demo": "#"
+  },
+  {
+    "no": "04",
+    "title": "SmartINNO Platform",
+    "role": "engineer · SM",
+    "tags": ["Full-Stack"],
+    "desc": "Six backend microservices, an internal video-conferencing service, and a React metrics dashboard for leadership.",
+    "problem": "Fragmented internal ops.",
+    "outcome": "15+ secured endpoints",
+    "tech": ["NestJS", "Django", "PostgreSQL", "React"],
+    "github": "https://github.com/Francisnampellah",
+    "demo": "#"
+  },
+  {
+    "no": "05",
+    "title": "Security Scan Platform",
+    "role": "full-stack",
+    "tags": ["Full-Stack", "AI"],
+    "desc": "Web app integrating OWASP-based scanning tools so clients can scan targets and surface vulnerabilities.",
+    "problem": "Clients lacked vuln visibility.",
+    "outcome": "10+ vuln classes",
+    "tech": ["React", "Node", "OWASP"],
+    "github": "https://github.com/Francisnampellah",
+    "demo": "#"
+  },
+  {
+    "no": "06",
+    "title": "3D Catalog (Three.js)",
+    "role": "frontend",
+    "tags": ["Frontend"],
+    "desc": "Scan a QR code to load an interactive 3D view of an item — a web experience for a virtual catalog.",
+    "problem": "Static product catalogs.",
+    "outcome": "50+ item catalog",
+    "tech": ["Three.js", "React", "WebGL"],
+    "github": "https://github.com/Francisnampellah",
+    "demo": "#"
+  }
+]

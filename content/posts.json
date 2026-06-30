@@ -1,0 +1,162 @@
+[
+  {
+    "id": "nest",
+    "cat": "Backend",
+    "date": "Jun 2026",
+    "read": "9 min",
+    "title": "Designing NestJS microservices that scale",
+    "excerpt": "How I structure services, RBAC, and Postgres for systems that grow without painful rewrites.",
+    "lede": "Six microservices walk into a bar. The bar is a message queue, and somehow it's already down.",
+    "sections": [
+      {
+        "h": "1. Start with one service and lie to yourself",
+        "paras": [
+          "Every great microservices architecture begins as a monolith that someone swore would 'stay small.' It did not stay small. It never stays small. You added one little feature, then auth, then notifications, and now your 'small' service has the body count of a soap opera.",
+          "My rule: don't split a service until it physically hurts to deploy. If two features still happily share a database and never argue, they're not two services — they're roommates. Leave them be."
+        ]
+      },
+      {
+        "h": "2. The database is the real boss",
+        "paras": [
+          "People think the hard part of microservices is the services. It's not. It's the data. The moment Service A needs Service B's table, you have invented a distributed monolith — all the latency of microservices, all the coupling of a monolith, and a pager that goes off at 3 a.m. out of spite.",
+          "I give each service its own Postgres schema and a strict 'no peeking' policy. If you want my data, you ask me nicely over an API like a civilized process."
+        ]
+      },
+      {
+        "h": "3. RBAC, or: who let the intern delete prod",
+        "paras": [
+          "Role-based access control is the seatbelt nobody appreciates until the windshield. NestJS guards make it almost pleasant — one decorator, and suddenly the intern can look but not touch.",
+          "Wrap it once, test it twice, and never trust a request just because it showed up wearing a valid-looking token. Tokens lie. Tokens are the cats of the internet."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "flutter",
+    "cat": "Mobile",
+    "date": "May 2026",
+    "read": "7 min",
+    "title": "Flutter in the field: building for low connectivity",
+    "excerpt": "Offline-first patterns, sync strategies, and UX lessons from livestock-tracking apps.",
+    "lede": "I built an app for tracking cattle. The cattle have better network coverage than the people counting them.",
+    "sections": [
+      {
+        "h": "1. Assume the internet is a rumor",
+        "paras": [
+          "When your users are standing in a field three hours from the nearest tower, 'just call the API' is comedy. Offline-first isn't a feature here — it's the whole personality of the app. Every action writes to local storage first and syncs later, like a diary that occasionally phones home.",
+          "The golden rule: the user should never see a spinner where they expected a checkmark. They tapped 'save.' It's saved. The cloud will find out eventually, the way distant relatives find out about a wedding."
+        ]
+      },
+      {
+        "h": "2. Sync conflicts are just two people being right",
+        "paras": [
+          "Two field officers edit the same goat record offline. Both are confident. Both are correct in their own little timeline. Now they sync, and your app has to play marriage counselor.",
+          "Last-write-wins is easy and occasionally cruel. I keep a version field and let the newer change win, but I log the loser so nobody quietly loses an afternoon of work. Goats deserve accurate records."
+        ]
+      },
+      {
+        "h": "3. Make it fast or make it forgiven",
+        "paras": [
+          "On a budget Android phone in 32-degree heat, every dropped frame feels personal. I keep widgets cheap, lists lazy, and animations short enough that nobody notices the phone is sweating too.",
+          "Performance is a feature you only get credit for when it's missing. Nobody tweets 'this app opened at a reasonable speed.' They absolutely tweet the opposite."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "aidata",
+    "cat": "AI",
+    "date": "Apr 2026",
+    "read": "6 min",
+    "title": "Collecting clean data for AI training",
+    "excerpt": "Turning messy real-world field input into structured datasets a model can actually learn from.",
+    "lede": "Garbage in, garbage out. Except in AI, where it's garbage in, confidently-wrong garbage out, with a citation.",
+    "sections": [
+      {
+        "h": "1. Humans are creative spellers",
+        "paras": [
+          "I asked field workers to enter an animal's condition. I received 'healthy', 'helthy', 'fine', 'ok', 'okayish', and one heartfelt 'idk looks tired.' A model cannot learn from vibes. It needs structure, dropdowns, and the gentle removal of free will.",
+          "Constrain the input or spend your weekends cleaning it. I learned this the way everyone learns things: the slow, regrettable way."
+        ]
+      },
+      {
+        "h": "2. Validate at the door, not at the model",
+        "paras": [
+          "The cheapest place to catch bad data is the exact moment someone types it. The most expensive place is three months later when your model insists every cow weighs 4 grams.",
+          "I validate on the device, again on the API, and one more time before training — belt, suspenders, and a backup pair of pants."
+        ]
+      },
+      {
+        "h": "3. Boring data is beautiful data",
+        "paras": [
+          "Everyone wants the exciting model. Nobody wants the spreadsheet hygiene that makes it possible. But clean, boring, consistent data is the unglamorous secret behind every 'wow' demo.",
+          "If your dataset were a houseguest, it should be the one who takes their shoes off without being asked."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "chaincode",
+    "cat": "Blockchain",
+    "date": "Mar 2026",
+    "read": "8 min",
+    "title": "Writing chaincode on Hyperledger Fabric",
+    "excerpt": "A practical look at transaction validation logic on a permissioned blockchain network.",
+    "lede": "I wrote a blockchain that nobody can change. Now I really wish I could change it.",
+    "sections": [
+      {
+        "h": "1. Permissioned means the bouncer knows everyone",
+        "paras": [
+          "Public blockchains are a nightclub where anyone can walk in. Hyperledger Fabric is a members-only lounge with a guest list, a dress code, and a slightly intimidating clipboard. Every participant is known, which is great for enterprises and terrible for plot twists.",
+          "This makes consensus less dramatic and more like a well-run committee meeting. No mining, no fireworks, just orderly agreement and excellent minutes."
+        ]
+      },
+      {
+        "h": "2. Chaincode is just stubborn business logic",
+        "paras": [
+          "At its heart, chaincode is a function that says yes or no to a transaction and then writes the result in permanent ink. The 'permanent ink' part is what keeps me humble. There is no Ctrl+Z. There is only Ctrl+Regret.",
+          "Test it like the deploy is final, because emotionally it is. I write more tests for chaincode than for anything else, mostly out of fear."
+        ]
+      },
+      {
+        "h": "3. Immutability is a promise and a threat",
+        "paras": [
+          "The whole pitch of the ledger is 'this can't be tampered with.' Wonderful — until you ship a typo into history forever. Now everyone can verify, with cryptographic certainty, that you misspelled 'livestock.'",
+          "So I treat every write like a tattoo: sober, double-checked, and ideally not chosen at 2 a.m."
+        ]
+      }
+    ]
+  },
+  {
+    "id": "rbac",
+    "cat": "Backend",
+    "date": "Feb 2026",
+    "read": "5 min",
+    "title": "RBAC done right across REST endpoints",
+    "excerpt": "Role-based access control patterns that stay maintainable as your API surface grows.",
+    "lede": "Permissions are easy. Just give everyone admin. (This is a joke. Please do not. I can hear my old self screaming.)",
+    "sections": [
+      {
+        "h": "1. The boolean that became a monster",
+        "paras": [
+          "It always starts innocently: isAdmin. One little boolean. Then you need editors, then viewers, then 'viewers who can also do this one thing on Tuesdays,' and now your auth logic is a Choose Your Own Adventure book with 400 endings.",
+          "Define roles early and centrally, before the booleans start dating each other and having more booleans."
+        ]
+      },
+      {
+        "h": "2. Deny by default, like a good doorman",
+        "paras": [
+          "Every endpoint should assume the worst about whoever knocks. No role? No entry. The safest API is a pessimist. If you forget to grant access, the user is annoyed. If you forget to deny it, the user is in your database.",
+          "One is a support ticket. The other is a very bad week and possibly a meeting with words like 'incident.'"
+        ]
+      },
+      {
+        "h": "3. Make the rules readable by humans",
+        "paras": [
+          "If your permission logic needs a PhD and a quiet room to understand, future-you will route around it and create a security hole shaped exactly like your own laziness.",
+          "I keep roles obvious, decorators declarative, and the whole thing boring enough that a tired engineer can still get it right. Boring security is the best security."
+        ]
+      }
+    ]
+  }
+]

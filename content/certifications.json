@@ -1,0 +1,46 @@
+[
+  {
+    "badge": "AI",
+    "title": "AI Agents Fundamentals",
+    "issuer": "Frontend Masters — Scott Moss",
+    "year": "2025",
+    "note": "Core concepts and hands-on development of agentic AI applications: tools, planning, and the agent loop.",
+    "credId": "FM-AIAGENTS-2025",
+    "verify": "https://frontendmasters.com/courses/ai-agents/",
+    "file": "/certs/certificate-placeholder.pdf",
+    "fileName": "Baraka-Nampellah-AI-Agents-Fundamentals.pdf"
+  },
+  {
+    "badge": "BE",
+    "title": "Backend System Design",
+    "issuer": "Frontend Masters — Jem Young (Netflix)",
+    "year": "2025",
+    "note": "Distributed system design, scalability, storage strategies, and the architectural tradeoffs behind large systems.",
+    "credId": "FM-BACKEND-2025",
+    "verify": "https://frontendmasters.com/courses/backend-architectures/",
+    "file": "/certs/certificate-placeholder.pdf",
+    "fileName": "Baraka-Nampellah-Backend-System-Design.pdf"
+  },
+  {
+    "badge": "CE",
+    "title": "BEng, Computer Engineering",
+    "issuer": "Dar es Salaam Institute of Technology",
+    "year": "2024",
+    "note": "Four-year engineering degree; final-year project built a blockchain-based data-integrity system end to end.",
+    "credId": "DIT-BENG-CPE-2024",
+    "verify": "#",
+    "file": "/certs/certificate-placeholder.pdf",
+    "fileName": "Baraka-Nampellah-BEng-Computer-Engineering.pdf"
+  },
+  {
+    "badge": "TE",
+    "title": "Diploma, Telecom & Electronics",
+    "issuer": "Arusha Technical College",
+    "year": "2020",
+    "note": "Foundational training in electronics and telecommunications, with practical lab and field work.",
+    "credId": "ATC-OD-TCE-2020",
+    "verify": "#",
+    "file": "/certs/certificate-placeholder.pdf",
+    "fileName": "Baraka-Nampellah-Diploma-Telecom-Electronics.pdf"
+  }
+]

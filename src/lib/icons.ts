@@ -1,0 +1,40 @@
+import {
+  Server,
+  Code2,
+  Smartphone,
+  Database,
+  Cloud,
+  Sparkles,
+  Bot,
+  Workflow,
+  Share2,
+  Box,
+  Layers,
+  Mail,
+  Phone,
+  Github,
+  Linkedin,
+  MapPin,
+  type LucideIcon,
+} from "lucide-react";
+
+export const ICONS = {
+  server: Server,
+  code: Code2,
+  smartphone: Smartphone,
+  database: Database,
+  cloud: Cloud,
+  sparkles: Sparkles,
+  bot: Bot,
+  workflow: Workflow,
+  share: Share2,
+  box: Box,
+  layers: Layers,
+  mail: Mail,
+  phone: Phone,
+  github: Github,
+  linkedin: Linkedin,
+  mappin: MapPin,
+} satisfies Record<string, LucideIcon>;
+
+export type IconName = keyof typeof ICONS;

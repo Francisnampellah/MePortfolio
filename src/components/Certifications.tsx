@@ -5,14 +5,14 @@ import { Award, Download } from "lucide-react";
 
 export function Certifications() {
   return (
-    <section id="certifications" className="relative z-[1] mx-auto max-w-[1000px] px-6 py-16">
+    <section id="certifications" className="relative z-[1] mx-auto max-w-page px-6 py-16">
       <SectionHeading
         label="04 / credentials"
         title="Certifications"
         blurb="Verified coursework and credentials. Each links to the issuer and includes a downloadable certificate."
       />
 
-      <div className="mt-[34px] grid grid-cols-1 gap-3.5 md:grid-cols-2">
+      <div className="mt-[34px] grid grid-cols-[repeat(auto-fill,minmax(min(500px,100%),500px))] gap-3.5">
         {CERTIFICATIONS.map((c, i) => (
           <Reveal
             key={c.credId}

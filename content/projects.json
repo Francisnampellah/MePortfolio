@@ -70,5 +70,29 @@
     "tech": ["Three.js", "React", "WebGL"],
     "github": "https://github.com/Francisnampellah",
     "demo": "#"
+  },
+  {
+    "no": "07",
+    "title": "namps-ui Design System",
+    "role": "frontend",
+    "tags": ["Frontend"],
+    "desc": "An Anthropic-inspired React component library — 33 accessible components, light/dark theming via CSS tokens, and a full documentation site with live examples.",
+    "problem": "No reusable, on-brand UI kit.",
+    "outcome": "33 documented components",
+    "tech": ["React", "TypeScript", "Next.js", "CSS tokens"],
+    "github": "https://github.com/Francisnampellah",
+    "demo": "/namps-ui"
+  },
+  {
+    "no": "08",
+    "title": "namps-native",
+    "role": "mobile · design",
+    "tags": ["Mobile", "Frontend"],
+    "desc": "A calm, token-driven React Native UI library — Button, Input, Switch and more — documented with live, interactive examples rendered via react-native-web.",
+    "problem": "No reusable, on-brand mobile UI kit.",
+    "outcome": "9 components, live docs",
+    "tech": ["React Native", "TypeScript", "Reanimated", "react-native-web"],
+    "github": "https://github.com/Francisnampellah",
+    "demo": "/namps-native"
   }
 ]

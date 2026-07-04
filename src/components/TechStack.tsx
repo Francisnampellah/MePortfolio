@@ -22,7 +22,7 @@ export function TechStack() {
         blurb="Type-safe from database to UI — the same tools I reach for across mobile, web, and backend systems."
       />
 
-      <div className="mt-[34px] grid grid-cols-1 items-start gap-3.5 md:grid-cols-2">
+      <div className="mt-[34px] grid grid-cols-[repeat(auto-fill,minmax(min(500px,100%),500px))] items-start gap-3.5">
         {TECH_GROUPS.map((g, i) => {
           const Icon = ICONS[g.icon];
           const overall = overallOf(g.items);

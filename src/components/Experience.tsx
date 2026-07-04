@@ -4,7 +4,7 @@ import { EXPERIENCE, EDUCATION } from "@/lib/data";
 
 export function Experience() {
   return (
-    <section id="experience" className="relative z-[1] mx-auto max-w-[920px] px-6 py-16">
+    <section id="experience" className="relative z-[1] mx-auto max-w-page px-6 py-16">
       <Reveal>
         <SectionLabel>03 / journey</SectionLabel>
         <h2 className="mt-2.5 text-[clamp(26px,3.4vw,38px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#141414]">
@@ -61,7 +61,7 @@ export function Experience() {
         <div className="mb-3.5 font-mono text-[11.5px] tracking-[0.04em] text-muted2">
           Education &amp; Certifications
         </div>
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(min(500px,100%),500px))] gap-3">
           {EDUCATION.map((ed) => (
             <div key={ed.title} className="rounded-xl border border-line bg-white px-[18px] py-4">
               <div className="flex items-start justify-between gap-3">

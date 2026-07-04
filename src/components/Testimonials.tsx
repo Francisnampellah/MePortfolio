@@ -12,7 +12,7 @@ export function Testimonials() {
         </h2>
       </Reveal>
 
-      <div className="mt-[34px] grid grid-cols-1 gap-3.5 lg:grid-cols-3">
+      <div className="mt-[34px] grid grid-cols-[repeat(auto-fill,minmax(min(340px,100%),340px))] gap-3.5">
         {TESTIMONIALS.map((t, i) => (
           <Reveal
             key={t.name}

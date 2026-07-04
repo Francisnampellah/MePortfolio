@@ -11,9 +11,14 @@
   "dependencies": {
     "framer-motion": "^11.3.0",
     "lucide-react": "^0.417.0",
+    "namps-native": "file:vendor/namps-native",
+    "namps-ui": "file:vendor/namps-ui",
     "next": "14.2.5",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-native-reanimated": "^3.19.5",
+    "react-native-svg": "^15.15.5",
+    "react-native-web": "^0.21.2"
   },
   "devDependencies": {
     "@types/node": "^20.14.0",
@@ -21,6 +26,7 @@
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.39",
+    "react-native": "^0.74.0",
     "tailwindcss": "^3.4.7",
     "typescript": "^5.5.4"
   }

@@ -41,7 +41,7 @@ export function Projects() {
         </div>
       </Reveal>
 
-      <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="mt-8 grid grid-cols-[repeat(auto-fill,minmax(min(500px,100%),500px))] gap-4">
         {visible.map((p, i) => (
           <Reveal
             key={p.no}

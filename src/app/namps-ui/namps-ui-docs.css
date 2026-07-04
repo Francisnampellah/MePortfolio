@@ -1,0 +1,236 @@
+/* Scoped under .pui-docs so these rules never leak into the rest of the portfolio. */
+.pui-docs {
+  background: var(--pui-bg);
+  color: var(--pui-text);
+  font-family: var(--pui-font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.pui-docs,
+.pui-docs * {
+  box-sizing: border-box;
+}
+
+.pui-docs a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ---- Docs shell ---- */
+.pui-docs .shell {
+  min-height: 100vh;
+}
+.pui-docs .shell__header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 0 28px;
+  background: color-mix(in srgb, var(--pui-bg) 86%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--pui-border);
+}
+.pui-docs .shell__brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-weight: 600;
+  font-size: 15px;
+}
+.pui-docs .shell__logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--pui-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+.pui-docs .shell__body {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 248px 1fr;
+  gap: 0;
+  align-items: start;
+}
+.pui-docs .shell__sidebar {
+  position: sticky;
+  top: 64px;
+  align-self: start;
+  max-height: calc(100vh - 64px);
+  overflow: auto;
+  padding: 30px 18px 60px;
+  border-right: 1px solid var(--pui-border);
+}
+.pui-docs .shell__main {
+  min-width: 0;
+  padding: 44px 56px 100px;
+}
+.pui-docs .nav-group + .nav-group {
+  margin-top: 24px;
+}
+.pui-docs .nav-group__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--pui-muted);
+  padding: 0 12px 8px;
+}
+.pui-docs .nav-link {
+  display: block;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--pui-muted);
+}
+.pui-docs .nav-link:hover {
+  background: var(--pui-panel);
+  color: var(--pui-text);
+}
+.pui-docs .nav-link[data-active="true"] {
+  background: var(--pui-accent-bg);
+  color: var(--pui-accent);
+  font-weight: 600;
+}
+
+/* ---- Doc content ---- */
+.pui-docs .doc__eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pui-accent);
+  margin-bottom: 10px;
+}
+.pui-docs .doc h1 {
+  font-family: var(--pui-font-serif);
+  font-weight: 500;
+  font-size: 40px;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  margin: 0 0 14px;
+}
+.pui-docs .doc h2 {
+  font-family: var(--pui-font-serif);
+  font-weight: 500;
+  font-size: 26px;
+  letter-spacing: -0.015em;
+  margin: 56px 0 6px;
+  scroll-margin-top: 84px;
+}
+.pui-docs .doc h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 28px 0 6px;
+}
+.pui-docs .doc__lede {
+  font-size: 18px;
+  color: var(--pui-muted);
+  line-height: 1.6;
+  margin: 0 0 12px;
+  max-width: 64ch;
+}
+.pui-docs .doc p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--pui-text);
+  max-width: 70ch;
+}
+.pui-docs .doc p.muted {
+  color: var(--pui-muted);
+}
+.pui-docs .doc__inline-code {
+  font-family: var(--pui-font-mono);
+  font-size: 0.88em;
+  background: var(--pui-panel);
+  border: 1px solid var(--pui-border);
+  border-radius: 5px;
+  padding: 1px 6px;
+}
+
+/* Example block */
+.pui-docs .example {
+  margin: 18px 0;
+  border: 1px solid var(--pui-border);
+  border-radius: var(--pui-radius-lg);
+  overflow: hidden;
+  background: var(--pui-card);
+}
+.pui-docs .example__preview {
+  padding: 32px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+.pui-docs .example__preview[data-layout="block"] {
+  flex-direction: column;
+  align-items: stretch;
+}
+.pui-docs .example__preview[data-layout="center"] {
+  justify-content: center;
+}
+.pui-docs .example__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px 8px 16px;
+  border-top: 1px solid var(--pui-border);
+  background: var(--pui-panel);
+}
+.pui-docs .example__bar span {
+  font-size: 12px;
+  color: var(--pui-muted);
+  font-family: var(--pui-font-mono);
+}
+
+/* Props table */
+.pui-docs .props {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 14px 0;
+  font-size: 13.5px;
+}
+.pui-docs .props th {
+  text-align: left;
+  padding: 9px 14px;
+  background: var(--pui-panel);
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--pui-muted);
+  border: 1px solid var(--pui-border);
+}
+.pui-docs .props td {
+  padding: 11px 14px;
+  border: 1px solid var(--pui-border);
+  vertical-align: top;
+}
+.pui-docs .props td code,
+.pui-docs .props .mono {
+  font-family: var(--pui-font-mono);
+  font-size: 12.5px;
+  color: var(--pui-accent);
+}
+.pui-docs .props .type {
+  color: var(--pui-muted);
+}
+
+/* On-this-page rail */
+.pui-docs .toc {
+  position: sticky;
+  top: 84px;
+  font-size: 13px;
+}
+.pui-docs .doc__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}

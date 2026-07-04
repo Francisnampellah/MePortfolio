@@ -20,7 +20,7 @@ const config: Config = {
         mono: ["var(--font-mono)", "monospace"],
       },
       maxWidth: {
-        page: "none",
+        page: "1440px",
       },
       keyframes: {
         blink: {

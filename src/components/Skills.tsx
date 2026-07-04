@@ -95,7 +95,8 @@ function Bar({ name, level }: { name: string; level: number }) {
 
 export function Skills() {
   return (
-    <section id="skills" className="relative z-[1] mx-auto max-w-page px-6 py-16">
+    <section id="skills" className="relative z-[1] border-t border-line bg-surface">
+      <div className="mx-auto max-w-page px-6 py-16">
       <Reveal>
         <SectionLabel>05 / strengths</SectionLabel>
         <h2 className="mt-2.5 text-[clamp(26px,3.4vw,38px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#141414]">
@@ -103,7 +104,7 @@ export function Skills() {
         </h2>
       </Reveal>
 
-      <div className="mt-[34px] grid grid-cols-[repeat(auto-fill,minmax(min(250px,100%),250px))] gap-3.5">
+      <div className="mt-[34px] grid grid-cols-[repeat(auto-fill,minmax(min(250px,100%),1fr))] gap-3.5">
         {SKILL_RINGS.map((r) => (
           <Reveal key={r.name}>
             <Ring {...r} />
@@ -111,12 +112,13 @@ export function Skills() {
         ))}
       </div>
 
-      <div className="mt-[18px] grid grid-cols-[repeat(auto-fill,minmax(min(500px,100%),500px))] gap-x-9 gap-y-4">
+      <div className="mt-[18px] grid grid-cols-[repeat(auto-fill,minmax(min(500px,100%),1fr))] gap-x-9 gap-y-4">
         {SKILL_BARS.map((s) => (
           <Reveal key={s.name}>
             <Bar {...s} />
           </Reveal>
         ))}
+      </div>
       </div>
     </section>
   );

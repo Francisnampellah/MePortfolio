@@ -4,7 +4,8 @@ import { TESTIMONIALS } from "@/lib/data";
 
 export function Testimonials() {
   return (
-    <section id="testimonials" className="relative z-[1] mx-auto max-w-page px-6 py-16">
+    <section id="testimonials" className="relative z-[1] border-t border-line bg-surface">
+      <div className="mx-auto max-w-page px-6 py-16">
       <Reveal>
         <SectionLabel>07 / references</SectionLabel>
         <h2 className="mt-2.5 text-[clamp(26px,3.4vw,38px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#141414]">
@@ -12,7 +13,7 @@ export function Testimonials() {
         </h2>
       </Reveal>
 
-      <div className="mt-[34px] grid grid-cols-[repeat(auto-fill,minmax(min(340px,100%),340px))] gap-3.5">
+      <div className="mt-[34px] grid grid-cols-[repeat(auto-fill,minmax(min(340px,100%),1fr))] gap-3.5">
         {TESTIMONIALS.map((t, i) => (
           <Reveal
             key={t.name}
@@ -34,6 +35,7 @@ export function Testimonials() {
             </figcaption>
           </Reveal>
         ))}
+      </div>
       </div>
     </section>
   );

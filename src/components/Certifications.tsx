@@ -12,7 +12,7 @@ export function Certifications() {
         blurb="Verified coursework and credentials. Each links to the issuer and includes a downloadable certificate."
       />
 
-      <div className="mt-[34px] grid grid-cols-[repeat(auto-fill,minmax(min(500px,100%),500px))] gap-3.5">
+      <div className="mt-[34px] grid grid-cols-[repeat(auto-fill,minmax(min(500px,100%),1fr))] gap-3.5">
         {CERTIFICATIONS.map((c, i) => (
           <Reveal
             key={c.credId}

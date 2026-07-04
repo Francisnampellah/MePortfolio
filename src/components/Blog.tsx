@@ -20,7 +20,8 @@ export function Blog() {
   );
 
   return (
-    <section id="blog" className="relative z-[1] mx-auto max-w-page px-6 py-16">
+    <section id="blog" className="relative z-[1] border-t border-line bg-surface">
+      <div className="mx-auto max-w-page px-6 py-16">
       <Reveal className="flex flex-wrap items-end justify-between gap-[18px]">
         <div>
           <SectionLabel>09 / writing</SectionLabel>
@@ -90,6 +91,7 @@ export function Blog() {
           ))}
         </div>
       )}
+      </div>
     </section>
   );
 }

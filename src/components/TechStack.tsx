@@ -246,7 +246,7 @@ export function TechStack() {
         </div>
 
         {/* Selector — a numbered index; the active segment's rule lights up */}
-        <div className="mt-8 -mx-16 flex gap-1 overflow-x-auto px-16 md:mx-0 md:grid md:grid-cols-6 md:gap-2 md:px-0">
+        <div className="mt-8 -mx-32 flex gap-1 overflow-x-auto px-32 md:mx-0 md:grid md:grid-cols-6 md:gap-2 md:px-0">
           {TECH_GROUPS.map((g, i) => {
             const on = i === active;
             return (

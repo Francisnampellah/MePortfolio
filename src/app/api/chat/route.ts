@@ -4,7 +4,7 @@ import { getBotConfig, buildKnowledge, systemPrompt } from "@/lib/bot";
 
 export const dynamic = "force-dynamic";
 
-const MODEL = process.env.ANTHROPIC_MODEL || "claude-3-5-haiku-latest";
+const MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -26,42 +26,40 @@ export async function POST(req: Request) {
   const knowledge = await buildKnowledge();
   const system = systemPrompt(cfg, knowledge);
 
-  const key = process.env.ANTHROPIC_API_KEY;
+  const key = process.env.OPENAI_API_KEY;
   if (!key) {
     return NextResponse.json({
       reply:
-        "I'm not fully wired up yet (no ANTHROPIC_API_KEY set). In the meantime: I'm Baraka, a full-stack engineer — ask away or email me at Bnampellah1@gmail.com.",
+        "I'm not fully wired up yet (no OPENAI_API_KEY set). In the meantime: I'm Baraka, a full-stack engineer — ask away or email me at Bnampellah1@gmail.com.",
       leadCaptured: false,
     });
   }
 
   let reply = "";
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
-        "x-api-key": key,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
+        Authorization: `Bearer ${key}`,
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         model: MODEL,
         max_tokens: 1024,
-        system,
-        messages,
+        messages: [{ role: "system", content: system }, ...messages],
       }),
     });
     if (!res.ok) {
       const err = await res.text();
-      console.error("Anthropic error:", err);
+      console.error("OpenAI error:", err);
       return NextResponse.json(
         { reply: "Sorry, I hit an error reaching my brain. Try again, or email Bnampellah1@gmail.com." },
         { status: 200 }
       );
     }
     const data = await res.json();
-    reply = data?.content?.[0]?.text ?? "";
-  } catch (e) {
+    reply = data?.choices?.[0]?.message?.content ?? "";
+  } catch {
     return NextResponse.json(
       { reply: "Hmm, I couldn't connect just now — mind trying again? You can always email Bnampellah1@gmail.com." },
       { status: 200 }

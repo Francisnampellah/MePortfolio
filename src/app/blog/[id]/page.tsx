@@ -8,6 +8,9 @@ import { ReadingProgress } from "./ReadingProgress";
 
 type Params = { params: { id: string } };
 
+// Book-style serif for the pull quotes — a deliberate contrast to the sans body.
+const SERIF = "Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', serif";
+
 export function generateStaticParams() {
   return POSTS.map((p) => ({ id: p.id }));
 }
@@ -16,6 +19,23 @@ export function generateMetadata({ params }: Params): Metadata {
   const post = POSTS.find((p) => p.id === params.id);
   if (!post) return { title: "Article not found" };
   return { title: `${post.title} — Baraka Nampellah`, description: post.excerpt };
+}
+
+/**
+ * Pull the closing line out of a section to set as a book-style quote: takes the
+ * last sentence of the last paragraph (or the last two if it's very short), and
+ * returns the remaining body so the line isn't printed twice.
+ */
+function splitPullQuote(paras: string[]): { bodyParas: string[]; quote: string } {
+  const last = paras[paras.length - 1];
+  const sentences = (last.match(/[^.!?]+[.!?]+(?:\s|$)/g) ?? [last]).map((s) => s.trim());
+  let take = sentences[sentences.length - 1].length < 24 && sentences.length > 1 ? 2 : 1;
+  if (sentences.slice(-take).join(" ").length > 160) take = 1;
+
+  const quote = sentences.slice(-take).join(" ").trim();
+  const remainder = sentences.slice(0, sentences.length - take).join(" ").trim();
+  const bodyParas = remainder ? [...paras.slice(0, -1), remainder] : paras.slice(0, -1);
+  return { bodyParas, quote };
 }
 
 export default function ArticlePage({ params }: Params) {
@@ -56,24 +76,35 @@ export default function ArticlePage({ params }: Params) {
 
           <hr className="my-8 border-line" />
 
-          {article.sections.map((s) => (
-            <section key={s.h}>
-              <h2 className="mt-9 text-[clamp(20px,2.6vw,24px)] font-bold tracking-[-0.02em] text-ink">{s.h}</h2>
-              {s.paras.map((p, i) => (
-                <p key={i} className="mt-3.5 text-[16.5px] leading-[1.75] text-[#3f3a35] text-pretty">
-                  {p}
-                </p>
-              ))}
-            </section>
-          ))}
+          {article.sections.map((s) => {
+            const { bodyParas, quote } = splitPullQuote(s.paras);
+            return (
+              <section key={s.h}>
+                <h2 className="mt-9 text-[clamp(20px,2.6vw,24px)] font-bold tracking-[-0.02em] text-ink">{s.h}</h2>
+                {bodyParas.map((p, i) => (
+                  <p key={i} className="mt-3.5 text-[16.5px] leading-[1.75] text-[#3f3a35] text-pretty">
+                    {p}
+                  </p>
+                ))}
+
+                {quote ? (
+                  <figure className="my-9 text-center">
+                    <span aria-hidden className="mx-auto mb-4 block h-[2px] w-10 rounded-full bg-accent" />
+                    <blockquote
+                      className="mx-auto max-w-[600px] text-[clamp(20px,3vw,27px)] font-medium italic leading-[1.45] text-[#2a2118]"
+                      style={{ fontFamily: SERIF }}
+                    >
+                      &ldquo;{quote}&rdquo;
+                    </blockquote>
+                  </figure>
+                ) : null}
+              </section>
+            );
+          })}
 
           <div className="mt-12 flex items-center gap-4 rounded-xl border border-line bg-surface px-5 py-5">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/baraka.jpg"
-              alt={PROFILE.name}
-              className="h-12 w-12 shrink-0 rounded-full object-cover"
-            />
+            <img src="/baraka.jpg" alt={PROFILE.name} className="h-12 w-12 shrink-0 rounded-full object-cover" />
             <div>
               <div className="text-[14.5px] font-bold text-ink">{PROFILE.name}</div>
               <div className="mt-0.5 text-[13px] leading-[1.5] text-muted">

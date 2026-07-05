@@ -273,12 +273,14 @@ own experience — a game settings menu at `md+`, a native app below.
   headline → CTAs → stats → clients, and stays the "code/terminal" identity
   while About is the "human/portrait" one.
 - **About** — abstract identity slide (added 2026-07-05), same low-detail
-  language as the rest: a large faded **ghost first-name** behind a single
-  concise statement (`PROFILE.intro`), three minimal fact tiles (location /
-  role / availability, data-driven from `PROFILE`), and the portrait as the
-  visual (reuses the `hero-photo` ImageSlot + accent glow + availability
-  badge). No stats grid or long bio — Hero already carries the stats. Two-
-  column at `lg+`, stacked below.
+  language as the rest, on the default (white) background: a large faded
+  **ghost first-name** (accent at ~7%) behind a single concise statement
+  (`PROFILE.intro`), three minimal fact tiles (based-in / focus /
+  experience, data-driven from `PROFILE`), and the **framed portrait**
+  (`hero-photo` ImageSlot, `4/5` in a `rounded-[20px]` frame + accent glow +
+  availability badge). No stats grid or long bio — Hero carries the stats.
+  Two-column at `lg+`, stacked below. (An accent-orange-panel variant with a
+  circular/white-disc portrait was tried and reverted on request.)
 - **Tech Stack** — abstract focal+selector (§5). Several forms were tried
   (radar + skill-dials + metric pills → power-ring + tag-cloud → equalizer
   bars) before landing, on request, on a **radar stat-wheel + segmented

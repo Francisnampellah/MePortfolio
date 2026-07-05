@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Check, Download } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { SectionLabel } from "./Section";
-import { ICONS } from "@/lib/icons";
 import { PROFILE, CONTACT_LINKS, PROJECT_TYPES } from "@/lib/data";
 
 export function Contact() {
@@ -32,37 +31,79 @@ export function Contact() {
             <p className="mt-3 max-w-[400px] text-[15px] leading-relaxed text-muted">
               Have a role, a project, or an idea? I reply within a day.
             </p>
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-[#c8e6d4] bg-[#eaf6ef] px-3.5 py-2">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#2e9e63] opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#2e9e63]" />
-              </span>
-              <span className="text-[12.5px] font-semibold text-[#1f7a4d]">Available for new projects</span>
-            </div>
+            {/* Contact details as a monospace receipt — itemised lines with
+                dotted leaders instead of cards. */}
+            <div className="mt-6 max-w-[420px] font-mono text-[12.5px] leading-none text-ink">
+              <div className="flex items-center justify-between border-b border-dashed border-[#d8d2c9] pb-2.5 text-[10px] uppercase tracking-[0.14em] text-faint">
+                <span>Baraka Nampellah</span>
+                <span>Reach me</span>
+              </div>
 
-            <div className="mt-6 flex flex-col gap-2">
-              {CONTACT_LINKS.map((c) => {
-                const Icon = ICONS[c.icon];
-                return (
-                  <a
-                    key={c.label}
-                    href={c.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-3 rounded-xl border border-line bg-white px-4 py-2.5 transition-colors hover:border-[#d9b8a8]"
-                  >
-                    <Icon className="h-[18px] w-[18px] shrink-0 text-muted2 transition-colors group-hover:text-accent" strokeWidth={2} />
-                    <div className="min-w-0">
-                      <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-faint">{c.label}</div>
-                      <div className="truncate text-[13.5px] font-semibold text-ink">{c.value}</div>
-                    </div>
-                  </a>
-                );
-              })}
+              <ul className="flex flex-col gap-2.5 py-3.5">
+                {CONTACT_LINKS.map((c) => (
+                  <li key={c.label}>
+                    <a
+                      href={c.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-baseline gap-1"
+                    >
+                      <span className="shrink-0 uppercase tracking-[0.06em] text-muted2 transition-colors group-hover:text-accent">
+                        {c.label}
+                      </span>
+                      <span
+                        aria-hidden
+                        className="min-w-[14px] flex-1 -translate-y-[0.28em] border-b border-dotted border-[#cfc8bd]"
+                      />
+                      <span className="max-w-[60%] truncate font-semibold text-ink transition-colors group-hover:text-accent">
+                        {c.value}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="flex flex-col gap-2.5 border-t border-dashed border-[#d8d2c9] py-3.5">
+                <div className="flex items-baseline gap-1">
+                  <span className="shrink-0 uppercase tracking-[0.06em] text-muted2">Status</span>
+                  <span aria-hidden className="min-w-[14px] flex-1 -translate-y-[0.28em] border-b border-dotted border-[#cfc8bd]" />
+                  <span className="inline-flex items-center gap-1.5 font-semibold text-[#1f7a4d]">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#2e9e63] opacity-75" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#2e9e63]" />
+                    </span>
+                    AVAILABLE
+                  </span>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="shrink-0 uppercase tracking-[0.06em] text-muted2">Response</span>
+                  <span aria-hidden className="min-w-[14px] flex-1 -translate-y-[0.28em] border-b border-dotted border-[#cfc8bd]" />
+                  <span className="font-semibold text-ink">&lt; 24 HRS</span>
+                </div>
+                <div className="flex items-baseline gap-1">
+                  <span className="shrink-0 uppercase tracking-[0.06em] text-muted2">Based in</span>
+                  <span aria-hidden className="min-w-[14px] flex-1 -translate-y-[0.28em] border-b border-dotted border-[#cfc8bd]" />
+                  <span className="font-semibold text-ink">{PROFILE.location}</span>
+                </div>
+              </div>
+
+              <div className="border-t border-dashed border-[#d8d2c9] pt-3 text-center text-[10px] uppercase tracking-[0.24em] text-faint">
+                ✦ thanks for scrolling ✦
+              </div>
+              <div
+                aria-hidden
+                className="mt-3 h-9 w-full opacity-90"
+                style={{
+                  backgroundImage:
+                    "repeating-linear-gradient(90deg, #1a1a1a 0 2px, transparent 2px 5px, #1a1a1a 5px 6px, transparent 6px 8px, #1a1a1a 8px 11px, transparent 11px 13px)",
+                }}
+              />
+              <div className="mt-1.5 text-center text-[9.5px] tracking-[0.3em] text-faint">BN·CONTACT·2026</div>
+
               <a
                 href={PROFILE.cvUrl}
                 download
-                className="mt-1 inline-flex items-center justify-center gap-2 rounded-xl bg-ink p-3 text-[13.5px] font-semibold text-white transition-colors hover:bg-black"
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-[9px] bg-ink p-3 text-[13px] font-semibold tracking-[0.02em] text-white transition-colors hover:bg-black"
               >
                 <Download className="h-4 w-4" strokeWidth={2} />
                 Download my CV

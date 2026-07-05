@@ -331,11 +331,17 @@ own experience — a game settings menu at `md+`, a native app below.
   section now.
 - **Contact + Footer** share a single slide (footer is compact enough not
   to need one of its own). Restyled 2026-07-05 to match the other sections:
-  a faded **ghost "Contact"** behind the heading, the open (un-boxed) two-
-  column layout, contact links as light hover cards, and form fields on
-  `bg-surface` that brighten to white on focus. The form still just sets a
-  local `sent` state on submit (no backend wired) — keep that in mind if
-  real delivery is expected.
+  a faded **ghost "Contact"** behind the heading and an open (un-boxed) two-
+  column layout. The left column presents the contact details as a
+  **monospace "receipt"** (replacing the earlier link cards): itemised
+  `CONTACT_LINKS` lines with dotted leaders (label ···· value, the whole
+  line a link), a meta block (status AVAILABLE with the live dot / response
+  `< 24 HRS` / based-in), a centred "thanks for scrolling" line, a CSS
+  barcode + `BN·CONTACT·2026` ref, then the CV button. The standalone green
+  availability pill was folded into the receipt's status line. The right
+  column is the form — fields on `bg-surface` that brighten to white on
+  focus; it still just sets a local `sent` state on submit (no backend
+  wired) — keep that in mind if real delivery is expected.
 
 ## 9. Things that have already been tried and rejected
 

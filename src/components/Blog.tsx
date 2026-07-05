@@ -95,7 +95,7 @@ export function Blog() {
         ) : (
           <div
             ref={trackRef}
-            className="-mx-32 mt-5 flex snap-x snap-mandatory gap-3.5 overflow-x-auto px-32 pb-2 [scrollbar-width:none] md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden"
+            className="-mx-6 mt-5 flex snap-x snap-mandatory gap-3.5 overflow-x-auto px-6 pb-2 [scrollbar-width:none] md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden"
           >
             {visible.map((b, i) => (
               <Reveal

@@ -10,7 +10,7 @@ export function Contact() {
   const [sent, setSent] = useState(false);
 
   return (
-    <section id="contact" className={`${SECTION_INNER} relative z-[1] flex flex-1 scroll-mt-16 flex-col justify-center`}>
+    <section id="contact" className={`${SECTION_INNER} relative z-[1] flex flex-1 scroll-mt-16 flex-col justify-center py-6`}>
       <div className="relative">
         {/* Ghost title behind the heading — same device as the other sections */}
         <span

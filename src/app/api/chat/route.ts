@@ -4,9 +4,14 @@ import { getBotConfig, buildKnowledge, systemPrompt } from "@/lib/bot";
 
 export const dynamic = "force-dynamic";
 
-const MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
-
 type Msg = { role: "user" | "assistant"; content: string };
+
+function openAIConfig() {
+  return {
+    key: process.env.OPENAI_API_KEY?.trim() || "",
+    model: (process.env.OPENAI_MODEL?.trim() || "gpt-4o-mini"),
+  };
+}
 
 export async function POST(req: Request) {
   let body: { messages?: Msg[] };
@@ -26,11 +31,14 @@ export async function POST(req: Request) {
   const knowledge = await buildKnowledge();
   const system = systemPrompt(cfg, knowledge);
 
-  const key = process.env.OPENAI_API_KEY;
+  const { key, model } = openAIConfig();
   if (!key) {
+    console.warn(
+      "[/api/chat] OPENAI_API_KEY is missing. Add it to .env.local and restart `npm run dev`."
+    );
     return NextResponse.json({
       reply:
-        "I'm not fully wired up yet (no OPENAI_API_KEY set). In the meantime: I'm Baraka, a full-stack engineer — ask away or email me at Bnampellah1@gmail.com.",
+        "I'm briefly offline — try again in a moment, or email me at Bnampellah1@gmail.com.",
       leadCaptured: false,
     });
   }
@@ -44,7 +52,7 @@ export async function POST(req: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: MODEL,
+        model: model,
         max_tokens: 1024,
         messages: [{ role: "system", content: system }, ...messages],
       }),

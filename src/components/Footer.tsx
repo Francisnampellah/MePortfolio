@@ -1,9 +1,10 @@
 import { ICONS } from "@/lib/icons";
 import { PROFILE, SOCIALS } from "@/lib/data";
+import { SECTION_INNER } from "./Section";
 
 export function Footer() {
   return (
-    <footer className="mx-auto w-full max-w-page shrink-0 px-6 pb-5">
+    <footer className={`${SECTION_INNER} shrink-0 pb-5`}>
       <div className="flex flex-wrap items-center justify-between gap-[18px] border-t border-line pt-4">
         <div className="flex items-center gap-[11px]">
           <span className="grid h-[30px] w-[30px] place-items-center rounded-[7px] bg-accent font-mono text-[11px] font-semibold text-white">

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Github } from "lucide-react";
 import { Reveal } from "./Reveal";
-import { SectionLabel } from "./Section";
+import { SectionLabel, SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
 import { ImageSlot } from "./ImageSlot";
 import { PROJECTS, PROJECT_FILTERS } from "@/lib/data";
 
@@ -40,11 +40,8 @@ export function Projects() {
   const go = (delta: number) => setActive((a) => (a + delta + visible.length) % visible.length);
 
   return (
-    <section
-      id="projects"
-      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip py-14 md:h-[var(--slide-h)] md:min-h-0 md:overflow-hidden md:py-0"
-    >
-      <div className="mx-auto w-full max-w-page px-6">
+    <section id="projects" className={SECTION_SLIDE_ROOT}>
+      <div className={SECTION_INNER}>
         <Reveal className="flex flex-wrap items-end justify-between gap-5">
           <div>
             <SectionLabel>03 / selected work</SectionLabel>

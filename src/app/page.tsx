@@ -14,6 +14,7 @@ import { BackToTop } from "@/components/BackToTop";
 import { ChatWidget } from "@/components/ChatWidget";
 import { SlideHud } from "@/components/SlideHud";
 import { TabBar } from "@/components/TabBar";
+import { CONTACT_SLIDE_ROOT } from "@/components/Section";
 import { FullPageScrollProvider, FullPageStage } from "@/lib/fullPageScroll";
 
 const SECTION_IDS = [
@@ -43,7 +44,7 @@ export default function Home() {
           <Testimonials />
           <GithubActivity />
           <Blog />
-          <div className="flex min-h-[calc(100dvh-4rem)] w-full shrink-0 flex-col overflow-x-clip md:h-[var(--slide-h)] md:min-h-0 md:overflow-hidden">
+          <div className={CONTACT_SLIDE_ROOT}>
             <Contact />
             <Footer />
           </div>

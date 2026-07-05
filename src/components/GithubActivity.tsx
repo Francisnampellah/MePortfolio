@@ -1,6 +1,6 @@
 import { Github } from "lucide-react";
 import { Reveal } from "./Reveal";
-import { SectionLabel } from "./Section";
+import { SectionLabel, SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
 import {
   PROFILE,
   GH_STATS,
@@ -27,11 +27,8 @@ export function GithubActivity() {
   const weeks = buildContribGrid();
 
   return (
-    <section
-      id="github"
-      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip py-14 md:h-[var(--slide-h)] md:min-h-0 md:overflow-hidden md:py-0"
-    >
-      <div className="mx-auto w-full max-w-page px-6">
+    <section id="github" className={SECTION_SLIDE_ROOT}>
+      <div className={SECTION_INNER}>
       <Reveal className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <SectionLabel>06 / open source</SectionLabel>

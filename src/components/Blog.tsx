@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { Reveal } from "./Reveal";
-import { SectionLabel } from "./Section";
+import { SectionLabel, SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
 import { ImageSlot } from "./ImageSlot";
 import { POSTS, BLOG_CATS } from "@/lib/data";
 
@@ -30,11 +30,8 @@ export function Blog() {
     trackRef.current?.scrollBy({ left: dir * (CARD_W + 14), behavior: "smooth" });
 
   return (
-    <section
-      id="blog"
-      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip border-t border-line bg-surface py-14 md:h-[var(--slide-h)] md:min-h-0 md:overflow-hidden md:py-0"
-    >
-      <div className="mx-auto w-full max-w-page px-6">
+    <section id="blog" className={`${SECTION_SLIDE_ROOT} border-t border-line bg-surface`}>
+      <div className={SECTION_INNER}>
         <Reveal className="flex flex-wrap items-end justify-between gap-[18px]">
           <div>
             <SectionLabel>07 / writing</SectionLabel>
@@ -98,7 +95,7 @@ export function Blog() {
         ) : (
           <div
             ref={trackRef}
-            className="-mx-6 mt-5 flex snap-x snap-mandatory gap-3.5 overflow-x-auto px-6 pb-2 [scrollbar-width:none] md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden"
+            className="-mx-16 mt-5 flex snap-x snap-mandatory gap-3.5 overflow-x-auto px-16 pb-2 [scrollbar-width:none] md:mx-0 md:px-0 [&::-webkit-scrollbar]:hidden"
           >
             {visible.map((b, i) => (
               <Reveal

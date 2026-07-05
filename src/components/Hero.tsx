@@ -2,6 +2,7 @@
 
 import { Download } from "lucide-react";
 import { Reveal } from "./Reveal";
+import { SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
 import { useFullPageScroll } from "@/lib/fullPageScroll";
 import { PROFILE, HERO_STATS, CLIENTS } from "@/lib/data";
 
@@ -9,11 +10,8 @@ export function Hero() {
   const { goToId } = useFullPageScroll();
 
   return (
-    <section
-      id="home"
-      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip py-14 md:h-[var(--slide-h)] md:min-h-0 md:overflow-hidden md:py-0"
-    >
-      <div className="mx-auto w-full max-w-page px-6">
+    <section id="home" className={SECTION_SLIDE_ROOT}>
+      <div className={SECTION_INNER}>
       <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
         {/* Left — copy */}
         <div className="text-left">

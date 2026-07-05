@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Reveal } from "./Reveal";
-import { SectionLabel } from "./Section";
+import { SectionLabel, SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
 import { EXPERIENCE, EDUCATION } from "@/lib/data";
 
 /**
@@ -62,11 +62,8 @@ export function Experience() {
   const job = s.job;
 
   return (
-    <section
-      id="experience"
-      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip border-t border-line bg-surface py-14 md:h-[var(--slide-h)] md:min-h-0 md:overflow-hidden md:py-0"
-    >
-      <div className="mx-auto w-full max-w-page px-6">
+    <section id="experience" className={`${SECTION_SLIDE_ROOT} border-t border-line bg-surface`}>
+      <div className={SECTION_INNER}>
         <Reveal>
           <SectionLabel>04 / journey</SectionLabel>
           <h2 className="mt-2.5 text-[clamp(26px,3.4vw,38px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#141414]">

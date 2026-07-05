@@ -3,14 +3,14 @@
 import { useState } from "react";
 import { Check, Download } from "lucide-react";
 import { Reveal } from "./Reveal";
-import { SectionLabel } from "./Section";
+import { SectionLabel, SECTION_INNER } from "./Section";
 import { PROFILE, CONTACT_LINKS, PROJECT_TYPES } from "@/lib/data";
 
 export function Contact() {
   const [sent, setSent] = useState(false);
 
   return (
-    <section id="contact" className="relative z-[1] mx-auto flex w-full max-w-page flex-1 scroll-mt-16 flex-col justify-center px-6 py-6">
+    <section id="contact" className={`${SECTION_INNER} relative z-[1] flex flex-1 scroll-mt-16 flex-col justify-center`}>
       <div className="relative">
         {/* Ghost title behind the heading — same device as the other sections */}
         <span

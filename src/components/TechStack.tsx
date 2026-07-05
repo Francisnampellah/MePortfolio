@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { SectionHeading } from "./Section";
+import { SectionHeading, SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
 import { TECH_GROUPS } from "@/lib/data";
 
 /**
@@ -173,11 +173,8 @@ export function TechStack() {
   const radarGroups = TECH_GROUPS.map((g) => ({ short: SHORT_NAME[g.name] ?? g.name, score: overallOf(g.items) }));
 
   return (
-    <section
-      id="tech"
-      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip border-t border-line bg-surface py-14 md:h-[var(--slide-h)] md:min-h-0 md:overflow-hidden md:py-0"
-    >
-      <div className="mx-auto w-full max-w-page px-6">
+    <section id="tech" className={`${SECTION_SLIDE_ROOT} border-t border-line bg-surface`}>
+      <div className={SECTION_INNER}>
         <SectionHeading
           label="02 / toolbox"
           title="A modern, full-stack toolkit"
@@ -249,7 +246,7 @@ export function TechStack() {
         </div>
 
         {/* Selector — a numbered index; the active segment's rule lights up */}
-        <div className="mt-8 -mx-6 flex gap-1 overflow-x-auto px-6 md:mx-0 md:grid md:grid-cols-6 md:gap-2 md:px-0">
+        <div className="mt-8 -mx-16 flex gap-1 overflow-x-auto px-16 md:mx-0 md:grid md:grid-cols-6 md:gap-2 md:px-0">
           {TECH_GROUPS.map((g, i) => {
             const on = i === active;
             return (

@@ -3,8 +3,8 @@ import { PROFILE, SOCIALS } from "@/lib/data";
 
 export function Footer() {
   return (
-    <footer className="mx-auto max-w-page px-6 pb-12">
-      <div className="flex flex-wrap items-center justify-between gap-[18px] border-t border-line pt-[26px]">
+    <footer className="mx-auto w-full max-w-page shrink-0 px-6 pb-5">
+      <div className="flex flex-wrap items-center justify-between gap-[18px] border-t border-line pt-4">
         <div className="flex items-center gap-[11px]">
           <span className="grid h-[30px] w-[30px] place-items-center rounded-[7px] bg-accent font-mono text-[11px] font-semibold text-white">
             {PROFILE.initials}

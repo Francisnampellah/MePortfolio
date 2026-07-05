@@ -7,8 +7,16 @@ import { Reveal } from "./Reveal";
 import { SectionLabel } from "./Section";
 import { ImageSlot } from "./ImageSlot";
 import { PROJECTS, PROJECT_FILTERS } from "@/lib/data";
+import {
+  ACTIVE_SPRING,
+  ConnectorBridge,
+  selectionGlow,
+  useConnector,
+  useSelectionPulse,
+} from "@/lib/connector";
 
 const AUTOPLAY_MS = 6500;
+const GAP = 20; // px — matches the grid's gap-5
 
 export function Projects() {
   const [filter, setFilter] = useState("All");
@@ -18,6 +26,9 @@ export function Projects() {
 
   const visible = PROJECTS.filter((p) => filter === "All" || p.tags.includes(filter));
   const current = visible[active] ?? visible[0];
+
+  const pulse = useSelectionPulse(active);
+  const { listRef, itemRefs, rect } = useConnector(active, "gutter-before-list", GAP, visible.length);
 
   useEffect(() => {
     setActive(0);
@@ -35,7 +46,11 @@ export function Projects() {
     setActive((a) => (a + delta + visible.length) % visible.length);
 
   return (
-    <section id="projects" className="relative z-[1] mx-auto max-w-page px-6 py-16">
+    <section
+      id="projects"
+      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip py-14 md:h-[calc(100dvh-4rem)] md:overflow-hidden md:py-0"
+    >
+      <div className="mx-auto w-full max-w-page px-6">
       <Reveal className="flex flex-wrap items-end justify-between gap-5">
         <div>
           <SectionLabel>02 / selected work</SectionLabel>
@@ -71,12 +86,15 @@ export function Projects() {
       ) : (
         <Reveal
           delay={0.08}
-          className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-[1.5fr_1fr]"
+          className="relative mt-5 grid grid-cols-1 gap-5 md:grid-cols-[1.5fr_1fr]"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
         >
-          {/* Left — carousel */}
-          <div className="flex flex-col overflow-hidden rounded-xl border border-line bg-white">
+          {/* Left — carousel (shown below the selector on mobile, first from md up) */}
+          <div
+            className="order-2 flex flex-col overflow-hidden rounded-xl border bg-white md:order-1"
+            style={selectionGlow(pulse)}
+          >
             <div className="relative overflow-hidden">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.article
@@ -87,7 +105,8 @@ export function Projects() {
                   transition={{ duration: reduced ? 0 : 0.4, ease: [0.2, 0.7, 0.2, 1] }}
                   className="flex flex-1 flex-col"
                 >
-                  <div className="relative aspect-video border-b border-line bg-surface2">
+                  {/* viewport-relative media area (a graphic, so it may flex) keeps the card on one screen at full type size */}
+                  <div className="relative h-[clamp(150px,24vh,230px)] border-b border-line bg-surface2">
                     <ImageSlot id={`proj-${current.no}`} placeholder="Drop project image" alt={current.title} />
                     <div className="pointer-events-none absolute left-[13px] top-[13px] flex flex-wrap gap-1.5">
                       {current.tags.map((tag) => (
@@ -101,14 +120,14 @@ export function Projects() {
                     </div>
                   </div>
 
-                  <div className="flex flex-1 flex-col gap-[13px] p-6">
+                  <div className="flex flex-1 flex-col gap-3 p-5">
                     <div className="flex items-start justify-between gap-3.5">
                       <h3 className="text-[21px] font-bold tracking-[-0.02em]">{current.title}</h3>
                       <span className="shrink-0 rounded-md border border-line bg-surface px-[9px] py-1 font-mono text-[10.5px] font-medium text-muted2">
                         {current.role}
                       </span>
                     </div>
-                    <p className="text-[14.5px] leading-relaxed text-muted">{current.desc}</p>
+                    <p className="line-clamp-2 text-[14.5px] leading-relaxed text-muted">{current.desc}</p>
 
                     <div className="grid grid-cols-2 overflow-hidden rounded-[9px] border border-line">
                       <div className="border-r border-line px-[13px] py-[11px]">
@@ -179,37 +198,54 @@ export function Projects() {
             </div>
           </div>
 
-          {/* Right — full project list */}
-          <div className="flex flex-col gap-2 lg:h-full lg:overflow-y-auto lg:pr-1">
+          {/* Right — full project list: horizontal scroller on mobile (shown first), vertical list from md up */}
+          <div
+            ref={listRef}
+            className="order-1 -mx-6 flex gap-2 overflow-x-auto px-6 pb-1 md:order-2 md:mx-0 md:h-full md:flex-col md:overflow-y-auto md:px-0 md:pb-0 md:pr-1"
+          >
             {visible.map((p, i) => {
               const isActive = i === active;
               return (
                 <button
                   key={p.no}
+                  ref={(el) => {
+                    itemRefs.current[i] = el;
+                  }}
                   onClick={() => setActive(i)}
                   aria-pressed={isActive}
-                  className={`flex items-center gap-3.5 rounded-xl border px-4 py-3.5 text-left transition-colors ${
-                    isActive ? "border-accent bg-[#faf2ee]" : "border-line bg-white hover:border-[#d6d1ca]"
+                  className={`relative flex w-[250px] shrink-0 items-center gap-3.5 overflow-hidden rounded-xl border px-4 py-3.5 text-left transition-colors md:w-full ${
+                    isActive ? "border-accent" : "border-line bg-white hover:border-[#d6d1ca]"
                   }`}
                 >
+                  {isActive ? (
+                    <motion.span
+                      layoutId="project-active-pill"
+                      className="absolute inset-0 bg-[#faf2ee]"
+                      transition={ACTIVE_SPRING}
+                    />
+                  ) : null}
                   <span
-                    className={`grid h-8 w-8 shrink-0 place-items-center rounded-[8px] font-mono text-[11px] font-semibold ${
+                    className={`relative z-10 grid h-8 w-8 shrink-0 place-items-center rounded-[8px] font-mono text-[11px] font-semibold ${
                       isActive ? "bg-ink text-white" : "bg-surface text-muted2"
                     }`}
                   >
                     {p.no}
                   </span>
-                  <div className="min-w-0 flex-1">
+                  <div className="relative z-10 min-w-0 flex-1">
                     <div className="truncate text-[14px] font-bold tracking-[-0.01em] text-ink">{p.title}</div>
                     <div className="mt-0.5 truncate font-mono text-[10.5px] text-muted3">{p.role}</div>
                   </div>
-                  {isActive ? <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" /> : null}
+                  {isActive ? <span className="relative z-10 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" /> : null}
                 </button>
               );
             })}
           </div>
+
+          {/* Connector — extends the selected card's border into the carousel */}
+          <ConnectorBridge rect={rect} gap={GAP} />
         </Reveal>
       )}
+      </div>
     </section>
   );
 }

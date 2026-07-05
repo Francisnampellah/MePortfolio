@@ -51,9 +51,6 @@ export const NAV_ITEMS = [
   { id: "tech", label: "Stack" },
   { id: "projects", label: "Projects" },
   { id: "experience", label: "Experience" },
-  { id: "certifications", label: "Certs" },
-  { id: "skills", label: "Skills" },
-  { id: "ai", label: "AI" },
   { id: "github", label: "GitHub" },
   { id: "blog", label: "Blog" },
 ] as const;

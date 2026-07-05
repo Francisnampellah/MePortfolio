@@ -97,7 +97,7 @@ export function ChatWidget() {
       <button
         onClick={toggle}
         aria-label="Chat with Baraka's assistant"
-        className="fixed bottom-[22px] right-[22px] z-[71] flex h-[52px] items-center gap-2.5 rounded-[26px] bg-ink pl-3.5 pr-[18px] text-white shadow-[0_10px_30px_rgba(20,18,15,.28)] transition-transform hover:scale-[1.02]"
+        className="fixed bottom-[22px] right-[22px] z-[71] flex h-[52px] items-center gap-2.5 rounded-[26px] bg-ink pl-3.5 pr-[18px] text-white shadow-[0_10px_30px_rgba(20,18,15,.28)] transition-transform hover:scale-[1.02] max-md:bottom-[calc(4.5rem+env(safe-area-inset-bottom))] max-md:right-4"
       >
         <span className="grid h-[30px] w-[30px] shrink-0 place-items-center rounded-full bg-accent">
           <MessageCircle className="h-4 w-4 text-white" strokeWidth={2} />
@@ -109,7 +109,7 @@ export function ChatWidget() {
 
       {/* Panel */}
       {open ? (
-        <div className="fixed bottom-[86px] right-[22px] z-[72] flex h-[min(580px,calc(100vh-130px))] w-[min(380px,calc(100vw-32px))] flex-col overflow-hidden rounded-[18px] border border-line bg-white shadow-[0_24px_70px_rgba(20,18,15,.3)] max-[760px]:inset-x-3 max-[760px]:bottom-20 max-[760px]:h-[min(72vh,calc(100vh-110px))] max-[760px]:w-auto">
+        <div className="fixed bottom-[86px] right-[22px] z-[72] flex h-[min(580px,calc(100vh-130px))] w-[min(380px,calc(100vw-32px))] flex-col overflow-hidden rounded-[18px] border border-line bg-white shadow-[0_24px_70px_rgba(20,18,15,.3)] max-[760px]:inset-x-3 max-[760px]:bottom-[calc(8.5rem+env(safe-area-inset-bottom))] max-[760px]:h-[min(68vh,calc(100vh-210px))] max-[760px]:w-auto">
           {/* header */}
           <div className="flex items-center gap-[11px] border-b border-line bg-surface px-4 py-3.5">
             <div className="relative h-[38px] w-[38px] shrink-0">

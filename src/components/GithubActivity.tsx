@@ -27,10 +27,14 @@ export function GithubActivity() {
   const weeks = buildContribGrid();
 
   return (
-    <section id="github" className="relative z-[1] mx-auto max-w-page px-6 py-16">
+    <section
+      id="github"
+      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip py-14 md:h-[calc(100dvh-4rem)] md:overflow-hidden md:py-0"
+    >
+      <div className="mx-auto w-full max-w-page px-6">
       <Reveal className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <SectionLabel>08 / open source</SectionLabel>
+          <SectionLabel>05 / open source</SectionLabel>
           <h2 className="mt-2.5 text-[clamp(26px,3.4vw,38px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#141414]">
             GitHub activity
           </h2>
@@ -130,6 +134,7 @@ export function GithubActivity() {
             </div>
           </Reveal>
         </div>
+      </div>
       </div>
     </section>
   );

@@ -3,12 +3,18 @@
 import { Download } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { ImageSlot } from "./ImageSlot";
-import { scrollToId } from "@/lib/useScroll";
+import { useFullPageScroll } from "@/lib/fullPageScroll";
 import { PROFILE, HERO_STATS, CLIENTS } from "@/lib/data";
 
 export function Hero() {
+  const { goToId } = useFullPageScroll();
+
   return (
-    <section id="home" className="relative z-[1] mx-auto max-w-page overflow-hidden px-6 pb-20 pt-20 sm:pt-24">
+    <section
+      id="home"
+      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip py-14 md:h-[calc(100dvh-4rem)] md:overflow-hidden md:py-0"
+    >
+      <div className="mx-auto w-full max-w-page px-6">
       <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
         {/* Left — copy */}
         <div className="text-left">
@@ -48,7 +54,7 @@ export function Hero() {
               href="#projects"
               onClick={(e) => {
                 e.preventDefault();
-                scrollToId("projects");
+                goToId("projects");
               }}
               className="inline-flex items-center gap-2 rounded-[9px] bg-ink px-[22px] py-[13px] text-[14.5px] font-semibold text-white transition-colors hover:bg-black"
             >
@@ -75,8 +81,8 @@ export function Hero() {
           </Reveal>
         </div>
 
-        {/* Right — terminal visual */}
-        <div className="relative">
+        {/* Right — terminal visual (omitted below lg: stacked it would not fit one screen at full type size) */}
+        <div className="relative hidden lg:block">
           <div
             aria-hidden
             className="pointer-events-none absolute -inset-x-10 -inset-y-16 -z-10 opacity-60 blur-3xl"
@@ -111,7 +117,7 @@ export function Hero() {
               <div className="mt-2">
                 <span style={{ color: "#e0855f" }}>$</span> <span className="text-[#f5f3f0]">cat</span> stack.json
               </div>
-              <div className="text-muted2">{PROFILE.stackJson}</div>
+              <div className="break-all text-muted2">{PROFILE.stackJson}</div>
               <div className="mt-2">
                 <span style={{ color: "#e0855f" }}>$</span> <span className="text-[#f5f3f0]">status</span> --available{" "}
                 <span style={{ color: "#3fcf7f" }}>true</span>
@@ -135,8 +141,8 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Companies */}
-      <Reveal delay={0.4} className="mt-24 border-t border-line pt-7">
+      {/* Companies — omitted on very short screens rather than shrinking anything */}
+      <Reveal delay={0.4} className="mt-12 border-t border-line pt-7 [@media(max-height:720px)]:hidden">
         <div className="mb-[18px] text-center font-mono text-[11px] uppercase tracking-[0.12em] text-faint">
           Teams I&apos;ve built with
         </div>
@@ -148,6 +154,7 @@ export function Hero() {
           ))}
         </div>
       </Reveal>
+      </div>
     </section>
   );
 }

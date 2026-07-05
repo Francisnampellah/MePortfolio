@@ -11,12 +11,12 @@ export function Contact() {
   const [sent, setSent] = useState(false);
 
   return (
-    <section id="contact" className="relative z-[1] mx-auto max-w-page px-6 pb-[88px] pt-16">
-      <div className="rounded-[14px] border border-line bg-surface p-[clamp(26px,4vw,44px)]">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
+    <section id="contact" className="relative z-[1] mx-auto flex w-full max-w-page flex-1 scroll-mt-16 flex-col justify-center px-6 py-4">
+      <div className="rounded-[14px] border border-line bg-surface p-6 sm:p-8">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           {/* Left: copy + links */}
           <Reveal>
-            <SectionLabel>10 / contact</SectionLabel>
+            <SectionLabel>07 / contact</SectionLabel>
             <h2 className="mt-2.5 text-[clamp(26px,3.4vw,36px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#141414]">
               Let&apos;s build something exceptional.
             </h2>
@@ -28,7 +28,7 @@ export function Contact() {
               <span className="text-[12.5px] font-semibold text-[#1f7a4d]">Available for new projects</span>
             </div>
 
-            <div className="mt-[26px] flex flex-col overflow-hidden rounded-xl border border-line bg-white">
+            <div className="mt-5 flex flex-col overflow-hidden rounded-xl border border-line bg-white">
               {CONTACT_LINKS.map((c) => {
                 const Icon = ICONS[c.icon];
                 return (
@@ -37,7 +37,7 @@ export function Contact() {
                     href={c.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 border-b border-line px-4 py-[13px] transition-colors hover:bg-surface"
+                    className="flex items-center gap-3 border-b border-line px-4 py-2 transition-colors hover:bg-surface"
                   >
                     <Icon className="h-[18px] w-[18px] shrink-0 text-muted2" strokeWidth={2} />
                     <div>
@@ -109,7 +109,7 @@ export function Contact() {
                   <span className="font-mono text-[11px] text-muted2">message</span>
                   <textarea
                     required
-                    rows={4}
+                    rows={3}
                     placeholder="Tell me a little about what you're building…"
                     className="resize-y rounded-[9px] border border-[#ddd9d3] bg-white px-3.5 py-3 text-[14px] text-ink outline-none transition-colors focus:border-accent"
                   />

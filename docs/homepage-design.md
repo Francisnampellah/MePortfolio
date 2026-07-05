@@ -53,17 +53,45 @@ live on resize/rotation.
   - `ctrlKey` on a `wheel` event means the user is pinch-zooming (this is
     how trackpads report it) — that event is let through untouched, never
     treated as a navigation input.
-- **Mac trackpad momentum fix**: a real swipe on a trackpad doesn't fire one
-  wheel event, it fires a long decaying tail of small events for
-  500–900ms after the finger lifts. Naively reacting to every event skips
-  multiple sections from one swipe. The fix: any wheel activity — even
-  below the trigger threshold — resets a 500ms "settle" timer
-  (`WHEEL_SETTLE_MS`), and no new navigation is accepted until that timer
-  expires with zero wheel activity. Combined with the `animatingRef` lock
-  during the transition itself, this guarantees **one input gesture = one
-  slide**, regardless of input device.
+- **Trackpad momentum fix (acceleration filter)**: a real swipe on a
+  trackpad doesn't fire one wheel event, it fires a long decaying tail of
+  small events for 500–900ms after the finger lifts. Naively reacting to
+  every event skips multiple sections from one swipe. The fix is the
+  fullpage.js-style heuristic: keep a rolling window of recent `|deltaY|`
+  values and compare the average of the last ~10 against the last ~70. A
+  genuine new gesture **accelerates** (recent ≥ middle) and triggers a
+  step; a momentum tail **decelerates** (recent < middle) and is ignored.
+  A pause longer than `WHEEL_GESTURE_GAP_MS` (200ms) clears the window so
+  the next push starts fresh. Deltas are recorded even while the
+  transition is animating, so a tail still decaying when the lock lifts
+  reads as deceleration and can't re-trigger.
+  - This replaced an earlier "settle timer" (any wheel activity reset a
+    500ms timer; navigation blocked until it expired). That timer also
+    blocked **continuous mouse-wheel scrolling** — steady scrolling kept
+    resetting it, so only the first notch registered and the rest were
+    eaten until you stopped for half a second. The acceleration filter
+    lets continuous scrolling page through slides while still collapsing
+    one flick to one slide.
+- **Lock safety net**: the `animatingRef` transition lock is released by
+  framer's `onComplete` (after a `COOLDOWN_MS` grace), but a mid-transition
+  resize cancels the animation via `y.set` **without** firing `onComplete`,
+  which would strand the lock and kill scrolling until reload. A backstop
+  timer (`ANIM_LOCK_MAX_MS`) always releases it. Combined with the
+  acceleration filter this guarantees **one input gesture = one slide**
+  without any state that can get permanently stuck.
 - Resizing re-measures `FullPageStage`'s `clientHeight` and snaps the
   transform to the correct offset for the current index (no animation).
+- **Slide height comes from the measured stage, not `dvh`.** The stage
+  publishes its measured `clientHeight` as the `--slide-h` CSS variable,
+  and every slide root is `md:h-[var(--slide-h)] md:min-h-0` (with a
+  `calc(100dvh - 4rem)` fallback for first paint). This is load-bearing:
+  the transform steps by the *measured* pixel height, but `calc(100dvh -
+  4rem)` can compute to a slightly different value on fractional-pixel
+  displays (Windows display scaling), and that few-px disagreement
+  accumulates across slides until a sliver of the neighbouring section
+  shows at the top/bottom. Driving both from one measured value removes the
+  drift. (Also why `md:min-h-0` is needed — the mobile `min-h` must not
+  win at `md+` and force the slide taller than `--slide-h`.)
 - **Deep links / shareable URLs**: on load, a `#section` hash jumps straight
   to that slide (or scrolls to it natively below `md`); as the active
   section changes, `history.replaceState` keeps the hash current (cleared
@@ -101,9 +129,10 @@ layout at the same type scale** — never to shrink it:
 - Font sizes, padding, and content stay exactly as designed. No "smaller
   fonts to make it fit", no dropped content.
 - Example: `Experience`'s vertical timeline was too tall (4 jobs + the
-  education grid), so it became a **horizontal** timeline — dots on a line
-  across the top, cards side by side beneath — with the identical type
-  scale. The orientation changed; the design didn't.
+  education grid), so it became an **abstract horizontal career-path
+  axis** — roles as stops on a time line with a big minimal "now showing"
+  display above — deliberately low-detail (no bullet lists) so the visual
+  carries it and it fits one screen easily.
 
 An earlier approach (`FitToHeight`, a `transform: scale()` wrapper that
 uniformly shrank too-tall sections like a browser zoom-out) was dropped in
@@ -117,13 +146,18 @@ single source of truth for slide order, nav highlighting, and `goToId`
 lookups:
 
 1. `home` — Hero (no numbered label; it's the landing slide)
-2. `tech` — **01 / toolbox** — Tech Stack
-3. `projects` — **02 / selected work** — Projects
-4. `experience` — **03 / journey** — Experience
-5. `testimonials` — **04 / references**
-6. `github` — **05 / open source**
-7. `blog` — **06 / writing**
-8. `contact` — **07 / contact** (Contact + Footer share one slide)
+2. `about` — **01 / about** — About (abstract identity slide, pairs with Hero)
+3. `tech` — **02 / toolbox** — Tech Stack
+4. `projects` — **03 / selected work** — Projects
+5. `experience` — **04 / journey** — Experience
+6. `testimonials` — **05 / references**
+7. `github` — **06 / open source**
+8. `blog` — **07 / writing**
+9. `contact` — **08 / contact** (Contact + Footer share one slide)
+
+(About was inserted after Hero on 2026-07-05; every following section's
+`NN /` label shifted up by one — those numbers are hardcoded per component,
+so adding/removing a section means renumbering them all.)
 
 Certifications, Skills, and AI Showcase (formerly 04/05/06) were removed
 from the homepage on request. Their components (`Certifications.tsx`,
@@ -133,82 +167,59 @@ still editable in `/admin`) are left in the repo, just not imported into
 and everything after renumbers.
 
 `NAV_ITEMS` in `src/lib/data.ts` must stay in sync with what's actually on
-the page — it currently lists Stack / Projects / Experience / GitHub / Blog
-(Testimonials and Contact are reachable but not in the top nav, matching
-the original design).
+the page — it currently lists About / Stack / Projects / Experience /
+GitHub / Blog (Testimonials and Contact are reachable but not in the top
+nav). `SlideHud`'s `LABELS` map and `TabBar` also key off section ids, so a
+new section needs an entry there too.
 
-## 5. The "connector" pattern
+## 5. The "abstract focal + selector" pattern
 
-Used in **Tech Stack** and **Projects** (and available to reuse anywhere
-with a "pick from a list, see detail" layout). It's what makes the selected
-list item feel physically wired into the detail panel next to it, instead
-of two separately-glowing boxes.
+The three interactive sections — **Tech Stack**, **Projects**, and
+**Experience** — all share one shape (converged there over several rounds
+on request; the brief that stuck was "more abstract, not much detail, but
+good visual"). It is:
 
-Layout: a simple selector list on one side (icon/number + label, one active
-item highlighted) and a detail panel on the other (Tech Stack: hexagon
-radar + skill dials; Projects: image carousel). Both live in the same
-`position: relative` grid so a connector element can be absolutely
-positioned in the gutter between them.
+- **One focal display** showing a *single* item at a time, big and
+  low-detail. Common ingredients: a large **faded "ghost" backdrop**
+  element for depth (Experience: the year; Tech Stack: the discipline
+  name; Projects: the project number — all at ~7% accent tint), a big
+  **title**, one supporting line, and a **light tag row**. No bullet
+  lists, no dense metric grids — that detail was deliberately stripped
+  (see §9).
+- **A linear selector** you move along: Experience's stops on a time axis,
+  Tech Stack's row of six discipline chips, Projects' row of numbered
+  dots (plus prev/next + counter). Every selector responds to
+  hover **and** click **and** focus; active = accent, others muted.
+- **A cross-fade** between focal states: `AnimatePresence mode="wait"`
+  keyed by the active index, a ~0.28s y-slide + fade. Any continuously
+  animating visual (Tech Stack's power ring) is a persistent element that
+  *springs* to the new value rather than cross-fading, so it feels alive.
 
-**Selection highlight** — not a className toggle. A single
-`<motion.span layoutId="…-active-pill">` renders only inside the active
-button; Framer Motion detects it moving between mount points across
-re-renders and animates position/size with a spring
-(`stiffness: 380, damping: 34`), producing one physics-based highlight that
-glides between items — the classic "sliding tab indicator" recipe. Two
-list-details pairs on the same page must use distinct `layoutId` strings
-(`"tech-active-pill"` vs `"project-active-pill"`) or they'll fight each
-other.
+Keep new interactive sections on this pattern rather than inventing a
+fourth interaction.
 
-**The bridge** — a `motion.span` positioned in the exact gutter between the
-list and the panel:
-- Measured via `ref`s on the list container and the active button:
-  `top = button.offsetTop`, `height = button.offsetHeight`,
-  `left` = the gutter's x-position (computed from `list.offsetLeft` /
-  `list.offsetWidth` depending on which side the list is on).
-- `width = GAP + OVERLAP * 2`, positioned `OVERLAP` px into *both*
-  neighbors (`OVERLAP = 4`) — this is what paints over the seam borders on
-  both the button and the panel, instead of just filling empty space
-  between them.
-- Vertically inset by `CORNER = 12` px on top and bottom
-  (`top: button.offsetTop + CORNER`, `height: button.offsetHeight -
-  CORNER * 2`) — this matters more than it looks: `rounded-xl` gives both
-  the button and the panel a 12px corner radius, and a flat-edged bridge
-  spanning the *full* button height would clip visibly through that curve.
-  Insetting by exactly the corner radius means the bridge only ever
-  touches the *straight* part of each border, so the rounded corners curve
-  away naturally with no double-curve artifact. (We tried giving the
-  bridge its own rounded corners instead — don't; two curves meeting
-  produces an ugly S-wiggle. Sharp-edged bridge, corner-matched inset,
-  nothing else.)
-- Fill color matches the active pill (`#faf2ee`) with a 1px accent
-  (`var(--accent)`) top and bottom border — no left/right border, so it
-  reads as an open-ended channel, not a boxed shape.
-- `layout` prop (not manual CSS transition) so it glides with the same
-  spring physics as the pill when the selection changes.
-- Hidden below `md` (768px) — on narrower screens the list and panel stack
-  vertically and there's no gutter to bridge.
-- `GAP` matches whatever gap the grid actually uses: `14` (Tech Stack's
-  `gap-3.5`) or `20` (Projects' `gap-5`) — if the grid gap changes, this
-  constant must change with it or the math breaks.
+**Retired — the "connector bridge":** an earlier version of Tech Stack and
+Projects used a `motion.span` "bridge" (`src/lib/connector.tsx`) that
+visually wired a selected list item into an adjacent detail panel, plus a
+`layoutId` sliding pill. That whole list+detail-panel approach was replaced
+by the focal+selector pattern above, so **`connector.tsx` is now unused
+dead code** — kept only as a reference if a list+panel layout ever returns.
+Don't wire it back into these three sections.
 
 ## 6. Responsive rules
 
-- The two-column list+panel layout (Tech Stack, Projects) switches from
-  stacked to side-by-side at `md` (768px), not `lg` — below `lg` there was
-  plenty of width for two columns and stacking wasted the whole tablet
-  range.
-- Below `md`, each list becomes a **horizontally scrollable row** of
-  fixed-width cards (edge-to-edge bleed via negative margin, a peek of the
-  next card as a scroll hint) instead of a tall vertical stack, and is
-  reordered to appear *above* the detail panel (`order-1`/`order-2`) so you
-  pick before you see detail.
-- Any grid element sized in JS relative to a container width (the dial
-  grid's column count, etc.) must key its breakpoint to whatever width the
-  *container* actually has at that point in the layout, not blindly to the
-  viewport — e.g. Tech Stack's skill-dial grid stays 2-column through the
-  `md`–`lg` range (where the panel is squeezed next to the list) and only
-  goes 4-column at `lg`, where the panel finally has room.
+- The focal displays (§5) go two-column (visual beside text) at `sm`/`md`
+  and stack the visual above the text below that — the ring, image, and
+  axis each keep their full size, they just reflow.
+- Selector rows that can overflow on a phone (Tech Stack's six chips,
+  Experience's mobile list) become **horizontally scrollable rows**
+  (`-mx-6 … overflow-x-auto px-6`, edge-to-edge bleed) instead of wrapping
+  into a tall block; at `md+` Tech Stack's chips become a fixed
+  `grid-cols-6`.
+- Experience swaps layout entirely by breakpoint: the horizontal time axis
+  at `md+`, a vertical newest-first stack below (a horizontal axis can't
+  breathe on a phone). Projects keeps the same focal layout at all widths,
+  just stacking image-over-text.
 
 ## 7. Chrome: game HUD (desktop) and app shell (mobile)
 
@@ -232,9 +243,17 @@ own experience — a game settings menu at `md+`, a native app below.
 - Sections without a tab of their own (experience, testimonials, github)
   keep the nearest *preceding* tab ("Work") lit while scrolled through —
   the way an app keeps a tab active on its inner screens.
-- The top nav's hamburger + full-screen menu were **removed**; below `md`
-  the top bar is brand + CV (+ Contact at `sm+`) only, and all section
-  navigation lives in the tab bar.
+- The top nav (`Nav.tsx`) is a **brand lockup** — the **logo mark**
+  (`public/logo.png`, the Sisyphus-and-boulder icon, shown via `next/image`
+  `fill` in a rounded tile, scaled `~1.42` to crop the baked-in cream
+  padding) + name + a mono role subtitle at `sm+`. The `md+` center links
+  mark the active section with a **subtle thin underline** only
+  (`layoutId="nav-underline"`, a 2px accent bar that springs between links —
+  deliberately understated, replaced an earlier filled pill on request).
+  Actions: a CV button (`sm+`) plus a primary **"Let's talk →"** to Contact
+  (always shown, since it's the only header action on mobile). The old
+  hamburger + full-screen menu are gone; below `md` all section navigation
+  lives in the bottom tab bar.
 - `FullPageStage` gets `pb-[calc(3.5rem+env(safe-area-inset-bottom))]`
   below `md` so the last slide clears the bar; the chat bubble/panel are
   raised above it on mobile.
@@ -247,26 +266,74 @@ own experience — a game settings menu at `md+`, a native app below.
 - **Hero** — two-column on `lg+` (copy left, terminal-window visual right,
   hidden below `lg` to avoid doubling required height on stacked layouts).
   CTA buttons use `goToId` from `useFullPageScroll()`, not native anchor
-  scrolling.
-- **Tech Stack** — hexagonal SVG radar chart (one axis per discipline,
-  selected axis bold/accent) paired with the connector pattern described
-  above; selecting a class swaps both the radar's highlighted axis and the
-  skill-dial breakdown below it.
-- **Projects** — image/description carousel (autoplay every 6.5s, pauses on
-  hover, disabled under `prefers-reduced-motion`) paired with the full
-  project list via the same connector pattern.
-- **Experience** — horizontal timeline of **compact role cards** (icon,
-  role, company, period — nothing else), 4-across at `lg` with dots on a
-  line above, 2-across at `md`, a horizontally scrollable row below that.
-  The bullet points + tech chips for **one role at a time** live in a
-  shared detail panel beneath the cards: hovering a card switches the
-  panel on desktop, tapping does on touch; the panel reuses
-  `useSelectionPulse`/`selectionGlow` from `src/lib/connector.tsx` and
-  cross-fades content on change. Redesigned this way (2026-07-05, on
-  request) because showing every role's full details at once read as a
-  wall of text. The education grid sits underneath.
+  scrolling. Trimmed 2026-07-05 once About landed, to stop the two intro
+  slides duplicating each other: the byline **portrait**, the floating
+  **availability badge**, and the location line were removed (About owns the
+  portrait + availability now); Hero leads with a mono **role eyebrow** →
+  headline → CTAs → stats → clients, and stays the "code/terminal" identity
+  while About is the "human/portrait" one.
+- **About** — abstract identity slide (added 2026-07-05), same low-detail
+  language as the rest: a large faded **ghost first-name** behind a single
+  concise statement (`PROFILE.intro`), three minimal fact tiles (location /
+  role / availability, data-driven from `PROFILE`), and the portrait as the
+  visual (reuses the `hero-photo` ImageSlot + accent glow + availability
+  badge). No stats grid or long bio — Hero already carries the stats. Two-
+  column at `lg+`, stacked below.
+- **Tech Stack** — abstract focal+selector (§5). Several forms were tried
+  (radar + skill-dials + metric pills → power-ring + tag-cloud → equalizer
+  bars) before landing, on request, on a **radar stat-wheel + segmented
+  skill meters**. Hero (`RadarWheel`): a hexagon radar plotting every
+  class's overall score at once — the whole toolkit's shape — with the
+  active axis lit; its axis labels are clickable/hoverable and select the
+  class (progressive enhancement over the chip row). Beside it, the active
+  class's four skills are **level-meter cards**: a `PipMeter` of ten
+  segments filled proportional to the score (a deliberately different
+  showcase from the earlier dials/tags/bars), the pips popping in with a
+  stagger on each class change, above them a header with the class name +
+  big accent overall score + S/A/B/C tier — plus a large faded **ghost
+  class name** behind that header (same device as Experience's ghost year /
+  Projects' ghost number). Selector: a **numbered index** (01–06 with short
+  name, a top rule that lights accent on the active segment) — replaced the
+  earlier class chips; also the primary control on mobile where radar axes
+  are hard to tap. Slim `AVG / CLASSES / SKILLS` meta line under the
+  heading.
+- **Projects** — abstract focal+selector (§5), redesigned 2026-07-05 from a
+  denser carousel card (which had a blurb + problem/outcome grid + inline
+  list). Focal display: a big **image hero** beside the project number
+  (ghosted), role kicker, title, a **one-line** summary (the project's
+  `outcome`), a light tech-tag row, and GitHub / Live-demo actions.
+  Selector: a row of **numbered dots** + counter + prev/next arrows.
+  Autoplay every 6.5s, pauses on hover, disabled under
+  `prefers-reduced-motion`. Filter chips (All / Mobile / …) unchanged; the
+  `problem`/`desc` fields still exist in the data, just unused here now.
+- **Experience** — **abstract career-path time axis** (redesigned
+  2026-07-05, on request: it went compact-cards → detail-card → this, the
+  brief being "more abstract, not much detail, but good visual"). At `md+`:
+  roles are glowing stops on a real horizontal time line, positioned by the
+  **start date parsed from each `period` string** (`startValue` → decimal
+  year; a min-gap rule nudges apart roles that share a year, e.g. the two
+  2025 stops, so they never collide). Left = earliest, right = now; the
+  "Present" stop pulses and is the default active one. Hover/click/focus a
+  stop to travel the path — an accent segment fills the line up to it, and
+  the **"now showing" display** above cross-fades to that role. That
+  display is intentionally minimal: a large faded **ghost year** behind,
+  the **role title**, a `company · period` line, and a light tech-tag row —
+  **no bullet points** (they read as clutter here and are what the earlier
+  versions were rejected for). Below `md` (native scroll) it's a **minimal
+  vertical stack, newest first** (icon, role, company, year — also no
+  bullets). The education grid sits underneath in both modes. Note: date
+  parsing keys off the free-text `period` (handles `"2025"`,
+  `"Mar 2026 — Present"`, `"2024 — Feb 2026"`); a period with no 4-digit
+  year sorts to the far left. The role bullet points still live in
+  `content/experience.json` (editable in `/admin`), just unused by this
+  section now.
 - **Contact + Footer** share a single slide (footer is compact enough not
-  to need one of its own).
+  to need one of its own). Restyled 2026-07-05 to match the other sections:
+  a faded **ghost "Contact"** behind the heading, the open (un-boxed) two-
+  column layout, contact links as light hover cards, and form fields on
+  `bg-surface` that brighten to white on focus. The form still just sets a
+  local `sent` state on submit (no backend wired) — keep that in mind if
+  real delivery is expected.
 
 ## 9. Things that have already been tried and rejected
 

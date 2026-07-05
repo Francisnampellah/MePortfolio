@@ -32,12 +32,12 @@ export function Blog() {
   return (
     <section
       id="blog"
-      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip border-t border-line bg-surface py-14 md:h-[calc(100dvh-4rem)] md:overflow-hidden md:py-0"
+      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip border-t border-line bg-surface py-14 md:h-[var(--slide-h)] md:min-h-0 md:overflow-hidden md:py-0"
     >
       <div className="mx-auto w-full max-w-page px-6">
         <Reveal className="flex flex-wrap items-end justify-between gap-[18px]">
           <div>
-            <SectionLabel>06 / writing</SectionLabel>
+            <SectionLabel>07 / writing</SectionLabel>
             <h2 className="mt-2.5 text-[clamp(26px,3.4vw,38px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#141414]">
               From the blog
             </h2>

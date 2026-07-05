@@ -12,6 +12,7 @@ import { useFullPageScroll } from "@/lib/fullPageScroll";
 
 const LABELS: Record<string, string> = {
   home: "start",
+  about: "about",
   tech: "toolbox",
   projects: "selected work",
   experience: "journey",

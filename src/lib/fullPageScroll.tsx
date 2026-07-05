@@ -16,14 +16,26 @@ const DURATION = 0.85;
 const COOLDOWN_MS = 150;
 const WHEEL_THRESHOLD = 8;
 const TOUCH_THRESHOLD = 50;
-// Trackpads (Mac in particular) fire a long tail of momentum "wheel" events after a single
-// swipe. Any new wheel activity — even below the trigger threshold — resets this timer, so the
-// input lock isn't released until the trackpad has been fully still for this long.
-const WHEEL_SETTLE_MS = 500;
+// A gap this long between wheel events ends the current gesture: the trackpad
+// momentum tail has died, so the next event starts a fresh (accelerating) gesture.
+const WHEEL_GESTURE_GAP_MS = 200;
+// Backstop: even if framer's onComplete never fires (e.g. a resize interrupts the
+// animation with y.set), the input lock must release. This is the longest a single
+// transition + cooldown can legitimately take, plus a small margin.
+const ANIM_LOCK_MAX_MS = DURATION * 1000 + COOLDOWN_MS + 150;
 // The slideshow hijack only runs at md+; below that, slides can be taller than one screen
 // (stacked layouts), so hijacking would clip content behind overflow-hidden with no way to
 // reach it. Small screens get native document scrolling instead.
 const DESKTOP_MQ = "(min-width: 768px)";
+
+/** Mean of the last `n` entries — used to compare recent vs older wheel speed. */
+function tailAverage(values: number[], n: number) {
+  const start = Math.max(values.length - n, 0);
+  let sum = 0;
+  for (let i = start; i < values.length; i++) sum += values[i];
+  const count = values.length - start;
+  return count ? sum / count : 0;
+}
 
 type FullPageCtx = {
   sectionIds: string[];
@@ -33,6 +45,10 @@ type FullPageCtx = {
   goToId: (id: string) => void;
   y: MotionValue<number>;
   stageRef: React.RefObject<HTMLDivElement>;
+  /** Measured stage height in px (0 before first measure); slides use it so their
+      height matches the translate step exactly — CSS `100dvh` can disagree with the
+      measured height on fractional-pixel displays and let a neighbor sliver show. */
+  stageH: number;
 };
 
 const Ctx = createContext<FullPageCtx | null>(null);
@@ -63,9 +79,13 @@ export function FullPageScrollProvider({
   const enabledRef = useRef(false);
   const y = useMotionValue(0);
   const slideHeightRef = useRef(0);
+  const [stageH, setStageH] = useState(0);
   const animatingRef = useRef(false);
-  const wheelLockedRef = useRef(false);
-  const wheelSettleTimer = useRef<number | undefined>(undefined);
+  const animLockTimer = useRef<number | undefined>(undefined);
+  // Rolling window of recent |deltaY| values; a decelerating tail (momentum)
+  // has a smaller recent average than middle average, an accelerating gesture larger.
+  const scrollingsRef = useRef<number[]>([]);
+  const lastWheelAtRef = useRef(0);
   const stageRef = useRef<HTMLDivElement>(null);
   const touchRef = useRef<{ x: number; y: number; axis: "v" | "h" | null } | null>(null);
   const reducedRef = useRef(false);
@@ -74,6 +94,7 @@ export function FullPageScrollProvider({
   const measure = useCallback(() => {
     const h = stageRef.current?.clientHeight ?? window.innerHeight;
     slideHeightRef.current = h;
+    setStageH(h);
     if (enabledRef.current) y.set(-indexRef.current * h);
   }, [y]);
 
@@ -100,11 +121,18 @@ export function FullPageScrollProvider({
         animatingRef.current = false;
         return;
       }
+      // Safety net: guarantee the lock releases even if onComplete is skipped
+      // (a mid-transition resize cancels the animation via y.set without firing it).
+      window.clearTimeout(animLockTimer.current);
+      animLockTimer.current = window.setTimeout(() => {
+        animatingRef.current = false;
+      }, ANIM_LOCK_MAX_MS);
       animate(y, targetY, {
         duration: DURATION,
         ease: EASE,
         onComplete: () => {
           window.setTimeout(() => {
+            window.clearTimeout(animLockTimer.current);
             animatingRef.current = false;
           }, COOLDOWN_MS);
         },
@@ -197,16 +225,29 @@ export function FullPageScrollProvider({
       if (e.ctrlKey) return;
       e.preventDefault();
 
-      // Any wheel activity (even sub-threshold momentum tail) pushes back the settle timer.
-      window.clearTimeout(wheelSettleTimer.current);
-      wheelSettleTimer.current = window.setTimeout(() => {
-        wheelLockedRef.current = false;
-      }, WHEEL_SETTLE_MS);
+      const now = Date.now();
+      // A pause longer than the gesture gap means the previous flick's momentum
+      // has ended; forget it so the next push reads as a fresh, accelerating gesture.
+      if (now - lastWheelAtRef.current > WHEEL_GESTURE_GAP_MS) scrollingsRef.current = [];
+      lastWheelAtRef.current = now;
 
-      if (animatingRef.current || wheelLockedRef.current) return;
-      if (Math.abs(e.deltaY) < WHEEL_THRESHOLD) return;
+      const magnitude = Math.abs(e.deltaY);
+      // Keep recording through the transition too, so a still-decaying momentum tail
+      // is visible (as deceleration) the moment the lock lifts and can't trigger again.
+      scrollingsRef.current.push(magnitude);
+      if (scrollingsRef.current.length > 150) scrollingsRef.current.shift();
 
-      wheelLockedRef.current = true;
+      if (animatingRef.current) return;
+      if (magnitude < WHEEL_THRESHOLD) return;
+
+      // Accelerating (recent faster than middle) = the user is actively scrolling →
+      // advance. Decelerating = a momentum tail → ignore. This lets continuous
+      // scrolling page through slides while one flick still moves exactly one slide.
+      const recent = tailAverage(scrollingsRef.current, 10);
+      const middle = tailAverage(scrollingsRef.current, 70);
+      if (recent < middle) return;
+
+      scrollingsRef.current = [];
       goToIndex(indexRef.current + (e.deltaY > 0 ? 1 : -1));
     };
 
@@ -262,7 +303,7 @@ export function FullPageScrollProvider({
     window.addEventListener("touchend", onTouchEnd);
 
     return () => {
-      window.clearTimeout(wheelSettleTimer.current);
+      window.clearTimeout(animLockTimer.current);
       document.body.style.overflow = prevBodyOverflow;
       document.documentElement.style.overflow = prevHtmlOverflow;
       window.removeEventListener("resize", onResize);
@@ -284,7 +325,7 @@ export function FullPageScrollProvider({
   }, [index, sectionIds]);
 
   return (
-    <Ctx.Provider value={{ sectionIds, index, activeId: sectionIds[index], goToIndex, goToId, y, stageRef }}>
+    <Ctx.Provider value={{ sectionIds, index, activeId: sectionIds[index], goToIndex, goToId, y, stageRef, stageH }}>
       {children}
     </Ctx.Provider>
   );
@@ -296,10 +337,14 @@ export function FullPageScrollProvider({
  * padded down past the fixed nav.
  */
 export function FullPageStage({ children }: { children: ReactNode }) {
-  const { y, stageRef } = useFullPageScroll();
+  const { y, stageRef, stageH } = useFullPageScroll();
   return (
     <div
       ref={stageRef}
+      // Publish the measured height as --slide-h so each slide is exactly one
+      // stage tall (matches the translate step). Falls back to the dvh calc for
+      // the first paint before measurement.
+      style={{ ["--slide-h" as string]: stageH ? `${stageH}px` : "calc(100dvh - 4rem)" }}
       className="pb-[calc(3.5rem+env(safe-area-inset-bottom))] pt-16 md:fixed md:inset-x-0 md:bottom-0 md:top-16 md:overflow-hidden md:pb-0 md:pt-0"
     >
       <motion.div style={{ y }} className="flex flex-col will-change-transform">

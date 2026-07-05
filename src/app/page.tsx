@@ -1,6 +1,7 @@
 import { Nav } from "@/components/Nav";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { Hero } from "@/components/Hero";
+import { About } from "@/components/About";
 import { TechStack } from "@/components/TechStack";
 import { Projects } from "@/components/Projects";
 import { Experience } from "@/components/Experience";
@@ -17,6 +18,7 @@ import { FullPageScrollProvider, FullPageStage } from "@/lib/fullPageScroll";
 
 const SECTION_IDS = [
   "home",
+  "about",
   "tech",
   "projects",
   "experience",
@@ -34,13 +36,14 @@ export default function Home() {
       <FullPageStage>
         <main className="contents">
           <Hero />
+          <About />
           <TechStack />
           <Projects />
           <Experience />
           <Testimonials />
           <GithubActivity />
           <Blog />
-          <div className="flex min-h-[calc(100dvh-4rem)] w-full shrink-0 flex-col overflow-x-clip md:h-[calc(100dvh-4rem)] md:overflow-hidden">
+          <div className="flex min-h-[calc(100dvh-4rem)] w-full shrink-0 flex-col overflow-x-clip md:h-[var(--slide-h)] md:min-h-0 md:overflow-hidden">
             <Contact />
             <Footer />
           </div>

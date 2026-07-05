@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Reveal } from "./Reveal";
 
-/** Mono section eyebrow, e.g. "01 / toolbox". */
+/** Mono section eyebrow, e.g. "02 / toolbox". */
 export function SectionLabel({ children }: { children: ReactNode }) {
   return (
     <div className="font-mono text-[12.5px] tracking-[0.04em] text-accent">

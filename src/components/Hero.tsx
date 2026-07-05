@@ -2,7 +2,6 @@
 
 import { Download } from "lucide-react";
 import { Reveal } from "./Reveal";
-import { ImageSlot } from "./ImageSlot";
 import { useFullPageScroll } from "@/lib/fullPageScroll";
 import { PROFILE, HERO_STATS, CLIENTS } from "@/lib/data";
 
@@ -12,31 +11,23 @@ export function Hero() {
   return (
     <section
       id="home"
-      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip py-14 md:h-[calc(100dvh-4rem)] md:overflow-hidden md:py-0"
+      className="relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip py-14 md:h-[var(--slide-h)] md:min-h-0 md:overflow-hidden md:py-0"
     >
       <div className="mx-auto w-full max-w-page px-6">
       <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
         {/* Left — copy */}
         <div className="text-left">
-          {/* Byline */}
-          <Reveal className="flex items-center gap-3">
-            <div
-              className="relative h-11 w-11 shrink-0 rounded-full p-[2px]"
-              style={{ background: "var(--accent)" }}
-            >
-              <div className="h-full w-full overflow-hidden rounded-full bg-surface2">
-                <ImageSlot id="hero-photo" rounded="full" placeholder="Photo" alt="Baraka Nampellah" defaultSrc="/baraka.jpg" />
-              </div>
-              <span className="absolute bottom-0 right-0 h-[13px] w-[13px] rounded-full border-2 border-white bg-[#2e9e63]" />
-            </div>
-            <div className="font-mono text-[12.5px] tracking-[0.02em] text-muted2">
-              {PROFILE.name} <span className="text-faint">·</span> {PROFILE.location.split(",")[0]}
-            </div>
+          {/* Eyebrow */}
+          <Reveal>
+            <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-1.5 font-mono text-[11.5px] font-medium text-muted2">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+              {PROFILE.role}
+            </span>
           </Reveal>
 
           {/* Headline */}
           <Reveal delay={0.06} as="div">
-            <h1 className="mt-6 max-w-[600px] text-[clamp(32px,5vw,54px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-ink text-pretty">
+            <h1 className="mt-5 max-w-[600px] text-[clamp(32px,5vw,54px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-ink text-pretty">
               Good software should feel simple{" "}
               <span style={{ color: "var(--accent)" }}>— even when the engineering isn&apos;t</span>.
             </h1>
@@ -124,19 +115,6 @@ export function Hero() {
                 <span className="ml-[5px] inline-block h-[15px] w-2 translate-y-[2px] animate-blink bg-[#f5f3f0] align-baseline" />
               </div>
             </div>
-          </Reveal>
-
-          {/* Floating availability badge */}
-          <Reveal
-            delay={0.34}
-            className="absolute -bottom-6 left-4 flex items-center gap-2.5 rounded-[11px] border border-line bg-white px-4 py-3 sm:left-8"
-            style={{ boxShadow: "0 14px 34px rgba(20,20,20,.12)" }}
-          >
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#2e9e63] opacity-75" />
-              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#2e9e63]" />
-            </span>
-            <span className="text-[13px] font-semibold text-ink">Available for new projects</span>
           </Reveal>
         </div>
       </div>

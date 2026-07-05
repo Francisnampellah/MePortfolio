@@ -48,6 +48,7 @@ export const CLIENTS = [
    Navigation
 ----------------------------------------------------------------- */
 export const NAV_ITEMS = [
+  { id: "about", label: "About" },
   { id: "tech", label: "Stack" },
   { id: "projects", label: "Projects" },
   { id: "experience", label: "Experience" },

@@ -13,9 +13,12 @@ const COLLECTIONS: { key: string; label: string; kind: "object" | "list" }[] = [
   { key: "posts", label: "Blog posts", kind: "list" },
   { key: "bot", label: "Assistant", kind: "object" },
   { key: "leads", label: "Leads", kind: "list" },
+  { key: "submissions", label: "Submissions", kind: "list" },
+  { key: "visitors", label: "Visitors", kind: "list" },
+  { key: "chat-logs", label: "Chat logs", kind: "list" },
 ];
 
-const LONG_KEYS = ["desc", "note", "quote", "intro", "lede", "excerpt", "tagline"];
+const LONG_KEYS = ["desc", "note", "quote", "intro", "lede", "excerpt", "tagline", "message"];
 
 type Json = Record<string, unknown>;
 

@@ -12,3 +12,7 @@ yarn-error.log*
 .vercel
 *.tsbuildinfo
 next-env.d.ts.bak
+
+# Local SQLite database (captured leads / submissions / visitors)
+/data/*.db
+/data/*.db-*

@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 import { Reveal } from "./Reveal";
 
-/** Full-page slide root: one viewport tall at md+, mobile vertical breathing room. */
+/** Full-page slide root: one viewport tall at md+, vertical breathing room on every size. */
 export const SECTION_SLIDE_ROOT =
-  "relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip py-14 md:h-[var(--slide-h)] md:min-h-0 md:overflow-hidden md:py-0";
+  "relative z-[1] flex min-h-[calc(100dvh-4rem)] w-full shrink-0 scroll-mt-16 flex-col justify-center overflow-x-clip py-16 sm:py-20 md:h-[var(--slide-h)] md:min-h-0 md:overflow-hidden md:py-10 lg:py-12";
 
-/** Inner content column inside a slide. */
-export const SECTION_INNER = "mx-auto w-full max-w-page px-6";
+/** Inner content column inside a slide: centered with responsive horizontal gutters. */
+export const SECTION_INNER = "mx-auto w-full max-w-page px-6 sm:px-8 lg:px-10";
 
 /** Contact + Footer share one slide; wrapper carries the slide sizing. */
 export const CONTACT_SLIDE_ROOT =

@@ -1,0 +1,202 @@
+[
+  {
+    "at": "2026-07-07T12:20:37.137Z",
+    "userMessage": "I've got a project",
+    "assistantReply": "Great to hear about your project! What are you looking to build or achieve?",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 1537,
+    "model": "gpt-4o-mini",
+    "messageCount": 2
+  },
+  {
+    "at": "2026-07-07T12:21:00.020Z",
+    "userMessage": "i need a pms",
+    "assistantReply": "A PMS? That sounds interesting. Are you looking for a specific set of features, or do you have a particular vision in mind for its functionality?",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 4896,
+    "model": "gpt-4o-mini",
+    "messageCount": 4
+  },
+  {
+    "at": "2026-07-07T12:21:25.370Z",
+    "userMessage": "general with some costume feature",
+    "assistantReply": "Got it. A general project management system with custom features. \n\nCould you share a bit about the specific features you're thinking of? That will help Nampellah understand how he can deliver the right solution for you.",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 4197,
+    "model": "gpt-4o-mini",
+    "messageCount": 6
+  },
+  {
+    "at": "2026-07-07T12:22:04.278Z",
+    "userMessage": "i need virtual assisant on the system",
+    "assistantReply": "A virtual assistant feature could add significant value to your PMS.\n\nWhat tasks would you like the virtual assistant to handle within the system?",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 1249,
+    "model": "gpt-4o-mini",
+    "messageCount": 8
+  },
+  {
+    "at": "2026-07-07T12:22:40.919Z",
+    "userMessage": "some automation of current manual work",
+    "assistantReply": "That sounds like a solid approach to improve efficiency. \n\nCould you outline the specific manual tasks you want the automation to tackle? This will help clarify what the virtual assistant should focus on.",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 2765,
+    "model": "gpt-4o-mini",
+    "messageCount": 10
+  },
+  {
+    "at": "2026-07-07T12:23:04.321Z",
+    "userMessage": "like invoice generation",
+    "assistantReply": "Automating invoice generation is a great way to save time and reduce errors.\n\nWould you also need features for tracking payments or sending reminders for overdue invoices?",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 1423,
+    "model": "gpt-4o-mini",
+    "messageCount": 12
+  },
+  {
+    "at": "2026-07-07T12:23:14.621Z",
+    "userMessage": "oky",
+    "assistantReply": "Perfect. It sounds like you're looking for a robust setup. \n\nDo you have a timeline or budget in mind for this project?",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 2249,
+    "model": "gpt-4o-mini",
+    "messageCount": 14
+  },
+  {
+    "at": "2026-07-07T12:23:48.152Z",
+    "userMessage": "abou 3 mnth and look to know the budget",
+    "assistantReply": "Three months sounds feasible for a project like this.\n\nAs for the budget, Nampellah typically works within market rates for experienced full-stack engineers in this region. If you'd like a more tailored quote, he would need more specific details about the features and complexity of your project.\n\nWant to set up a time for Nampellah to discuss this in detail? It might help clarify everything for you.",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 1839,
+    "model": "gpt-4o-mini",
+    "messageCount": 16
+  },
+  {
+    "at": "2026-07-07T12:24:09.768Z",
+    "userMessage": "can i get a range",
+    "assistantReply": "Unfortunately, specific ranges can be tricky without details on the project scope. \n\nHowever, market rates for experienced full-stack engineers in East Africa typically vary based on the project's complexity. Nampellah would be happy to provide more precise information once he understands your requirements better. \n\nWould you like to share your email so he can follow up directly?",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 2102,
+    "model": "gpt-4o-mini",
+    "messageCount": 18
+  },
+  {
+    "at": "2026-07-07T12:24:25.963Z",
+    "userMessage": "okay",
+    "assistantReply": "Great! Please share your name and email, and Nampellah can follow up with you to discuss the project further.",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 2052,
+    "model": "gpt-4o-mini",
+    "messageCount": 20
+  },
+  {
+    "at": "2026-07-07T12:24:33.769Z",
+    "userMessage": "juma ali",
+    "assistantReply": "Thanks, Juma. Could you please provide your email address as well?",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 1081,
+    "model": "gpt-4o-mini",
+    "messageCount": 22
+  },
+  {
+    "at": "2026-07-07T12:24:45.075Z",
+    "userMessage": "jumali@nji.mo",
+    "assistantReply": "Thanks for that. \n\nTo summarize, Nampellah will follow up regarding your project on a PMS with a virtual assistant feature for automating tasks like invoice generation.\n\nWant me to pass this along to him?",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 1557,
+    "model": "gpt-4o-mini",
+    "messageCount": 24
+  },
+  {
+    "at": "2026-07-07T12:24:57.988Z",
+    "userMessage": "yes",
+    "assistantReply": "Nampellah will get back to you soon about your project.",
+    "leadCaptured": true,
+    "status": "ok",
+    "durationMs": 1583,
+    "model": "gpt-4o-mini",
+    "messageCount": 24
+  },
+  {
+    "at": "2026-07-07T12:28:14.744Z",
+    "userMessage": "he",
+    "assistantReply": "Nampellah will get back to you soon about your project.",
+    "leadCaptured": true,
+    "status": "ok",
+    "durationMs": 2018,
+    "model": "gpt-4o-mini",
+    "messageCount": 24
+  },
+  {
+    "at": "2026-07-07T12:28:21.387Z",
+    "userMessage": "he",
+    "assistantReply": "Nampellah will follow up with you soon about your project.",
+    "leadCaptured": true,
+    "status": "ok",
+    "durationMs": 1794,
+    "model": "gpt-4o-mini",
+    "messageCount": 24
+  },
+  {
+    "at": "2026-07-07T12:28:24.477Z",
+    "userMessage": "hi",
+    "assistantReply": "Welcome back, Juma!\n\nHave you been thinking more about the project since we last spoke?",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 1412,
+    "model": "gpt-4o-mini",
+    "messageCount": 24
+  },
+  {
+    "at": "2026-07-07T12:28:39.593Z",
+    "userMessage": "can u pass another information",
+    "assistantReply": "Absolutely, Juma. What information would you like to share?",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 1057,
+    "model": "gpt-4o-mini",
+    "messageCount": 24
+  },
+  {
+    "at": "2026-07-07T12:28:48.925Z",
+    "userMessage": "i he as time this weekend",
+    "assistantReply": "Got it. Would you like to share a specific message or detail for Nampellah regarding this weekend?",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 1508,
+    "model": "gpt-4o-mini",
+    "messageCount": 24
+  },
+  {
+    "at": "2026-07-07T12:29:15.630Z",
+    "userMessage": "yah if we can get in touch this weekend would be great",
+    "assistantReply": "Sure! I'll pass that message along.\n\nWant me to include any specific details or just that you'd like to connect this weekend?",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 1949,
+    "model": "gpt-4o-mini",
+    "messageCount": 24
+  },
+  {
+    "at": "2026-07-07T12:29:34.186Z",
+    "userMessage": "no just what i told u",
+    "assistantReply": "Thanks for confirming! \n\nI'll pass along that you’d like to connect this weekend. \n\nJust a moment while I record this.",
+    "leadCaptured": false,
+    "status": "ok",
+    "durationMs": 1717,
+    "model": "gpt-4o-mini",
+    "messageCount": 24
+  }
+]

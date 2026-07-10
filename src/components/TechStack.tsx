@@ -181,7 +181,7 @@ export function TechStack() {
           blurb="Pick a class to see its strengths."
         />
 
-        <div className="mt-4 flex flex-wrap items-center gap-2 font-mono text-[11px] text-muted2">
+        <div className="mt-4 hidden flex-wrap items-center gap-2 font-mono text-[11px] text-muted2 md:flex">
           <span className="rounded-full border border-line bg-white px-3 py-1">AVG {avgPower}</span>
           <span className="rounded-full border border-line bg-white px-3 py-1">{TECH_GROUPS.length} CLASSES</span>
           <span className="rounded-full border border-line bg-white px-3 py-1">{totalSkills} SKILLS</span>
@@ -204,7 +204,7 @@ export function TechStack() {
                 {/* Big faded class name behind the header */}
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute -top-9 left-0 z-0 select-none whitespace-nowrap font-extrabold uppercase leading-none tracking-[-0.04em] text-[clamp(60px,10vw,132px)]"
+                  className="pointer-events-none absolute -top-9 left-0 z-0 hidden select-none whitespace-nowrap font-extrabold uppercase leading-none tracking-[-0.04em] text-[clamp(60px,10vw,132px)] md:block"
                   style={{ color: "color-mix(in srgb, var(--accent) 7%, transparent)" }}
                 >
                   {SHORT_NAME[group.name] ?? group.name}

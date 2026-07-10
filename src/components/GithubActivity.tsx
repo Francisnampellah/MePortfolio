@@ -68,7 +68,10 @@ export function GithubActivity() {
               more
             </span>
           </div>
-          <div className="flex gap-[3px] overflow-hidden">
+          {/* Below md the year is wider than the card, so it pans horizontally
+              (edge-to-edge, scrollbar hidden) instead of being clipped; at md+
+              it fits the wide card and stays static. */}
+          <div className="-mx-[22px] flex gap-[3px] overflow-x-auto px-[22px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:overflow-hidden md:px-0">
             {weeks.map((days, wi) => (
               <div key={wi} className="flex flex-col gap-[3px]">
                 {days.map((n, di) => (
@@ -81,7 +84,7 @@ export function GithubActivity() {
               </div>
             ))}
           </div>
-          <div className="mt-[22px] grid grid-cols-4 border-t border-line pt-[18px]">
+          <div className="mt-[22px] grid grid-cols-2 gap-y-4 border-t border-line pt-[18px] sm:grid-cols-4 sm:gap-y-0">
             {GH_STATS.map((g) => (
               <div key={g.k} className="pr-3.5">
                 <div className="text-[22px] font-extrabold tracking-[-0.02em] text-[#141414]">{g.v}</div>

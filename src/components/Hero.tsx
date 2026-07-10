@@ -60,9 +60,9 @@ export function Hero() {
           </Reveal>
 
           {/* Stats */}
-          <Reveal delay={0.24} className="mt-11 flex flex-wrap gap-x-9 gap-y-5">
+          <Reveal delay={0.24} className="mt-10 flex flex-wrap gap-x-8 gap-y-5 sm:mt-11 sm:gap-x-9">
             {HERO_STATS.map((s, i) => (
-              <div key={s.k} className={i > 0 ? "border-l border-line pl-9" : ""}>
+              <div key={s.k} className={i > 0 ? "sm:border-l sm:border-line sm:pl-9" : ""}>
                 <div className="text-[26px] font-extrabold tracking-[-0.02em] text-ink">{s.v}</div>
                 <div className="mt-1 font-mono text-[11.5px] text-muted2">{s.k}</div>
               </div>

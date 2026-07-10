@@ -108,7 +108,7 @@ export function Projects() {
                   <div className="relative text-center md:text-left">
                     <span
                       aria-hidden
-                      className="pointer-events-none absolute -top-14 right-0 select-none font-extrabold leading-none tracking-[-0.04em] text-[120px] md:left-0 md:right-auto"
+                      className="pointer-events-none absolute -top-14 right-0 hidden select-none font-extrabold leading-none tracking-[-0.04em] text-[120px] md:left-0 md:right-auto md:block"
                       style={{ color: "color-mix(in srgb, var(--accent) 7%, transparent)" }}
                     >
                       {current.no}
@@ -186,14 +186,14 @@ export function Projects() {
                   <button
                     onClick={() => go(-1)}
                     aria-label="Previous project"
-                    className="grid h-9 w-9 place-items-center rounded-lg border border-[#ddd9d3] bg-white text-ink transition-colors hover:border-accent"
+                    className="grid h-10 w-10 place-items-center rounded-lg border border-[#ddd9d3] bg-white text-ink transition-colors hover:border-accent md:h-9 md:w-9"
                   >
                     <ChevronLeft className="h-4 w-4" strokeWidth={2} />
                   </button>
                   <button
                     onClick={() => go(1)}
                     aria-label="Next project"
-                    className="grid h-9 w-9 place-items-center rounded-lg border border-[#ddd9d3] bg-white text-ink transition-colors hover:border-accent"
+                    className="grid h-10 w-10 place-items-center rounded-lg border border-[#ddd9d3] bg-white text-ink transition-colors hover:border-accent md:h-9 md:w-9"
                   >
                     <ChevronRight className="h-4 w-4" strokeWidth={2} />
                   </button>

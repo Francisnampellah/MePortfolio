@@ -220,6 +220,27 @@ Don't wire it back into these three sections.
   at `md+`, a vertical newest-first stack below (a horizontal axis can't
   breathe on a phone). Projects keeps the same focal layout at all widths,
   just stacking image-over-text.
+- Anything wider than a phone card gets a horizontal pan below `md` rather
+  than being clipped. The **GitHub** contribution graph (a full year ≈
+  ~730px) is `overflow-x-auto` with an edge-to-edge bleed (`-mx-[22px]
+  px-[22px]`, scrollbar hidden) below `md`, and `md:overflow-hidden` at `md+`
+  where the wide card fits it whole. Its stats grid is `grid-cols-2` on a
+  phone (`sm:grid-cols-4`) so four figures don't cram into ~78px columns.
+- Divider-style separators (e.g. the **Hero** stats' `border-l` rules) are
+  gated to `sm+`, because when the row wraps on a phone a leading border
+  dangles at the start of the new line. Below `sm` the items separate by gap
+  alone.
+- **Decorative depth layers are hidden below `md` for focus.** The large
+  faded "ghost" backdrop words (§5 — About's first name, Tech Stack's
+  discipline, Projects' number, Contact's "Contact") and Tech Stack's
+  `AVG / CLASSES / SKILLS` meta pills are `hidden md:block` / `md:flex`. With
+  a full slide of whitespace at `md+` they read as subtle depth; stacked
+  tightly on a phone they crowd/overlap the real content and compete for
+  attention, so each section leads with one clear thing on mobile. This is a
+  deliberate focus choice, **not** a missing element to "restore" — the
+  ghost words remain a core part of the pattern at `md+`. (Experience's ghost
+  year already lives inside its `hidden md:block` desktop path, so mobile
+  never showed it.)
 
 ## 7. Chrome: game HUD (desktop) and app shell (mobile)
 

@@ -15,7 +15,7 @@ export function Contact() {
         {/* Ghost title behind the heading — same device as the other sections */}
         <span
           aria-hidden
-          className="pointer-events-none absolute -top-14 -left-1 z-0 select-none font-extrabold uppercase leading-none tracking-[-0.04em] text-[clamp(70px,12vw,150px)]"
+          className="pointer-events-none absolute -top-14 -left-1 z-0 hidden select-none font-extrabold uppercase leading-none tracking-[-0.04em] text-[clamp(70px,12vw,150px)] md:block"
           style={{ color: "color-mix(in srgb, var(--accent) 7%, transparent)" }}
         >
           Contact

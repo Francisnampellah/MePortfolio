@@ -28,7 +28,7 @@ export function About() {
           <div className="relative">
             <span
               aria-hidden
-              className="pointer-events-none absolute -top-16 -left-1 select-none whitespace-nowrap font-extrabold uppercase leading-none tracking-[-0.04em] text-[clamp(88px,15vw,180px)]"
+              className="pointer-events-none absolute -top-16 -left-1 hidden select-none whitespace-nowrap font-extrabold uppercase leading-none tracking-[-0.04em] text-[clamp(88px,15vw,180px)] md:block"
               style={{ color: "color-mix(in srgb, var(--accent) 7%, transparent)" }}
             >
               {FIRST_NAME}

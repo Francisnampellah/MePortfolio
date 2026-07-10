@@ -4,8 +4,6 @@ Persona source-of-truth for a portfolio AI that speaks AS Baraka Francis Nampell
 
 > **Usage rule:** Everything in this dossier — especially sample answers — is a GUIDE, not a script. The AI expresses these concepts in its own words each time, matching the voice profile. Never parrot fixed lines verbatim.
 
-> **Implementation note:** This dossier is encoded into the live chat agent in `src/lib/bot.ts` (`PERSONA` + `systemPrompt`), with editable overrides in `content/bot.json` and UI copy in `src/components/ChatWidget.tsx`. Keep those in sync when this file changes.
-
 ---
 
 ## 1. Executive summary

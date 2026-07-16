@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Github } from "lucide-react";
+import { ChevronLeft, ChevronRight, Github, X } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { SectionLabel, SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
 import { ImageSlot } from "./ImageSlot";
@@ -22,14 +23,33 @@ export function Projects() {
   const [filter, setFilter] = useState("All");
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [preview, setPreview] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const reduced = useReducedMotion();
 
   const visible = PROJECTS.filter((p) => filter === "All" || p.tags.includes(filter));
   const current = visible[active] ?? visible[0];
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
     setActive(0);
   }, [filter]);
+
+  useEffect(() => {
+    setPreview(false);
+  }, [active, filter]);
+
+  useEffect(() => {
+    if (!preview) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPreview(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [preview]);
 
   useEffect(() => {
     if (paused || reduced || visible.length < 2) return;
@@ -89,8 +109,22 @@ export function Projects() {
                 >
                   {/* Image hero */}
                   <div className="relative overflow-hidden rounded-2xl border border-line bg-surface2">
-                    <div className="relative h-[clamp(190px,32vh,300px)]">
-                      <ImageSlot id={`proj-${current.no}`} placeholder="Drop project image" alt={current.title} />
+                    <div
+                      className={`relative h-[clamp(190px,32vh,300px)] ${current.image ? "cursor-zoom-in" : ""}`}
+                      onMouseEnter={() => current.image && setPreview(true)}
+                      onMouseLeave={() => current.image && setPreview(false)}
+                      onClick={() => current.image && setPreview((v) => !v)}
+                    >
+                      {current.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={current.image}
+                          alt={current.title}
+                          className="h-full w-full object-cover object-top"
+                        />
+                      ) : (
+                        <ImageSlot id={`proj-${current.no}`} placeholder="Drop project image" alt={current.title} />
+                      )}
                     </div>
                     <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-1.5">
                       {current.tags.map((tag) => (
@@ -203,6 +237,49 @@ export function Projects() {
           </div>
         )}
       </div>
+
+      {mounted &&
+        current?.image &&
+        createPortal(
+          <AnimatePresence>
+            {preview && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 z-[100] flex items-center justify-center bg-black/55 p-5 backdrop-blur-sm"
+                onMouseLeave={() => setPreview(false)}
+                onClick={() => setPreview(false)}
+              >
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.96, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96, y: 10 }}
+                  transition={{ duration: 0.22, ease: [0.22, 0.7, 0.2, 1] }}
+                  onClick={(e) => e.stopPropagation()}
+                  className="relative max-h-[85vh] max-w-[90vw] rounded-2xl border border-white/25 bg-white/10 p-3 shadow-2xl backdrop-blur-2xl sm:p-4"
+                >
+                  <button
+                    type="button"
+                    aria-label="Close preview"
+                    onClick={() => setPreview(false)}
+                    className="absolute -right-3 -top-3 grid h-8 w-8 place-items-center rounded-full border border-white/25 bg-white/90 text-ink shadow-lg backdrop-blur-sm transition-colors hover:bg-white"
+                  >
+                    <X className="h-4 w-4" strokeWidth={2} />
+                  </button>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={current.image}
+                    alt={current.title}
+                    className="max-h-[78vh] max-w-[86vw] rounded-xl object-contain"
+                  />
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
     </section>
   );
 }

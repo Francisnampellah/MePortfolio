@@ -1,6 +1,32 @@
 [
   {
     "no": "01",
+    "title": "Agentic Pharmacy OS",
+    "role": "full-stack · agent",
+    "tags": ["Full-Stack", "AI", "Agentic AI"],
+    "desc": "Full pharmacy management platform on Cloudflare Workers — dashboard, inventory, sales, and cashflow tracking — paired with an agentic AI assistant on Telegram that runs day-to-day operations by chat: checking stock levels, flagging low/expiring items, and adding new products through natural conversation.",
+    "problem": "Pharmacies tracked stock, sales, and cashflow by hand, with no fast way to query or update the business.",
+    "outcome": "AI agent manages stock via chat",
+    "tech": ["Cloudflare Workers", "Telegram Bot API", "React"],
+    "github": "https://github.com/Francisnampellah",
+    "demo": "https://pharmacy-api.prome.workers.dev/",
+    "image": "/projects/pharmacy-hero.png"
+  },
+  {
+    "no": "02",
+    "title": "Cantina Food Point",
+    "role": "full-stack · agent",
+    "tags": ["Full-Stack", "AI", "Agentic AI"],
+    "desc": "AI-powered food-ordering platform for restaurants on Cloudflare — customers order via WhatsApp in Swahili or English through Marco, an agentic AI waiter that takes orders end-to-end with no app or account required, plus live shareable order tracking. A Cloudflare Workers + D1 back office gives staff a real-time kitchen queue, order overview, menu management, and full conversation logs.",
+    "problem": "Restaurants ran ordering and kitchen queues by phone call and memory, with no way for customers to order or track status without calling in.",
+    "outcome": "AI waiter takes orders via WhatsApp",
+    "tech": ["Cloudflare Workers", "Cloudflare D1", "WhatsApp API", "React"],
+    "github": "https://github.com/Francisnampellah",
+    "demo": "https://express-d1-app.prome.workers.dev/admin/",
+    "image": "/projects/cantina-hero.png"
+  },
+  {
+    "no": "03",
     "title": "Mnyama Check",
     "role": "lead mobile",
     "tags": ["Mobile"],
@@ -12,7 +38,7 @@
     "demo": "#"
   },
   {
-    "no": "02",
+    "no": "04",
     "title": "Mnyama Collector",
     "role": "developer",
     "tags": ["Mobile", "AI"],
@@ -24,7 +50,7 @@
     "demo": "#"
   },
   {
-    "no": "03",
+    "no": "05",
     "title": "Agrovet POS",
     "role": "developer",
     "tags": ["Full-Stack"],
@@ -36,7 +62,7 @@
     "demo": "#"
   },
   {
-    "no": "04",
+    "no": "06",
     "title": "SmartINNO Platform",
     "role": "engineer · SM",
     "tags": ["Full-Stack"],
@@ -48,7 +74,7 @@
     "demo": "#"
   },
   {
-    "no": "05",
+    "no": "07",
     "title": "Security Scan Platform",
     "role": "full-stack",
     "tags": ["Full-Stack", "AI"],
@@ -60,7 +86,7 @@
     "demo": "#"
   },
   {
-    "no": "06",
+    "no": "08",
     "title": "3D Catalog (Three.js)",
     "role": "frontend",
     "tags": ["Frontend"],
@@ -72,7 +98,7 @@
     "demo": "#"
   },
   {
-    "no": "07",
+    "no": "09",
     "title": "namps-ui Design System",
     "role": "frontend",
     "tags": ["Frontend"],
@@ -84,7 +110,7 @@
     "demo": "/namps-ui"
   },
   {
-    "no": "08",
+    "no": "10",
     "title": "namps-native",
     "role": "mobile · design",
     "tags": ["Mobile", "Frontend"],

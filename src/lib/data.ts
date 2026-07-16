@@ -150,10 +150,11 @@ export type Project = {
   tech: string[];
   github: string;
   demo: string;
+  image?: string;
 };
 
 export const PROJECTS = projectsJson as Project[];
-export const PROJECT_FILTERS = ["All", "Mobile", "Full-Stack", "AI", "Frontend"];
+export const PROJECT_FILTERS = ["All", "Mobile", "Full-Stack", "AI", "Agentic AI", "Frontend"];
 
 /* ----------------------------------------------------------------
    Experience + education  (content/*.json — editable in /admin)

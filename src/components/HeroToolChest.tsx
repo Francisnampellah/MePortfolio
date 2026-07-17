@@ -18,8 +18,8 @@ const FOV = 40;
 /** Padding around the bounding sphere. 1.43 ≈ 20% larger than the prior 1.72 framing. */
 const FIT_MARGIN = 1.43;
 /** Nudge the model as a fraction of its radius. */
-const LIFT_RATIO = 0.20; // 10% up
-const LEFT_RATIO = 0.20; // 15% left
+const LIFT_RATIO = 0.1; // 10% up
+const LEFT_RATIO = 0.15; // 15% left
 
 const WAIT_LINES = [
   "Winding the spring…",

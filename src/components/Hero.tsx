@@ -29,7 +29,7 @@ export function Hero() {
           {/* Headline */}
           <Reveal as="div">
             <h1 className="max-w-[600px] text-[clamp(32px,5vw,54px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-ink text-pretty">
-              Good software should feel simple{" "}
+              Good Product should feel simple{" "}
               <span style={{ color: "var(--accent)" }}>even when the engineering isn&apos;t</span>.
             </h1>
           </Reveal>

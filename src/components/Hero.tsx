@@ -1,10 +1,21 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { Download } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
 import { useFullPageScroll } from "@/lib/fullPageScroll";
 import { PROFILE, HERO_STATS, CLIENTS } from "@/lib/data";
+
+const HeroToolChest = dynamic(
+  () => import("./HeroToolChest").then((m) => m.HeroToolChest),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="mx-auto h-[min(420px,48vh)] w-full max-w-[520px] animate-pulse rounded-2xl bg-surface2 lg:mx-0 lg:ml-auto" />
+    ),
+  }
+);
 
 export function Hero() {
   const { goToId } = useFullPageScroll();
@@ -62,49 +73,10 @@ export function Hero() {
           </Reveal>
         </div>
 
-        {/* Right — terminal visual (omitted below lg: stacked it would not fit one screen at full type size) */}
+        {/* Right — rotating 3D tool chest */}
         <div className="relative hidden lg:block">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute -inset-x-10 -inset-y-16 -z-10 opacity-60 blur-3xl"
-            style={{
-              background:
-                "radial-gradient(45% 45% at 60% 35%, rgba(194,97,63,.28), transparent 70%)",
-            }}
-          />
-
-          <Reveal
-            delay={0.1}
-            className="mx-auto w-full max-w-[460px] overflow-hidden rounded-[13px] border border-[#2a2a2a] bg-[#141414] text-left lg:mx-0 lg:ml-auto"
-            style={{ boxShadow: "0 24px 60px rgba(20,20,20,.28)" }}
-          >
-            <div className="flex items-center gap-[7px] border-b border-[#2a2a2a] bg-[#1c1c1c] px-4 py-3">
-              <span className="h-[11px] w-[11px] rounded-full bg-[#ff5f57]" />
-              <span className="h-[11px] w-[11px] rounded-full bg-[#febc2e]" />
-              <span className="h-[11px] w-[11px] rounded-full bg-[#28c840]" />
-              <span className="ml-1.5 font-mono text-[11.5px] text-muted2">baraka@dev ~ portfolio</span>
-            </div>
-            <div className="px-6 py-5 font-mono text-[13.5px] leading-[2] text-[#b8b2a8]">
-              <div>
-                <span style={{ color: "#e0855f" }}>$</span> <span className="text-[#f5f3f0]">whoami</span>
-              </div>
-              <div className="text-muted2">Baraka Nampellah · Full Stack Software Engineer</div>
-              <div className="mt-2">
-                <span style={{ color: "#e0855f" }}>$</span> <span className="text-[#f5f3f0]">cat</span> focus.txt
-              </div>
-              <div className="text-[15.5px] font-medium leading-[1.5] text-[#f5f3f0]">
-                Scalable backends · Mobile apps · <span style={{ color: "#e0855f" }}>AI ready systems</span>
-              </div>
-              <div className="mt-2">
-                <span style={{ color: "#e0855f" }}>$</span> <span className="text-[#f5f3f0]">cat</span> stack.json
-              </div>
-              <div className="break-all text-muted2">{PROFILE.stackJson}</div>
-              <div className="mt-2">
-                <span style={{ color: "#e0855f" }}>$</span> <span className="text-[#f5f3f0]">status</span> --available{" "}
-                <span style={{ color: "#3fcf7f" }}>true</span>
-                <span className="ml-[5px] inline-block h-[15px] w-2 translate-y-[2px] animate-blink bg-[#f5f3f0] align-baseline" />
-              </div>
-            </div>
+          <Reveal delay={0.1}>
+            <HeroToolChest />
           </Reveal>
         </div>
       </div>

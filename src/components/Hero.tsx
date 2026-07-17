@@ -40,8 +40,7 @@ export function Hero() {
 
           <Reveal delay={0.12} as="div">
             <p className="mt-5 max-w-[500px] text-[16px] leading-relaxed text-muted text-pretty">
-              I build full-stack products and intelligent agents that turn complex operations into effortless workflows.
-            </p>
+             A software engineer who believes good design and simple solutions is how we solve real problems.            </p>
           </Reveal>
 
           {/* CTAs */}

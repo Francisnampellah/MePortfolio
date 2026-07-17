@@ -14,7 +14,7 @@ export function HeroModelWait({
     <div className="flex h-full w-full flex-col items-center justify-center px-6 text-center">
       <p className="text-[16px] font-semibold tracking-[-0.015em] text-ink">{message}</p>
       <p className="mt-2 max-w-[240px] text-[13px] leading-relaxed text-muted">
-        Hang tight — something nice is loading.
+        Hang tight... something nice is loading.
       </p>
 
       <div className="mt-5 h-[3px] w-36 overflow-hidden rounded-full bg-[#efeae4]">

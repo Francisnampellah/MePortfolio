@@ -5,12 +5,12 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, useGLTF, ContactShadows } from "@react-three/drei";
 import { Box3, Group, Sphere } from "three";
 
-const MODEL_URL = "/models/metal_tool_chest/metal_tool_chest_2k.gltf";
+const MODEL_URL = "/models/alarm_clock/alarm_clock_2k.gltf";
 const FOV = 38;
 /** Extra room so corners never clip while spinning. */
 const FIT_MARGIN = 1.55;
 
-function ToolChest() {
+function AlarmClock() {
   const group = useRef<Group>(null);
   const { scene } = useGLTF(MODEL_URL);
   const camera = useThree((s) => s.camera);
@@ -66,6 +66,7 @@ function ToolChest() {
 
 useGLTF.preload(MODEL_URL);
 
+/** Rotating hero 3D model (alarm clock). Kept export name for Hero import stability. */
 export function HeroToolChest() {
   return (
     <div className="relative mx-auto aspect-square h-auto w-full max-w-[560px] lg:mx-0 lg:ml-auto lg:max-w-none lg:w-full">
@@ -87,7 +88,7 @@ export function HeroToolChest() {
         <directionalLight position={[4, 6, 3]} intensity={1.35} />
         <directionalLight position={[-3, 2, -2]} intensity={0.35} />
         <Suspense fallback={null}>
-          <ToolChest />
+          <AlarmClock />
           <Environment preset="city" />
         </Suspense>
       </Canvas>

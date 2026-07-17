@@ -14,8 +14,8 @@ const HeroToolChest = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="mx-auto w-full max-w-[520px] lg:mx-0 lg:ml-auto">
-        <HeroModelWait progress={6} message="Spinning up the scene…" />
+      <div className="relative mx-auto aspect-square h-auto w-full max-w-[560px] lg:mx-0 lg:ml-auto lg:max-w-none lg:w-full">
+        <HeroModelWait progress={6} message="Just a moment…" />
       </div>
     ),
   }

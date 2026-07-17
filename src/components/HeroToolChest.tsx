@@ -24,10 +24,10 @@ const ACCENT_FALLBACK = "#c2613f";
 const CONTAINER_SHIFT = "translate(-12%, -10%)"; // little left, 10% up
 
 const WAIT_LINES = [
-  "Winding the spring…",
-  "Setting the hands…",
-  "Polishing the glass…",
-  "Almost ready. Hang tight.",
+  "Almost there…",
+  "Still worth the wait…",
+  "Bringing the clock in…",
+  "Just a second more…",
 ];
 
 function readAccentHex(): string {
@@ -274,16 +274,7 @@ export function HeroToolChest() {
 
   return (
     <div className="relative mx-auto aspect-square h-auto w-full max-w-[560px] overflow-visible lg:mx-0 lg:ml-auto lg:max-w-none lg:w-full">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -inset-x-8 -inset-y-10 -z-10 opacity-60 blur-3xl"
-        style={{
-          background:
-            "radial-gradient(45% 45% at 60% 35%, rgba(194,97,63,.28), transparent 70%)",
-          transform: CONTAINER_SHIFT,
-        }}
-      />
-
+      {/* Loader stays in the natural grid slot — no transform */}
       <div
         aria-live="polite"
         aria-busy={!ready}
@@ -294,10 +285,19 @@ export function HeroToolChest() {
         <HeroModelWait progress={progress} message={WAIT_LINES[lineIdx]} />
       </div>
 
+      {/* Model stage can sit slightly left / up without moving the loader */}
       <div
         className={`h-full w-full transition-opacity duration-700 ${ready ? "opacity-100" : "opacity-0"}`}
         style={{ transform: CONTAINER_SHIFT }}
       >
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -inset-x-8 -inset-y-10 -z-10 opacity-60 blur-3xl"
+          style={{
+            background:
+              "radial-gradient(45% 45% at 60% 35%, rgba(194,97,63,.28), transparent 70%)",
+          }}
+        />
         <Canvas
           camera={{ fov: FOV, position: [1.2, 0.9, 3.2], near: 0.01, far: 100 }}
           dpr={[1, 1.75]}
@@ -314,7 +314,7 @@ export function HeroToolChest() {
           </Suspense>
         </Canvas>
         <p className="pointer-events-none -mt-2 text-center font-mono text-[11px] tracking-[0.04em] text-muted2">
-        A Product Like <span className="text-accent">An Alarm Clock</span>
+          A Product Like <span className="text-accent">An Alarm Clock</span>
         </p>
       </div>
     </div>

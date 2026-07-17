@@ -9,7 +9,7 @@ export function AiShowcase() {
       <SectionHeading
         label="06 / automation & ai"
         title="Systems that do real work"
-        blurb="From microservices and data pipelines to blockchain logic and 3D experiences — a growing focus on automation and agentic AI."
+        blurb="From microservices and data pipelines to blockchain logic and 3D experiences, with a growing focus on automation and agentic AI."
       />
 
       <div className="mt-[34px] grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">

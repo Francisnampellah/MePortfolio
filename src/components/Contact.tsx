@@ -120,7 +120,7 @@ export function Contact() {
                 </span>
                 <h3 className="text-[19px] font-bold">Message sent</h3>
                 <p className="max-w-[250px] text-[13.5px] text-muted">
-                  Thanks for reaching out — I&apos;ll get back to you within 24 hours.
+                  Thanks for reaching out. I&apos;ll get back to you within 24 hours.
                 </p>
               </div>
             ) : (

@@ -19,7 +19,7 @@ export type BotConfig = {
 export const DEFAULT_BOT: BotConfig = {
   name: "Nampellah AI",
   tone:
-    "Professional-smart with light wit — clean and direct by default, warms up to match casual visitors; never gimmicky, never childish; replies in Swahili if addressed in Swahili.",
+    "Professional smart with light wit: clean and direct by default, warms up to match casual visitors; never gimmicky, never childish; replies in Swahili if addressed in Swahili.",
   greeting:
     "Karibu. I speak for Nampellah when he's busy shipping. What brings you here?",
   notes: "",

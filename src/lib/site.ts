@@ -15,12 +15,12 @@ export const SITE_URL = (
 ).replace(/\/$/, "");
 
 export const SITE_NAME = PROFILE.shortName; // "Baraka Nampellah"
-export const SITE_TITLE = `${PROFILE.shortName} — ${PROFILE.role}`;
+export const SITE_TITLE = `${PROFILE.shortName} · ${PROFILE.role}`;
 
 export const SITE_DESCRIPTION =
-  "Full-Stack Software Engineer from Dar es Salaam, Tanzania building scalable backends, cross-platform mobile apps, and AI-ready systems with NestJS, Django, React, Next.js, Flutter, and PostgreSQL.";
+  "Full Stack Software Engineer from Dar es Salaam, Tanzania building scalable backends, cross platform mobile apps, and AI ready systems with NestJS, Django, React, Next.js, Flutter, and PostgreSQL.";
 
-export const OG_IMAGE_ALT = `${PROFILE.shortName} — ${PROFILE.role}`;
+export const OG_IMAGE_ALT = `${PROFILE.shortName} · ${PROFILE.role}`;
 
 /** Profiles that verify this identity — feeds JSON-LD `sameAs`. */
 export const SAME_AS = [PROFILE.github, PROFILE.linkedin].filter(Boolean);
@@ -28,7 +28,7 @@ export const SAME_AS = [PROFILE.github, PROFILE.linkedin].filter(Boolean);
 export const SEO_KEYWORDS = [
   "Baraka Nampellah",
   "Baraka Francis Nampellah",
-  "Full-Stack Software Engineer",
+  "Full Stack Software Engineer",
   "Software Engineer Tanzania",
   "Software Engineer Dar es Salaam",
   "NestJS developer",

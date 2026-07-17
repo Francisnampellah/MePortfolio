@@ -37,7 +37,7 @@
     "date": "May 2026",
     "read": "7 min",
     "title": "Flutter in the field: building for low connectivity",
-    "excerpt": "Offline-first patterns, sync strategies, and UX lessons from livestock-tracking apps.",
+    "excerpt": "Offline first patterns, sync strategies, and UX lessons from livestock tracking apps.",
     "lede": "I built an app for tracking cattle. The cattle have better network coverage than the people counting them.",
     "sections": [
       {
@@ -69,8 +69,8 @@
     "date": "Apr 2026",
     "read": "6 min",
     "title": "Collecting clean data for AI training",
-    "excerpt": "Turning messy real-world field input into structured datasets a model can actually learn from.",
-    "lede": "Garbage in, garbage out. Except in AI, where it's garbage in, confidently-wrong garbage out, with a citation.",
+    "excerpt": "Turning messy real world field input into structured datasets a model can actually learn from.",
+    "lede": "Garbage in, garbage out. Except in AI, where it's garbage in, confidently wrong garbage out, with a citation.",
     "sections": [
       {
         "h": "1. Humans are creative spellers",
@@ -133,7 +133,7 @@
     "date": "Feb 2026",
     "read": "5 min",
     "title": "RBAC done right across REST endpoints",
-    "excerpt": "Role-based access control patterns that stay maintainable as your API surface grows.",
+    "excerpt": "Role based access control patterns that stay maintainable as your API surface grows.",
     "lede": "Permissions are easy. Just give everyone admin. (This is a joke. Please do not. I can hear my old self screaming.)",
     "sections": [
       {

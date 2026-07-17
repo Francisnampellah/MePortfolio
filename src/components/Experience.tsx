@@ -20,9 +20,9 @@ const MONTHS: Record<string, number> = {
   jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
 };
 
-/** Decimal-year of a period's start, e.g. "Mar 2026 — Present" → 2026.17. */
+/** Decimal-year of a period's start, e.g. "Mar 2026 to Present" → 2026.17. */
 function startValue(period: string): number {
-  const start = period.split(/[—–-]/)[0].trim();
+  const start = period.split(/\s+to\s+|[—–-]/)[0].trim();
   const year = start.match(/\d{4}/);
   const month = start.match(/[A-Za-z]{3}/);
   return (year ? parseInt(year[0], 10) : 0) + (month ? (MONTHS[month[0].toLowerCase()] ?? 0) / 12 : 0);
@@ -145,7 +145,7 @@ export function Experience() {
                   onFocus={() => setActive(i)}
                   onClick={() => setActive(i)}
                   aria-pressed={on}
-                  aria-label={`${st.job.role} — ${st.job.company}`}
+                  aria-label={`${st.job.role} at ${st.job.company}`}
                   className="group absolute top-0 flex -translate-x-1/2 flex-col items-center"
                   style={{ left: `${st.pos * 100}%` }}
                 >

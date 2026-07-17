@@ -94,13 +94,13 @@ function stripMarkdown(text: string): string {
 function captureNotice(leadCaptured?: boolean, submissionType?: string): string {
   switch (submissionType) {
     case "order":
-      return "Order received — Nampellah will be in touch";
+      return "Order received · Nampellah will be in touch";
     case "request":
-      return "Request noted — Nampellah will follow up";
+      return "Request noted · Nampellah will follow up";
     case "opinion":
-      return "Thanks — your feedback reached Nampellah";
+      return "Thanks · your feedback reached Nampellah";
   }
-  return leadCaptured ? "Details captured — Nampellah will be in touch" : "";
+  return leadCaptured ? "Details captured · Nampellah will be in touch" : "";
 }
 
 export function ChatWidget() {
@@ -229,7 +229,7 @@ export function ChatWidget() {
       }
     } catch (err) {
       console.error("[ChatWidget] request failed", err);
-      reply = "I couldn't reach the server just now — try again, or email Bnampellah1@gmail.com.";
+      reply = "I couldn't reach the server just now. Try again, or email Bnampellah1@gmail.com.";
     }
 
     // Drip the reply out as consecutive bubbles for a natural texting rhythm:

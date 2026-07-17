@@ -13,12 +13,12 @@ export function Footer() {
           <div>
             <div className="text-[13px] font-semibold">{PROFILE.name}</div>
             <div className="font-mono text-[11px] text-muted3">
-              Full-Stack Engineer · {PROFILE.location.split(",")[0]}, TZ
+              Full Stack Engineer · {PROFILE.location.split(",")[0]}, TZ
             </div>
           </div>
         </div>
 
-        <div className="font-mono text-[11px] text-faint">© 2026 — built from scratch</div>
+        <div className="font-mono text-[11px] text-faint">© 2026 · built from scratch</div>
 
         <div className="flex gap-2">
           {SOCIALS.map((s) => {

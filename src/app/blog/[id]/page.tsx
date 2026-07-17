@@ -18,7 +18,7 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: Params): Metadata {
   const post = POSTS.find((p) => p.id === params.id);
   if (!post) return { title: "Article not found" };
-  return { title: `${post.title} — Baraka Nampellah`, description: post.excerpt };
+  return { title: `${post.title} · Baraka Nampellah`, description: post.excerpt };
 }
 
 /**

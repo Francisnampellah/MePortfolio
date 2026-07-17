@@ -93,7 +93,7 @@ export const TECH_GROUPS: TechGroup[] = [
   {
     icon: "smartphone",
     name: "Mobile",
-    tagline: "cross-platform apps",
+    tagline: "cross platform apps",
     items: [
       { name: "Flutter", level: 86, label: "advanced" },
       { name: "React Native", level: 88, label: "advanced" },
@@ -154,7 +154,7 @@ export type Project = {
 };
 
 export const PROJECTS = projectsJson as Project[];
-export const PROJECT_FILTERS = ["All", "Mobile", "Full-Stack", "AI", "Agentic AI", "Frontend"];
+export const PROJECT_FILTERS = ["All", "Mobile", "Full Stack", "AI", "Agentic AI", "Frontend"];
 
 /* ----------------------------------------------------------------
    Experience + education  (content/*.json — editable in /admin)
@@ -230,7 +230,7 @@ export const AI_SERVICES: AiService[] = [
   {
     icon: "bot",
     title: "Agentic AI (foundations)",
-    desc: "Building toward agent workflows that plan and call tools — backed by formal AI-agents training.",
+    desc: "Building toward agent workflows that plan and call tools, backed by formal AI agents training.",
     metric: "Cert",
     metricLabel: "AI Agents Fundamentals",
   },
@@ -245,13 +245,13 @@ export const AI_SERVICES: AiService[] = [
     icon: "workflow",
     title: "Workflow automation",
     desc: "Automating data sync and operational flows so teams stop doing repetitive manual work.",
-    metric: "Real-time",
-    metricLabel: "health-data sync",
+    metric: "Real time",
+    metricLabel: "health data sync",
   },
   {
     icon: "share",
     title: "REST & API integration",
-    desc: "Connecting services with well-designed REST APIs, auth, and role-based access control.",
+    desc: "Connecting services with well designed REST APIs, auth, and role based access control.",
     metric: "15+",
     metricLabel: "secured endpoints",
   },
@@ -265,7 +265,7 @@ export const AI_SERVICES: AiService[] = [
   {
     icon: "layers",
     title: "3D & visualization",
-    desc: "Interactive Three.js experiences — QR-triggered 3D product views for virtual catalogs.",
+    desc: "Interactive Three.js experiences: QR triggered 3D product views for virtual catalogs.",
     metric: "50+",
     metricLabel: "items visualized",
   },

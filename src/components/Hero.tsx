@@ -27,7 +27,7 @@ export function Hero() {
           <Reveal delay={0.06} as="div">
             <h1 className="mt-5 max-w-[600px] text-[clamp(32px,5vw,54px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-ink text-pretty">
               Good software should feel simple{" "}
-              <span style={{ color: "var(--accent)" }}>— even when the engineering isn&apos;t</span>.
+              <span style={{ color: "var(--accent)" }}>even when the engineering isn&apos;t</span>.
             </h1>
           </Reveal>
 
@@ -96,12 +96,12 @@ export function Hero() {
               <div>
                 <span style={{ color: "#e0855f" }}>$</span> <span className="text-[#f5f3f0]">whoami</span>
               </div>
-              <div className="text-muted2">Baraka Nampellah — Full-Stack Software Engineer</div>
+              <div className="text-muted2">Baraka Nampellah · Full Stack Software Engineer</div>
               <div className="mt-2">
                 <span style={{ color: "#e0855f" }}>$</span> <span className="text-[#f5f3f0]">cat</span> focus.txt
               </div>
               <div className="text-[15.5px] font-medium leading-[1.5] text-[#f5f3f0]">
-                Scalable backends · Mobile apps · <span style={{ color: "#e0855f" }}>AI-ready systems</span>
+                Scalable backends · Mobile apps · <span style={{ color: "#e0855f" }}>AI ready systems</span>
               </div>
               <div className="mt-2">
                 <span style={{ color: "#e0855f" }}>$</span> <span className="text-[#f5f3f0]">cat</span> stack.json

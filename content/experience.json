@@ -1,13 +1,13 @@
 [
   {
     "icon": "AM",
-    "role": "Full-Stack Mobile Developer",
+    "role": "Full Stack Mobile Developer",
     "company": "Afya Ya Mnyama Digital",
-    "period": "Mar 2026 — Present",
+    "period": "Mar 2026 to Present",
     "points": [
-      "Maintained & upgraded the Mnyama Check Flutter app — subscriptions, notifications, and a refreshed UI.",
+      "Maintained & upgraded the Mnyama Check Flutter app: subscriptions, notifications, and a refreshed UI.",
       "Built Mnyama Collector, a field app capturing animal disease data for AI training.",
-      "Added an in-app agrovet management + POS system, now piloting across 5 outlets.",
+      "Added an in app agrovet management + POS system, now piloting across 5 outlets.",
       "Integrated REST APIs syncing 200+ animal health profiles in real time."
     ],
     "tech": ["Flutter", "NestJS", "REST", "PostgreSQL"]
@@ -20,7 +20,7 @@
     "points": [
       "Developed 6 backend microservices using NestJS (TypeScript) and Django.",
       "Acted as Scrum Master for a team of 6, running agile ceremonies and backlog grooming.",
-      "Built an internal video-conferencing service and a React leadership dashboard.",
+      "Built an internal video conferencing service and a React leadership dashboard.",
       "Wrote Hyperledger Fabric chaincode and enforced RBAC across 15+ endpoints."
     ],
     "tech": ["NestJS", "Django", "PostgreSQL", "Hyperledger", "React"]
@@ -29,10 +29,10 @@
     "icon": "BT",
     "role": "Frontend Engineer",
     "company": "BeginnerTech (Japan, Remote)",
-    "period": "2024 — Feb 2026",
+    "period": "2024 to Feb 2026",
     "points": [
       "Built and maintained reusable, responsive React.js components.",
-      "Integrated RESTful APIs and handled client-side data flow.",
+      "Integrated RESTful APIs and handled client side data flow.",
       "Collaborated across time zones with a Japanese team in a remote setup."
     ],
     "tech": ["React", "REST", "Tailwind"]
@@ -44,9 +44,9 @@
     "period": "2025",
     "points": [
       "Resolved ~8 critical AWS production issues and configured Docker/AWS deploys.",
-      "Sole React Native developer on a multi-vendor marketplace app.",
-      "Built an OWASP security-scanning platform detecting 10+ vulnerability classes.",
-      "Created a Three.js QR-to-3D experience for a 50+ item virtual catalog."
+      "Sole React Native developer on a multi vendor marketplace app.",
+      "Built an OWASP security scanning platform detecting 10+ vulnerability classes.",
+      "Created a Three.js QR to 3D experience for a 50+ item virtual catalog."
     ],
     "tech": ["React Native", "AWS", "Docker", "Three.js"]
   }

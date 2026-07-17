@@ -230,7 +230,7 @@ export async function POST(req: Request) {
       status = "error";
       error = "OPENAI_API_KEY missing";
       reply =
-        "I'm briefly offline — try again in a moment, or email me at Bnampellah1@gmail.com.";
+        "I'm briefly offline. Try again in a moment, or email me at Bnampellah1@gmail.com.";
       console.warn(`${LOG_PREFIX} ${error}. Add it to .env.local and restart \`npm run dev\`.`);
       return NextResponse.json({ reply, leadCaptured: false });
     }
@@ -276,7 +276,7 @@ export async function POST(req: Request) {
       status = "error";
       error = err instanceof Error ? err.message : "OpenAI fetch failed";
       reply =
-        "Hmm, I couldn't connect just now — mind trying again? You can always email Bnampellah1@gmail.com.";
+        "Hmm, I couldn't connect just now. Mind trying again? You can always email Bnampellah1@gmail.com.";
       console.error(`${LOG_PREFIX} OpenAI fetch failed:`, err);
       return NextResponse.json({ reply, leadCaptured: false });
     }

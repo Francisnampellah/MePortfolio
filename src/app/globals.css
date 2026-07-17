@@ -61,3 +61,15 @@ body {
     opacity: 0.3;
   }
 }
+
+@keyframes hero-clock-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hero-clock-hand {
+  to {
+    transform: translate(-50%, -100%) rotate(360deg);
+  }
+}

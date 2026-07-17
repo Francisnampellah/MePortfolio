@@ -7,12 +7,16 @@ import { SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
 import { useFullPageScroll } from "@/lib/fullPageScroll";
 import { PROFILE, HERO_STATS, CLIENTS } from "@/lib/data";
 
+import { HeroModelWait } from "./HeroModelWait";
+
 const HeroToolChest = dynamic(
   () => import("./HeroToolChest").then((m) => m.HeroToolChest),
   {
     ssr: false,
     loading: () => (
-      <div className="mx-auto h-[min(420px,48vh)] w-full max-w-[520px] animate-pulse rounded-2xl bg-surface2 lg:mx-0 lg:ml-auto" />
+      <div className="mx-auto w-full max-w-[520px] lg:mx-0 lg:ml-auto">
+        <HeroModelWait progress={6} message="Spinning up the scene…" />
+      </div>
     ),
   }
 );

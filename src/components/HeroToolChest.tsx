@@ -1,52 +1,64 @@
 "use client";
 
-import { Suspense, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, useGLTF, ContactShadows } from "@react-three/drei";
+import { ContactShadows, Environment, useGLTF, useProgress } from "@react-three/drei";
 import {
   Box3,
   Group,
   Mesh,
+  MeshPhysicalMaterial,
   MeshStandardMaterial,
   Sphere,
   type Object3D,
 } from "three";
+import { HeroModelWait } from "./HeroModelWait";
 
 const MODEL_URL = "/models/alarm_clock/alarm_clock_4k.gltf";
 const FOV = 38;
 /** Extra room so corners never clip while spinning. Lower = larger on screen. */
-const FIT_MARGIN = 1.29; // ~20% larger than the previous 1.55 framing
+const FIT_MARGIN = 1.29;
+
+const WAIT_LINES = [
+  "Winding the spring…",
+  "Setting the hands…",
+  "Polishing the glass…",
+  "Almost ready. Hang tight.",
+];
 
 /**
- * Poly Haven's glass material ships as alpha BLEND with a dark diffuse tint.
- * In Three.js that reads as an opaque black plate over the dial. Make the glass
- * a clear cover (or hide it) so the numbered face shows through.
+ * Keep the glass cover, but make it optically clear so the dial shows through.
  */
 function fixClockGlass(root: Object3D) {
   root.traverse((obj) => {
     if (!(obj instanceof Mesh)) return;
     const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
-    for (const mat of mats) {
-      if (!(mat instanceof MeshStandardMaterial)) continue;
-      if (!/glass/i.test(mat.name)) continue;
+    const next = mats.map((mat) => {
+      if (!(mat instanceof MeshStandardMaterial)) return mat;
+      if (!/glass/i.test(mat.name)) return mat;
 
-      mat.map = null;
-      mat.normalMap = null;
-      mat.metalnessMap = null;
-      mat.roughnessMap = null;
-      mat.color.set("#ffffff");
-      mat.metalness = 0;
-      mat.roughness = 0.08;
-      mat.transparent = true;
-      mat.opacity = 0.18;
-      mat.depthWrite = false;
-      mat.envMapIntensity = 1.2;
-      mat.needsUpdate = true;
-    }
+      const glass = new MeshPhysicalMaterial({
+        name: mat.name,
+        color: "#ffffff",
+        metalness: 0,
+        roughness: 0.05,
+        transmission: 0.92,
+        thickness: 0.2,
+        ior: 1.45,
+        transparent: true,
+        opacity: 1,
+        depthWrite: false,
+        envMapIntensity: 1,
+        side: mat.side,
+      });
+      mat.dispose();
+      return glass;
+    });
+    obj.material = next.length === 1 ? next[0] : next;
   });
 }
 
-function AlarmClock() {
+function AlarmClock({ onReady }: { onReady: () => void }) {
   const group = useRef<Group>(null);
   const { scene } = useGLTF(MODEL_URL);
   const camera = useThree((s) => s.camera);
@@ -57,19 +69,18 @@ function AlarmClock() {
     return c;
   }, [scene]);
   const [shadowY, setShadowY] = useState(-0.4);
+  const readySent = useRef(false);
 
   useLayoutEffect(() => {
     const box = new Box3().setFromObject(clone);
     const sphere = new Sphere();
     box.getBoundingSphere(sphere);
 
-    // Center the model on the origin so rotation stays in place.
     clone.position.sub(sphere.center);
 
     const after = new Box3().setFromObject(clone);
     setShadowY(after.min.y - 0.02);
 
-    // Frame for the full bounding sphere (covers every rotation angle).
     const aspect = size.width / Math.max(size.height, 1);
     const vFov = (FOV * Math.PI) / 180;
     const hFov = 2 * Math.atan(Math.tan(vFov / 2) * aspect);
@@ -82,7 +93,12 @@ function AlarmClock() {
     camera.far = distance * 20;
     camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
-  }, [clone, camera, size.width, size.height]);
+
+    if (!readySent.current) {
+      readySent.current = true;
+      requestAnimationFrame(() => onReady());
+    }
+  }, [clone, camera, size.width, size.height, onReady]);
 
   useFrame((_, delta) => {
     if (group.current) group.current.rotation.y += delta * 0.4;
@@ -106,8 +122,26 @@ function AlarmClock() {
 
 useGLTF.preload(MODEL_URL);
 
+function ProgressBridge({ onProgress }: { onProgress: (n: number) => void }) {
+  const { progress } = useProgress();
+  useEffect(() => {
+    onProgress(progress);
+  }, [progress, onProgress]);
+  return null;
+}
+
 /** Rotating hero 3D model (alarm clock). Kept export name for Hero import stability. */
 export function HeroToolChest() {
+  const [ready, setReady] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [lineIdx, setLineIdx] = useState(0);
+
+  useEffect(() => {
+    if (ready) return;
+    const id = setInterval(() => setLineIdx((i) => (i + 1) % WAIT_LINES.length), 2200);
+    return () => clearInterval(id);
+  }, [ready]);
+
   return (
     <div className="relative mx-auto aspect-square h-auto w-full max-w-[560px] lg:mx-0 lg:ml-auto lg:max-w-none lg:w-full">
       <div
@@ -118,7 +152,21 @@ export function HeroToolChest() {
             "radial-gradient(45% 45% at 60% 35%, rgba(194,97,63,.28), transparent 70%)",
         }}
       />
-      <div className="h-full w-full" style={{ transform: "translate(-8%, -15%)" }}>
+
+      <div
+        aria-live="polite"
+        aria-busy={!ready}
+        className={`pointer-events-none absolute inset-0 z-10 transition-opacity duration-500 ${
+          ready ? "opacity-0" : "opacity-100"
+        }`}
+      >
+        <HeroModelWait progress={progress} message={WAIT_LINES[lineIdx]} />
+      </div>
+
+      <div
+        className={`h-full w-full transition-opacity duration-700 ${ready ? "opacity-100" : "opacity-0"}`}
+        style={{ transform: "translate(-8%, -15%)" }}
+      >
         <Canvas
           camera={{ fov: FOV, position: [1.2, 0.9, 3.2], near: 0.01, far: 100 }}
           dpr={[1, 1.75]}
@@ -128,8 +176,9 @@ export function HeroToolChest() {
           <ambientLight intensity={0.7} />
           <directionalLight position={[2, 4, 5]} intensity={1.6} />
           <directionalLight position={[-3, 2, -2]} intensity={0.4} />
+          <ProgressBridge onProgress={setProgress} />
           <Suspense fallback={null}>
-            <AlarmClock />
+            <AlarmClock onReady={() => setReady(true)} />
             <Environment preset="apartment" />
           </Suspense>
         </Canvas>

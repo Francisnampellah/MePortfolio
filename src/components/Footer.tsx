@@ -7,8 +7,9 @@ export function Footer() {
     <footer className={`${SECTION_INNER} shrink-0 pb-5`}>
       <div className="flex flex-wrap items-center justify-between gap-[18px] border-t border-line pt-4">
         <div className="flex items-center gap-[11px]">
-          <span className="grid h-[30px] w-[30px] place-items-center rounded-[7px] bg-accent font-mono text-[11px] font-semibold text-white">
-            {PROFILE.initials}
+          <span className="grid h-[30px] w-[30px] place-items-center overflow-hidden rounded-[7px] bg-white p-1">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.svg" alt="" className="h-full w-full object-contain" />
           </span>
           <div>
             <div className="text-[13px] font-semibold">{PROFILE.name}</div>

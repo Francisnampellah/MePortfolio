@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { Download } from "lucide-react";
 import { motion } from "framer-motion";
 import { NAV_ITEMS, PROFILE } from "@/lib/data";
@@ -19,8 +18,9 @@ export function Nav() {
       <div className="mx-auto flex h-full max-w-page items-center justify-between px-6">
         {/* Brand — logo mark + name */}
         <a href="#home" onClick={go("home")} className="group flex items-center gap-2.5">
-          <span className="relative block h-9 w-9 overflow-hidden rounded-[10px] border border-line transition-transform duration-300 group-hover:scale-105">
-            <Image src="/logo.png" alt={`${PROFILE.shortName} logo`} fill sizes="36px" priority className="scale-[1.42] object-cover" />
+          <span className="relative grid h-9 w-9 place-items-center overflow-hidden rounded-[10px] bg-white p-1.5 transition-transform duration-300 group-hover:scale-105">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.svg" alt={`${PROFILE.shortName} logo`} className="h-full w-full object-contain" />
           </span>
           <span className="flex flex-col leading-none">
             <span className="text-[14.5px] font-bold tracking-[-0.01em] text-ink">{PROFILE.shortName}</span>

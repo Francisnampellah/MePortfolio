@@ -14,8 +14,8 @@ import {
 
 const MODEL_URL = "/models/alarm_clock/alarm_clock_4k.gltf";
 const FOV = 38;
-/** Extra room so corners never clip while spinning. */
-const FIT_MARGIN = 1.55;
+/** Extra room so corners never clip while spinning. Lower = larger on screen. */
+const FIT_MARGIN = 1.29; // ~20% larger than the previous 1.55 framing
 
 /**
  * Poly Haven's glass material ships as alpha BLEND with a dark diffuse tint.

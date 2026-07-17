@@ -86,12 +86,12 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
 
 /** True for the pale teal / aqua body paint — leave dial, metal, and red alone. */
 function isTealBodyPixel(h: number, s: number, l: number): boolean {
-  return s > 0.1 && l > 0.18 && l < 0.88 && h >= 135 && h <= 210;
+  return s > 0.08 && l > 0.15 && l < 0.9 && h >= 125 && h <= 215;
 }
 
 /**
- * Remap teal body paint in the diffuse map to the site accent, keeping
- * luminance so shading still reads correctly.
+ * Remap teal body paint in the diffuse map to a vivid site accent,
+ * close to the hero text color (punch saturation, keep shade variation).
  */
 function recolorTealMapToAccent(map: Texture, accentHex: string): Texture {
   const img = map.image as CanvasImageSource | undefined;
@@ -111,12 +111,17 @@ function recolorTealMapToAccent(map: Texture, accentHex: string): Texture {
   const imageData = ctx.getImageData(0, 0, width, height);
   const { data } = imageData;
   const [ar, ag, ab] = hexToRgb(accentHex);
-  const [accentH, accentS] = rgbToHsl(ar, ag, ab);
+  const [accentH, accentS, accentL] = rgbToHsl(ar, ag, ab);
+  // Rich but not blown-out — sit darker than the UI text accent under 3D lighting.
+  const vividS = Math.min(0.88, Math.max(0.62, accentS * 1.1));
 
   for (let i = 0; i < data.length; i += 4) {
     const [h, s, l] = rgbToHsl(data[i], data[i + 1], data[i + 2]);
     if (!isTealBodyPixel(h, s, l)) continue;
-    const [nr, ng, nb] = hslToRgb(accentH, Math.min(0.75, Math.max(s, accentS * 0.65)), l);
+    // Keep shade variation, pull the whole body into a deeper terracotta range.
+    const shade = Math.min(1, Math.max(0, (l - 0.2) / 0.55));
+    const light = Math.min(0.42, Math.max(0.16, accentL * 0.55 + shade * 0.1));
+    const [nr, ng, nb] = hslToRgb(accentH, vividS, light);
     data[i] = nr;
     data[i + 1] = ng;
     data[i + 2] = nb;

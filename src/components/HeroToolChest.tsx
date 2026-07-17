@@ -17,8 +17,9 @@ const MODEL_URL = "/models/alarm_clock/alarm_clock_4k.gltf";
 const FOV = 40;
 /** Padding around the bounding sphere. 1.43 ≈ 20% larger than the prior 1.72 framing. */
 const FIT_MARGIN = 1.43;
-/** Lift the model as a fraction of its radius (15% toward the top). */
-const LIFT_RATIO = 0.15;
+/** Nudge the model as a fraction of its radius. */
+const LIFT_RATIO = 0.20; // 10% up
+const LEFT_RATIO = 0.20; // 15% left
 
 const WAIT_LINES = [
   "Winding the spring…",
@@ -66,6 +67,7 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
     return c;
   }, [scene]);
   const [shadowY, setShadowY] = useState(-0.4);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
   const readySent = useRef(false);
 
   useLayoutEffect(() => {
@@ -77,7 +79,9 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
 
     const after = new Box3().setFromObject(clone);
     const lift = sphere.radius * LIFT_RATIO;
+    const left = -sphere.radius * LEFT_RATIO;
     setShadowY(after.min.y - 0.02 + lift);
+    setOffset({ x: left, y: lift });
 
     const aspect = size.width / Math.max(size.height, 1);
     const vFov = (FOV * Math.PI) / 180;
@@ -87,14 +91,14 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
     const distance = Math.max(distV, distH) * FIT_MARGIN;
 
     // Front-biased camera so the dial faces the visitor.
-    camera.position.set(distance * 0.18, distance * 0.14 + lift, distance);
+    camera.position.set(distance * 0.18 + left, distance * 0.14 + lift, distance);
     camera.near = Math.max(0.01, distance / 100);
     camera.far = distance * 40;
-    camera.lookAt(0, lift, 0);
+    camera.lookAt(left, lift, 0);
     camera.updateProjectionMatrix();
 
     if (group.current) {
-      group.current.position.y = lift;
+      group.current.position.set(left, lift, 0);
       group.current.rotation.y = 0.15;
     }
 
@@ -114,7 +118,7 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
         <primitive object={clone} />
       </group>
       <ContactShadows
-        position={[0, shadowY, 0]}
+        position={[offset.x, shadowY, 0]}
         opacity={0.32}
         scale={Math.max(4, shadowY * -8)}
         blur={2.6}

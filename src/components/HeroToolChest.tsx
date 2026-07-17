@@ -7,7 +7,6 @@ import {
   Box3,
   Group,
   Mesh,
-  MeshPhysicalMaterial,
   MeshStandardMaterial,
   Sphere,
   type Object3D,
@@ -15,9 +14,9 @@ import {
 import { HeroModelWait } from "./HeroModelWait";
 
 const MODEL_URL = "/models/alarm_clock/alarm_clock_4k.gltf";
-const FOV = 38;
-/** Extra room so corners never clip while spinning. Lower = larger on screen. */
-const FIT_MARGIN = 1.29;
+const FOV = 40;
+/** Padding around the bounding sphere so the full clock stays in frame while spinning. */
+const FIT_MARGIN = 1.72;
 
 const WAIT_LINES = [
   "Winding the spring…",
@@ -27,34 +26,30 @@ const WAIT_LINES = [
 ];
 
 /**
- * Keep the glass cover, but make it optically clear so the dial shows through.
+ * Keep the glass cover, but keep it simple and clear.
+ * Transmission glass can look "zoomed"/empty over the dial in this setup.
  */
 function fixClockGlass(root: Object3D) {
   root.traverse((obj) => {
     if (!(obj instanceof Mesh)) return;
     const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
-    const next = mats.map((mat) => {
-      if (!(mat instanceof MeshStandardMaterial)) return mat;
-      if (!/glass/i.test(mat.name)) return mat;
+    for (const mat of mats) {
+      if (!(mat instanceof MeshStandardMaterial)) continue;
+      if (!/glass/i.test(mat.name)) continue;
 
-      const glass = new MeshPhysicalMaterial({
-        name: mat.name,
-        color: "#ffffff",
-        metalness: 0,
-        roughness: 0.05,
-        transmission: 0.92,
-        thickness: 0.2,
-        ior: 1.45,
-        transparent: true,
-        opacity: 1,
-        depthWrite: false,
-        envMapIntensity: 1,
-        side: mat.side,
-      });
-      mat.dispose();
-      return glass;
-    });
-    obj.material = next.length === 1 ? next[0] : next;
+      mat.map = null;
+      mat.normalMap = null;
+      mat.metalnessMap = null;
+      mat.roughnessMap = null;
+      mat.color.set("#ffffff");
+      mat.metalness = 0;
+      mat.roughness = 0.12;
+      mat.transparent = true;
+      mat.opacity = 0.22;
+      mat.depthWrite = false;
+      mat.envMapIntensity = 0.9;
+      mat.needsUpdate = true;
+    }
   });
 }
 
@@ -88,11 +83,16 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
     const distH = sphere.radius / Math.tan(hFov / 2);
     const distance = Math.max(distV, distH) * FIT_MARGIN;
 
-    camera.position.set(distance * 0.35, distance * 0.28, distance);
-    camera.near = distance / 100;
-    camera.far = distance * 20;
+    // Front-biased camera so the dial faces the visitor, with enough distance
+    // that the whole clock (bells + legs) stays in frame while rotating.
+    camera.position.set(distance * 0.18, distance * 0.14, distance);
+    camera.near = Math.max(0.01, distance / 100);
+    camera.far = distance * 40;
     camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
+
+    // Start with the dial roughly facing the camera.
+    if (group.current) group.current.rotation.y = 0.15;
 
     if (!readySent.current) {
       readySent.current = true;
@@ -165,7 +165,6 @@ export function HeroToolChest() {
 
       <div
         className={`h-full w-full transition-opacity duration-700 ${ready ? "opacity-100" : "opacity-0"}`}
-        style={{ transform: "translate(-8%, -15%)" }}
       >
         <Canvas
           camera={{ fov: FOV, position: [1.2, 0.9, 3.2], near: 0.01, far: 100 }}

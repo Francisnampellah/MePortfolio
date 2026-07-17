@@ -17,9 +17,9 @@ const MODEL_URL = "/models/alarm_clock/alarm_clock_4k.gltf";
 const FOV = 40;
 /** Padding around the bounding sphere. 1.43 ≈ 20% larger than the prior 1.72 framing. */
 const FIT_MARGIN = 1.43;
-/** Nudge the model in the viewport (fraction of its radius). */
-const LIFT_RATIO = 0.1; // 10% up
-const LEFT_RATIO = 0.12; // a little left
+
+/** Shift the whole model container in layout — not the 3D scene origin. */
+const CONTAINER_SHIFT = "translate(-12%, -10%)"; // little left, 10% up
 
 const WAIT_LINES = [
   "Winding the spring…",
@@ -67,7 +67,6 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
     return c;
   }, [scene]);
   const [shadowY, setShadowY] = useState(-0.4);
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
   const readySent = useRef(false);
 
   useLayoutEffect(() => {
@@ -75,13 +74,11 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
     const sphere = new Sphere();
     box.getBoundingSphere(sphere);
 
+    // Center only — layout shift is handled by the container CSS.
     clone.position.sub(sphere.center);
 
     const after = new Box3().setFromObject(clone);
-    const lift = sphere.radius * LIFT_RATIO;
-    const left = -sphere.radius * LEFT_RATIO;
-    setShadowY(after.min.y - 0.02 + lift);
-    setOffset({ x: left, y: lift });
+    setShadowY(after.min.y - 0.02);
 
     const aspect = size.width / Math.max(size.height, 1);
     const vFov = (FOV * Math.PI) / 180;
@@ -90,18 +87,11 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
     const distH = sphere.radius / Math.tan(hFov / 2);
     const distance = Math.max(distV, distH) * FIT_MARGIN;
 
-    // Keep the camera aimed at the scene center so model offsets are visible
-    // in the frame (moving lookAt with the model cancels the nudge).
     camera.position.set(distance * 0.18, distance * 0.14, distance);
     camera.near = Math.max(0.01, distance / 100);
     camera.far = distance * 40;
     camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
-
-    if (group.current) {
-      group.current.position.set(left, lift, 0);
-      group.current.rotation.y = 0.15;
-    }
 
     if (!readySent.current) {
       readySent.current = true;
@@ -119,7 +109,7 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
         <primitive object={clone} />
       </group>
       <ContactShadows
-        position={[offset.x, shadowY, 0]}
+        position={[0, shadowY, 0]}
         opacity={0.32}
         scale={Math.max(4, shadowY * -8)}
         blur={2.6}
@@ -159,6 +149,7 @@ export function HeroToolChest() {
         style={{
           background:
             "radial-gradient(45% 45% at 60% 35%, rgba(194,97,63,.28), transparent 70%)",
+          transform: CONTAINER_SHIFT,
         }}
       />
 
@@ -174,6 +165,7 @@ export function HeroToolChest() {
 
       <div
         className={`h-full w-full transition-opacity duration-700 ${ready ? "opacity-100" : "opacity-0"}`}
+        style={{ transform: CONTAINER_SHIFT }}
       >
         <Canvas
           camera={{ fov: FOV, position: [1.2, 0.9, 3.2], near: 0.01, far: 100 }}

@@ -37,7 +37,7 @@ export function HeroModelWait({
           <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-accent">Loading 3D</p>
           <p className="mt-2 text-[15px] font-semibold tracking-[-0.01em] text-ink">{message}</p>
           <p className="mt-1.5 text-[12.5px] leading-snug text-muted">
-            Worth a short wait. The model is high-res.
+            Simple on the face. Serious underneath.
           </p>
         </div>
 

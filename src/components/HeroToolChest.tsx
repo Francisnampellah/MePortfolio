@@ -182,6 +182,9 @@ export function HeroToolChest() {
             <Environment preset="apartment" />
           </Suspense>
         </Canvas>
+        <p className="pointer-events-none -mt-2 text-center font-mono text-[11px] tracking-[0.04em] text-muted2">
+          Simple on the face. <span className="text-accent">Serious underneath.</span>
+        </p>
       </div>
     </div>
   );

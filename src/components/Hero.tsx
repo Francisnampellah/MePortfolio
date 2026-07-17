@@ -77,7 +77,7 @@ export function Hero() {
           </Reveal>
         </div>
 
-        {/* Right — rotating 3D tool chest */}
+        {/* Right — rotating clock */}
         <div className="relative hidden lg:block">
           <Reveal delay={0.1}>
             <HeroToolChest />

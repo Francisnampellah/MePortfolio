@@ -5,7 +5,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, useGLTF, ContactShadows } from "@react-three/drei";
 import { Box3, Group, Sphere } from "three";
 
-const MODEL_URL = "/models/alarm_clock/alarm_clock_2k.gltf";
+const MODEL_URL = "/models/alarm_clock/alarm_clock_4k.gltf";
 const FOV = 38;
 /** Extra room so corners never clip while spinning. */
 const FIT_MARGIN = 1.55;
@@ -78,20 +78,22 @@ export function HeroToolChest() {
             "radial-gradient(45% 45% at 60% 35%, rgba(194,97,63,.28), transparent 70%)",
         }}
       />
-      <Canvas
-        camera={{ fov: FOV, position: [1.2, 0.9, 3.2], near: 0.01, far: 100 }}
-        dpr={[1, 1.75]}
-        gl={{ antialias: true, alpha: true }}
-        style={{ width: "100%", height: "100%" }}
-      >
-        <ambientLight intensity={0.55} />
-        <directionalLight position={[4, 6, 3]} intensity={1.35} />
-        <directionalLight position={[-3, 2, -2]} intensity={0.35} />
-        <Suspense fallback={null}>
-          <AlarmClock />
-          <Environment preset="city" />
-        </Suspense>
-      </Canvas>
+      <div className="h-full w-full" style={{ transform: "translate(-8%, -15%)" }}>
+        <Canvas
+          camera={{ fov: FOV, position: [1.2, 0.9, 3.2], near: 0.01, far: 100 }}
+          dpr={[1, 1.75]}
+          gl={{ antialias: true, alpha: true }}
+          style={{ width: "100%", height: "100%" }}
+        >
+          <ambientLight intensity={0.55} />
+          <directionalLight position={[4, 6, 3]} intensity={1.35} />
+          <directionalLight position={[-3, 2, -2]} intensity={0.35} />
+          <Suspense fallback={null}>
+            <AlarmClock />
+            <Environment preset="city" />
+          </Suspense>
+        </Canvas>
+      </div>
     </div>
   );
 }

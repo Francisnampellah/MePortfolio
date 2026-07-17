@@ -35,6 +35,11 @@ export const metadata: Metadata = {
     "Dar es Salaam",
   ],
   authors: [{ name: "Baraka Francis Nampellah" }],
+  icons: {
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
   openGraph: {
     type: "website",
     url: SITE_URL,

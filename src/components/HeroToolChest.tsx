@@ -15,8 +15,10 @@ import { HeroModelWait } from "./HeroModelWait";
 
 const MODEL_URL = "/models/alarm_clock/alarm_clock_4k.gltf";
 const FOV = 40;
-/** Padding around the bounding sphere so the full clock stays in frame while spinning. */
-const FIT_MARGIN = 1.72;
+/** Padding around the bounding sphere. 1.43 ≈ 20% larger than the prior 1.72 framing. */
+const FIT_MARGIN = 1.43;
+/** Lift the model as a fraction of its radius (15% toward the top). */
+const LIFT_RATIO = 0.15;
 
 const WAIT_LINES = [
   "Winding the spring…",
@@ -74,7 +76,8 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
     clone.position.sub(sphere.center);
 
     const after = new Box3().setFromObject(clone);
-    setShadowY(after.min.y - 0.02);
+    const lift = sphere.radius * LIFT_RATIO;
+    setShadowY(after.min.y - 0.02 + lift);
 
     const aspect = size.width / Math.max(size.height, 1);
     const vFov = (FOV * Math.PI) / 180;
@@ -83,16 +86,17 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
     const distH = sphere.radius / Math.tan(hFov / 2);
     const distance = Math.max(distV, distH) * FIT_MARGIN;
 
-    // Front-biased camera so the dial faces the visitor, with enough distance
-    // that the whole clock (bells + legs) stays in frame while rotating.
-    camera.position.set(distance * 0.18, distance * 0.14, distance);
+    // Front-biased camera so the dial faces the visitor.
+    camera.position.set(distance * 0.18, distance * 0.14 + lift, distance);
     camera.near = Math.max(0.01, distance / 100);
     camera.far = distance * 40;
-    camera.lookAt(0, 0, 0);
+    camera.lookAt(0, lift, 0);
     camera.updateProjectionMatrix();
 
-    // Start with the dial roughly facing the camera.
-    if (group.current) group.current.rotation.y = 0.15;
+    if (group.current) {
+      group.current.position.y = lift;
+      group.current.rotation.y = 0.15;
+    }
 
     if (!readySent.current) {
       readySent.current = true;
@@ -143,7 +147,7 @@ export function HeroToolChest() {
   }, [ready]);
 
   return (
-    <div className="relative mx-auto aspect-square h-auto w-full max-w-[560px] lg:mx-0 lg:ml-auto lg:max-w-none lg:w-full">
+    <div className="relative mx-auto aspect-square h-auto w-full max-w-[560px] overflow-visible lg:mx-0 lg:ml-auto lg:max-w-none lg:w-full">
       <div
         aria-hidden
         className="pointer-events-none absolute -inset-x-8 -inset-y-10 -z-10 opacity-60 blur-3xl"

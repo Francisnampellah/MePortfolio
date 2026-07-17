@@ -3,19 +3,59 @@
 import { Suspense, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, useGLTF, ContactShadows } from "@react-three/drei";
-import { Box3, Group, Sphere } from "three";
+import {
+  Box3,
+  Group,
+  Mesh,
+  MeshStandardMaterial,
+  Sphere,
+  type Object3D,
+} from "three";
 
 const MODEL_URL = "/models/alarm_clock/alarm_clock_4k.gltf";
 const FOV = 38;
 /** Extra room so corners never clip while spinning. */
 const FIT_MARGIN = 1.55;
 
+/**
+ * Poly Haven's glass material ships as alpha BLEND with a dark diffuse tint.
+ * In Three.js that reads as an opaque black plate over the dial. Make the glass
+ * a clear cover (or hide it) so the numbered face shows through.
+ */
+function fixClockGlass(root: Object3D) {
+  root.traverse((obj) => {
+    if (!(obj instanceof Mesh)) return;
+    const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+    for (const mat of mats) {
+      if (!(mat instanceof MeshStandardMaterial)) continue;
+      if (!/glass/i.test(mat.name)) continue;
+
+      mat.map = null;
+      mat.normalMap = null;
+      mat.metalnessMap = null;
+      mat.roughnessMap = null;
+      mat.color.set("#ffffff");
+      mat.metalness = 0;
+      mat.roughness = 0.08;
+      mat.transparent = true;
+      mat.opacity = 0.18;
+      mat.depthWrite = false;
+      mat.envMapIntensity = 1.2;
+      mat.needsUpdate = true;
+    }
+  });
+}
+
 function AlarmClock() {
   const group = useRef<Group>(null);
   const { scene } = useGLTF(MODEL_URL);
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
-  const clone = useMemo(() => scene.clone(true), [scene]);
+  const clone = useMemo(() => {
+    const c = scene.clone(true);
+    fixClockGlass(c);
+    return c;
+  }, [scene]);
   const [shadowY, setShadowY] = useState(-0.4);
 
   useLayoutEffect(() => {
@@ -85,12 +125,12 @@ export function HeroToolChest() {
           gl={{ antialias: true, alpha: true }}
           style={{ width: "100%", height: "100%" }}
         >
-          <ambientLight intensity={0.55} />
-          <directionalLight position={[4, 6, 3]} intensity={1.35} />
-          <directionalLight position={[-3, 2, -2]} intensity={0.35} />
+          <ambientLight intensity={0.7} />
+          <directionalLight position={[2, 4, 5]} intensity={1.6} />
+          <directionalLight position={[-3, 2, -2]} intensity={0.4} />
           <Suspense fallback={null}>
             <AlarmClock />
-            <Environment preset="city" />
+            <Environment preset="apartment" />
           </Suspense>
         </Canvas>
       </div>

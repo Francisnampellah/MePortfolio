@@ -17,9 +17,9 @@ const MODEL_URL = "/models/alarm_clock/alarm_clock_4k.gltf";
 const FOV = 40;
 /** Padding around the bounding sphere. 1.43 ≈ 20% larger than the prior 1.72 framing. */
 const FIT_MARGIN = 1.43;
-/** Nudge the model as a fraction of its radius. */
+/** Nudge the model in the viewport (fraction of its radius). */
 const LIFT_RATIO = 0.1; // 10% up
-const LEFT_RATIO = 0.15; // 15% left
+const LEFT_RATIO = 0.12; // a little left
 
 const WAIT_LINES = [
   "Winding the spring…",
@@ -90,11 +90,12 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
     const distH = sphere.radius / Math.tan(hFov / 2);
     const distance = Math.max(distV, distH) * FIT_MARGIN;
 
-    // Front-biased camera so the dial faces the visitor.
-    camera.position.set(distance * 0.18 + left, distance * 0.14 + lift, distance);
+    // Keep the camera aimed at the scene center so model offsets are visible
+    // in the frame (moving lookAt with the model cancels the nudge).
+    camera.position.set(distance * 0.18, distance * 0.14, distance);
     camera.near = Math.max(0.01, distance / 100);
     camera.far = distance * 40;
-    camera.lookAt(left, lift, 0);
+    camera.lookAt(0, 0, 0);
     camera.updateProjectionMatrix();
 
     if (group.current) {

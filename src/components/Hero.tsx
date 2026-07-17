@@ -15,17 +15,9 @@ export function Hero() {
       <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
         {/* Left — copy */}
         <div className="text-left">
-          {/* Eyebrow */}
-          <Reveal>
-            <span className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3.5 py-1.5 font-mono text-[11.5px] font-medium text-muted2">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-              {PROFILE.role}
-            </span>
-          </Reveal>
-
           {/* Headline */}
-          <Reveal delay={0.06} as="div">
-            <h1 className="mt-5 max-w-[600px] text-[clamp(32px,5vw,54px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-ink text-pretty">
+          <Reveal as="div">
+            <h1 className="max-w-[600px] text-[clamp(32px,5vw,54px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-ink text-pretty">
               Good software should feel simple{" "}
               <span style={{ color: "var(--accent)" }}>even when the engineering isn&apos;t</span>.
             </h1>

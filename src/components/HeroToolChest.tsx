@@ -9,6 +9,7 @@ import {
   Mesh,
   MeshStandardMaterial,
   Sphere,
+  Texture,
   type Object3D,
 } from "three";
 import { HeroModelWait } from "./HeroModelWait";
@@ -17,6 +18,7 @@ const MODEL_URL = "/models/alarm_clock/alarm_clock_4k.gltf";
 const FOV = 40;
 /** Padding around the bounding sphere. 1.43 ≈ 20% larger than the prior 1.72 framing. */
 const FIT_MARGIN = 1.43;
+const ACCENT_FALLBACK = "#c2613f";
 
 /** Shift the whole model container in layout — not the 3D scene origin. */
 const CONTAINER_SHIFT = "translate(-12%, -10%)"; // little left, 10% up
@@ -27,6 +29,129 @@ const WAIT_LINES = [
   "Polishing the glass…",
   "Almost ready. Hang tight.",
 ];
+
+function readAccentHex(): string {
+  if (typeof window === "undefined") return ACCENT_FALLBACK;
+  const v = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim();
+  return v || ACCENT_FALLBACK;
+}
+
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace("#", "").trim();
+  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  const n = parseInt(full, 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  if (max === min) return [0, 0, l];
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  let h = 0;
+  if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+  else if (max === g) h = ((b - r) / d + 2) / 6;
+  else h = ((r - g) / d + 4) / 6;
+  return [h * 360, s, l];
+}
+
+function hslToRgb(h: number, s: number, l: number): [number, number, number] {
+  const hh = ((h % 360) + 360) % 360 / 360;
+  if (s === 0) {
+    const v = Math.round(l * 255);
+    return [v, v, v];
+  }
+  const hue2rgb = (p: number, q: number, t: number) => {
+    let T = t;
+    if (T < 0) T += 1;
+    if (T > 1) T -= 1;
+    if (T < 1 / 6) return p + (q - p) * 6 * T;
+    if (T < 1 / 2) return q;
+    if (T < 2 / 3) return p + (q - p) * (2 / 3 - T) * 6;
+    return p;
+  };
+  const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+  const p = 2 * l - q;
+  return [
+    Math.round(hue2rgb(p, q, hh + 1 / 3) * 255),
+    Math.round(hue2rgb(p, q, hh) * 255),
+    Math.round(hue2rgb(p, q, hh - 1 / 3) * 255),
+  ];
+}
+
+/** True for the pale teal / aqua body paint — leave dial, metal, and red alone. */
+function isTealBodyPixel(h: number, s: number, l: number): boolean {
+  return s > 0.1 && l > 0.18 && l < 0.88 && h >= 135 && h <= 210;
+}
+
+/**
+ * Remap teal body paint in the diffuse map to the site accent, keeping
+ * luminance so shading still reads correctly.
+ */
+function recolorTealMapToAccent(map: Texture, accentHex: string): Texture {
+  const img = map.image as CanvasImageSource | undefined;
+  if (!img || typeof document === "undefined") return map;
+
+  const width = "width" in img ? Number(img.width) : 0;
+  const height = "height" in img ? Number(img.height) : 0;
+  if (!width || !height) return map;
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return map;
+
+  ctx.drawImage(img, 0, 0);
+  const imageData = ctx.getImageData(0, 0, width, height);
+  const { data } = imageData;
+  const [ar, ag, ab] = hexToRgb(accentHex);
+  const [accentH, accentS] = rgbToHsl(ar, ag, ab);
+
+  for (let i = 0; i < data.length; i += 4) {
+    const [h, s, l] = rgbToHsl(data[i], data[i + 1], data[i + 2]);
+    if (!isTealBodyPixel(h, s, l)) continue;
+    const [nr, ng, nb] = hslToRgb(accentH, Math.min(0.75, Math.max(s, accentS * 0.65)), l);
+    data[i] = nr;
+    data[i + 1] = ng;
+    data[i + 2] = nb;
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+  const next = map.clone();
+  next.image = canvas;
+  next.colorSpace = map.colorSpace;
+  next.flipY = map.flipY;
+  next.needsUpdate = true;
+  return next;
+}
+
+function recolorClockBody(root: Object3D, accentHex: string) {
+  const remapped = new WeakMap<Texture, Texture>();
+
+  root.traverse((obj) => {
+    if (!(obj instanceof Mesh)) return;
+    const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+    for (const mat of mats) {
+      if (!(mat instanceof MeshStandardMaterial)) continue;
+      if (/glass/i.test(mat.name)) continue;
+      if (!mat.map) continue;
+
+      let tinted = remapped.get(mat.map);
+      if (!tinted) {
+        tinted = recolorTealMapToAccent(mat.map, accentHex);
+        remapped.set(mat.map, tinted);
+      }
+      mat.map = tinted;
+      mat.needsUpdate = true;
+    }
+  });
+}
 
 /**
  * Keep the glass cover, but keep it simple and clear.
@@ -64,6 +189,7 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
   const clone = useMemo(() => {
     const c = scene.clone(true);
     fixClockGlass(c);
+    recolorClockBody(c, readAccentHex());
     return c;
   }, [scene]);
   const [shadowY, setShadowY] = useState(-0.4);

@@ -93,10 +93,38 @@ export function FullPageScrollProvider({
 
   const measure = useCallback(() => {
     const h = stageRef.current?.clientHeight ?? window.innerHeight;
+    if (h <= 0) return h;
     slideHeightRef.current = h;
     setStageH(h);
-    if (enabledRef.current) y.set(-indexRef.current * h);
+    if (enabledRef.current) {
+      y.set(-indexRef.current * h);
+      window.scrollTo(0, 0);
+    }
+    return h;
   }, [y]);
+
+  const lockDocumentScroll = useCallback(() => {
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    window.scrollTo(0, 0);
+  }, []);
+
+  const unlockDocumentScroll = useCallback(() => {
+    document.body.style.overflow = "";
+    document.documentElement.style.overflow = "";
+  }, []);
+
+  const applyLocationHash = useCallback(() => {
+    const id = window.location.hash.slice(1);
+    if (!id) return false;
+    // Project deep-links are handled by Projects; ignore them here.
+    if (id.startsWith("project-")) return false;
+    const i = sectionIds.indexOf(id);
+    if (i < 0) return false;
+    indexRef.current = i;
+    setIndex(i);
+    return true;
+  }, [sectionIds]);
 
   const goToIndex = useCallback(
     (target: number) => {
@@ -164,26 +192,23 @@ export function FullPageScrollProvider({
   useEffect(() => {
     if (enabled === null) return;
     enabledRef.current = enabled;
+    animatingRef.current = false;
+    scrollingsRef.current = [];
 
-    // Deep-link support: apply the hash the page was opened with (once),
-    // in whichever mode is active by then.
-    if (!hashAppliedRef.current) {
-      hashAppliedRef.current = true;
-      const id = window.location.hash.slice(1);
-      const i = sectionIds.indexOf(id);
-      if (i > 0) {
-        indexRef.current = i;
-        setIndex(i);
-        if (!enabled) {
-          document.getElementById(id)?.scrollIntoView({ behavior: "auto" });
-        }
-      }
-    }
+    // Deep-link / return-from-article: apply hash every time this mode mounts.
+    // (hashAppliedRef only blocks the URL-writer from clearing the hash on first paint.)
+    const hadHash = applyLocationHash();
+    if (!hashAppliedRef.current) hashAppliedRef.current = true;
 
     if (!enabled) {
       y.set(0);
-      // Keep `index` (nav highlight, progress bar, back-to-top) tracking the
-      // section nearest the middle of the viewport while the user scrolls natively.
+      unlockDocumentScroll();
+      if (hadHash) {
+        const id = window.location.hash.slice(1);
+        requestAnimationFrame(() => {
+          document.getElementById(id)?.scrollIntoView({ behavior: "auto" });
+        });
+      }
       const observer = new IntersectionObserver(
         (entries) => {
           for (const entry of entries) {
@@ -204,20 +229,37 @@ export function FullPageScrollProvider({
       return () => observer.disconnect();
     }
 
-    measure();
-    // Mode switch (e.g. tablet rotation) can land mid-document; snap the stage
-    // to whatever section the user was on.
-    y.set(-indexRef.current * slideHeightRef.current);
-    window.scrollTo(0, 0);
+    lockDocumentScroll();
+    // Layout may not have height on the first tick after client nav — measure
+    // now, after paint, and whenever the stage resizes.
+    const sync = () => {
+      measure();
+      lockDocumentScroll();
+    };
+    sync();
+    const raf = window.requestAnimationFrame(() => {
+      sync();
+      window.requestAnimationFrame(sync);
+    });
 
-    const prevBodyOverflow = document.body.style.overflow;
-    const prevHtmlOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
+    const ro =
+      typeof ResizeObserver !== "undefined" && stageRef.current
+        ? new ResizeObserver(() => sync())
+        : null;
+    if (stageRef.current && ro) ro.observe(stageRef.current);
 
-    const onResize = () => measure();
+    const onResize = () => sync();
+    const onPageShow = (e: PageTransitionEvent) => {
+      // Back/forward cache can restore a frozen page with a stale lock.
+      if (e.persisted) {
+        animatingRef.current = false;
+        applyLocationHash();
+        sync();
+      }
+    };
     window.addEventListener("resize", onResize);
     window.visualViewport?.addEventListener("resize", onResize);
+    window.addEventListener("pageshow", onPageShow);
 
     const onWheel = (e: WheelEvent) => {
       // Pinch-to-zoom on a Mac trackpad is reported as a wheel event with ctrlKey set —
@@ -303,11 +345,14 @@ export function FullPageScrollProvider({
     window.addEventListener("touchend", onTouchEnd);
 
     return () => {
+      window.cancelAnimationFrame(raf);
+      ro?.disconnect();
       window.clearTimeout(animLockTimer.current);
-      document.body.style.overflow = prevBodyOverflow;
-      document.documentElement.style.overflow = prevHtmlOverflow;
+      animatingRef.current = false;
+      unlockDocumentScroll();
       window.removeEventListener("resize", onResize);
       window.visualViewport?.removeEventListener("resize", onResize);
+      window.removeEventListener("pageshow", onPageShow);
       window.removeEventListener("wheel", onWheel);
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("touchstart", onTouchStart);

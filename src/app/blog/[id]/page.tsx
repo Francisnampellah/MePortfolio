@@ -50,6 +50,7 @@ export default function ArticlePage({ params }: Params) {
       <main className="mx-auto max-w-[720px] px-6 pb-24 pt-14">
         <Link
           href="/#blog"
+          scroll={false}
           className="inline-flex items-center gap-2 font-mono text-[12.5px] text-muted2 transition-colors hover:text-accent"
         >
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />

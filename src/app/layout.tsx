@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { SITE_URL } from "@/lib/site";
 import { ViewportRefresh } from "@/components/ViewportRefresh";
+import { VisitBeacon } from "@/components/VisitBeacon";
 import "./globals.css";
 
 const inter = Inter({
@@ -67,6 +68,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${mono.variable}`}>
       <body className="font-sans antialiased">
         <ViewportRefresh />
+        <VisitBeacon />
         {children}
       </body>
     </html>

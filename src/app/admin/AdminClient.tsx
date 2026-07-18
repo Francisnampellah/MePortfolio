@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { Plus, Trash2, ArrowUp, ArrowDown, Save, LogOut, Check } from "lucide-react";
 
-const COLLECTIONS: { key: string; label: string; kind: "object" | "list" }[] = [
+const COLLECTIONS: { key: string; label: string; kind: "object" | "list" | "traffic" }[] = [
+  { key: "traffic", label: "Traffic", kind: "traffic" },
   { key: "profile", label: "Profile", kind: "object" },
   { key: "projects", label: "Projects", kind: "list" },
   { key: "experience", label: "Experience", kind: "list" },
@@ -20,7 +21,62 @@ const COLLECTIONS: { key: string; label: string; kind: "object" | "list" }[] = [
 
 const LONG_KEYS = ["desc", "note", "quote", "intro", "lede", "excerpt", "tagline", "message"];
 
-type Json = Record<string, unknown>;
+type TrafficStats = {
+  totalVisitors: number;
+  totalPageviews: number;
+  todayVisitors: number;
+  todayPageviews: number;
+  last7Days: { day: string; pageviews: number; visitors: number }[];
+};
+
+function TrafficPanel({ stats }: { stats: TrafficStats }) {
+  const max = Math.max(1, ...stats.last7Days.map((d) => d.visitors));
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          { k: "Total visitors", v: stats.totalVisitors },
+          { k: "Total pageviews", v: stats.totalPageviews },
+          { k: "Today — visitors", v: stats.todayVisitors },
+          { k: "Today — pageviews", v: stats.todayPageviews },
+        ].map((s) => (
+          <div key={s.k} className="rounded-xl border border-line bg-white px-4 py-4">
+            <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted2">{s.k}</div>
+            <div className="mt-2 text-[28px] font-extrabold tracking-[-0.03em] tabular-nums text-ink">
+              {s.v.toLocaleString()}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="rounded-xl border border-line bg-white p-5">
+        <div className="font-mono text-[10.5px] uppercase tracking-[0.08em] text-muted2">
+          Last 7 days — unique visitors
+        </div>
+        <div className="mt-4 flex items-end gap-2" style={{ height: 120 }}>
+          {stats.last7Days.map((d) => (
+            <div key={d.day} className="flex flex-1 flex-col items-center gap-1.5">
+              <span className="font-mono text-[10px] tabular-nums text-muted2">{d.visitors}</span>
+              <div
+                className="w-full max-w-[36px] rounded-t-md bg-accent"
+                style={{ height: `${Math.max(4, (d.visitors / max) * 88)}px` }}
+                title={`${d.day}: ${d.visitors} visitors, ${d.pageviews} views`}
+              />
+              <span className="font-mono text-[9px] text-faint">
+                {d.day.slice(5)}
+              </span>
+            </div>
+          ))}
+        </div>
+        <p className="mt-4 text-[12.5px] leading-relaxed text-muted">
+          Anonymous counts only — a visitor is a browser that loaded the site. Reloads and
+          page changes count as pageviews; the same browser counts once toward unique
+          visitors.
+        </p>
+      </div>
+    </div>
+  );
+}
 
 /* ---------- small field controls ---------- */
 
@@ -222,7 +278,8 @@ export function AdminClient() {
     let alive = true;
     setLoading(true);
     setError("");
-    fetch(`/api/admin/${active}`)
+    const url = active === "traffic" ? "/api/admin/traffic" : `/api/admin/${active}`;
+    fetch(url)
       .then((r) => r.json())
       .then((d) => {
         if (alive) setData(d);
@@ -325,6 +382,8 @@ export function AdminClient() {
       <div className="mt-6">
         {loading ? (
           <p className="py-16 text-center font-mono text-[13px] text-muted2">loading…</p>
+        ) : meta.kind === "traffic" && data && !("error" in (data as object)) ? (
+          <TrafficPanel stats={data as TrafficStats} />
         ) : meta.kind === "object" && data ? (
           <div className="rounded-xl border border-line bg-white p-5">
             <ObjectFields obj={data as Json} onChange={(n) => setData(n)} />
@@ -359,10 +418,15 @@ export function AdminClient() {
               <Plus className="h-4 w-4" /> Add item
             </button>
           </div>
+        ) : error || (data && typeof data === "object" && "error" in data) ? (
+          <p className="py-16 text-center text-[13px] text-[#c0392b]">
+            {(data as { error?: string })?.error || error || "Failed to load."}
+          </p>
         ) : null}
       </div>
 
-      {/* save bar */}
+      {/* save bar — hidden for read-only traffic */}
+      {meta.kind !== "traffic" ? (
       <div className="sticky bottom-4 mt-8 flex items-center justify-between gap-3 rounded-xl border border-line bg-white/95 px-4 py-3 backdrop-blur">
         <span className="text-[13px] text-muted">
           {error ? <span className="text-[#c0392b]">{error}</span> : `Editing: ${meta.label}`}
@@ -376,6 +440,7 @@ export function AdminClient() {
           {saving ? "Saving…" : saved ? "Saved" : "Save changes"}
         </button>
       </div>
+      ) : null}
     </div>
   );
 }

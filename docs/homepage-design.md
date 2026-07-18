@@ -302,24 +302,14 @@ own experience — a game settings menu at `md+`, a native app below.
   availability badge). No stats grid or long bio — Hero carries the stats.
   Two-column at `lg+`, stacked below. (An accent-orange-panel variant with a
   circular/white-disc portrait was tried and reverted on request.)
-- **Tech Stack** — abstract focal+selector (§5). Several forms were tried
-  (radar + skill-dials + metric pills → power-ring + tag-cloud → equalizer
-  bars) before landing, on request, on a **radar stat-wheel + segmented
-  skill meters**. Hero (`RadarWheel`): a hexagon radar plotting every
-  class's overall score at once — the whole toolkit's shape — with the
-  active axis lit; its axis labels are clickable/hoverable and select the
-  class (progressive enhancement over the chip row). Beside it, the active
-  class's four skills are **level-meter cards**: a `PipMeter` of ten
-  segments filled proportional to the score (a deliberately different
-  showcase from the earlier dials/tags/bars), the pips popping in with a
-  stagger on each class change, above them a header with the class name +
-  big accent overall score + S/A/B/C tier — plus a large faded **ghost
-  class name** behind that header (same device as Experience's ghost year /
-  Projects' ghost number). Selector: a **numbered index** (01–06 with short
-  name, a top rule that lights accent on the active segment) — replaced the
-  earlier class chips; also the primary control on mobile where radar axes
-  are hard to tap. Slim `AVG / CLASSES / SKILLS` meta line under the
-  heading.
+- **Tech Stack** — abstract focal+selector (§5), redesigned 2026-07-18 to
+  match Projects' composed rhythm (skills-first). Focal: active class
+  **level-meter cards** (`PipMeter`) as the hero — header with class name +
+  accent score/tier + quieter ghost name — with a **compact** `RadarWheel`
+  as supporting visual (axes still select a class). Selector: numbered
+  index (01–06) under the focal, content-width. Meta pills
+  (`AVG / CLASSES / SKILLS`) removed as clutter. Spec:
+  `docs/superpowers/specs/2026-07-18-toolbox-redesign.md`.
 - **Projects** — abstract focal+selector (§5), redesigned 2026-07-05 from a
   denser carousel card (which had a blurb + problem/outcome grid + inline
   list). Focal display: a big **image hero** beside the project number

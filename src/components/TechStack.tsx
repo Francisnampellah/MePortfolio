@@ -6,10 +6,8 @@ import { SectionHeading, SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
 import { TECH_GROUPS } from "@/lib/data";
 
 /**
- * Abstract skills view (same language as the Experience axis): a hexagon radar
- * "stat wheel" plots all six classes at once; the active axis is lit and its
- * skills show at the side as segmented level-meter cards (a fresh take — not the
- * old dials, tags, or bars). Radar axes and the chip row both select a class.
+ * Toolbox — Projects-mirrored composition: skills meters as the focal hero,
+ * a compact radar as supporting visual, numbered class index underneath.
  */
 
 const SHORT_NAME: Record<string, string> = {
@@ -31,7 +29,7 @@ function tierOf(score: number) {
   return "C";
 }
 
-/** Hexagon radar of every class's overall score; the active axis is emphasised. */
+/** Compact hexagon radar; active axis lit; labels select a class. */
 function RadarWheel({
   groups,
   active,
@@ -42,9 +40,9 @@ function RadarWheel({
   onSelect: (i: number) => void;
 }) {
   const n = groups.length;
-  const R = 122;
-  const cx = 170;
-  const cy = 158;
+  const R = 88;
+  const cx = 130;
+  const cy = 120;
   const angleFor = (i: number) => (Math.PI * 2 * i) / n - Math.PI / 2;
   const pointAt = (i: number, r: number) => {
     const a = angleFor(i);
@@ -53,8 +51,8 @@ function RadarWheel({
   const scorePoints = groups.map((g, i) => pointAt(i, (Math.max(g.score, 4) / 100) * R));
 
   return (
-    <div className="mx-auto w-[340px] max-w-full">
-      <svg width="100%" viewBox="0 0 340 320" className="overflow-visible">
+    <div className="mx-auto w-[260px] max-w-full lg:mx-0">
+      <svg width="100%" viewBox="0 0 260 240" className="overflow-visible">
         {[0.25, 0.5, 0.75, 1].map((r) => (
           <polygon
             key={r}
@@ -97,7 +95,7 @@ function RadarWheel({
               key={i}
               cx={x}
               cy={y}
-              r={on ? 6 : 3.5}
+              r={on ? 5 : 3}
               fill="var(--accent)"
               opacity={on ? 1 : 0.7}
               style={{ transition: "r .3s ease" }}
@@ -105,9 +103,8 @@ function RadarWheel({
           );
         })}
 
-        {/* Clickable axis labels */}
         {groups.map((g, i) => {
-          const [x, y] = pointAt(i, R + 30);
+          const [x, y] = pointAt(i, R + 24);
           const on = i === active;
           return (
             <g
@@ -120,15 +117,14 @@ function RadarWheel({
               tabIndex={0}
               style={{ cursor: "pointer" }}
             >
-              {/* invisible hit padding */}
-              <rect x={x - 40} y={y - 14} width="80" height="28" fill="transparent" />
+              <rect x={x - 36} y={y - 12} width="72" height="24" fill="transparent" />
               <text
                 x={x}
                 y={y}
                 textAnchor="middle"
                 dominantBaseline="middle"
                 className="font-mono"
-                fontSize={on ? 13 : 12}
+                fontSize={on ? 11.5 : 10.5}
                 fontWeight={on ? 700 : 500}
                 fill={on ? "var(--accent)" : "#8a857e"}
                 style={{ transition: "fill .3s ease" }}
@@ -166,11 +162,10 @@ export function TechStack() {
   const [active, setActive] = useState(0);
   const group = TECH_GROUPS[active];
   const score = overallOf(group.items);
-
-  const overalls = TECH_GROUPS.map((g) => overallOf(g.items));
-  const avgPower = Math.round(overalls.reduce((s, v) => s + v, 0) / overalls.length);
-  const totalSkills = TECH_GROUPS.reduce((s, g) => s + g.items.length, 0);
-  const radarGroups = TECH_GROUPS.map((g) => ({ short: SHORT_NAME[g.name] ?? g.name, score: overallOf(g.items) }));
+  const radarGroups = TECH_GROUPS.map((g) => ({
+    short: SHORT_NAME[g.name] ?? g.name,
+    score: overallOf(g.items),
+  }));
 
   return (
     <section id="tech" className={`${SECTION_SLIDE_ROOT} border-t border-line bg-surface`}>
@@ -181,17 +176,9 @@ export function TechStack() {
           blurb="Pick a class to see its strengths."
         />
 
-        <div className="mt-4 hidden flex-wrap items-center gap-2 font-mono text-[11px] text-muted2 md:flex">
-          <span className="rounded-full border border-line bg-white px-3 py-1">AVG {avgPower}</span>
-          <span className="rounded-full border border-line bg-white px-3 py-1">{TECH_GROUPS.length} CLASSES</span>
-          <span className="rounded-full border border-line bg-white px-3 py-1">{totalSkills} SKILLS</span>
-        </div>
-
-        {/* Focal — radar wheel + the active class's skill meters */}
-        <div className="mt-6 grid grid-cols-1 items-center gap-6 lg:grid-cols-[minmax(0,360px)_1fr] lg:gap-10">
-          <RadarWheel groups={radarGroups} active={active} onSelect={setActive} />
-
-          <div className="relative min-h-[240px]">
+        {/* Focal — skills hero + compact radar (Projects rhythm) */}
+        <div className="mt-8 grid max-w-[920px] grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.7fr)] lg:gap-12">
+          <div className="relative order-1 min-h-[220px]">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}
@@ -201,11 +188,10 @@ export function TechStack() {
                 transition={{ duration: 0.26, ease: [0.22, 0.7, 0.2, 1] }}
                 className="relative"
               >
-                {/* Big faded class name behind the header */}
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute -top-9 left-0 z-0 hidden select-none whitespace-nowrap font-extrabold uppercase leading-none tracking-[-0.04em] text-[clamp(60px,10vw,132px)] md:block"
-                  style={{ color: "color-mix(in srgb, var(--accent) 7%, transparent)" }}
+                  className="pointer-events-none absolute -top-6 left-0 z-0 hidden select-none whitespace-nowrap font-extrabold uppercase leading-none tracking-[-0.04em] text-[clamp(48px,7vw,88px)] md:block"
+                  style={{ color: "color-mix(in srgb, var(--accent) 5%, transparent)" }}
                 >
                   {SHORT_NAME[group.name] ?? group.name}
                 </span>
@@ -243,10 +229,14 @@ export function TechStack() {
               </motion.div>
             </AnimatePresence>
           </div>
+
+          <div className="order-2 flex justify-center lg:justify-end">
+            <RadarWheel groups={radarGroups} active={active} onSelect={setActive} />
+          </div>
         </div>
 
-        {/* Selector — a numbered index; the active segment's rule lights up */}
-        <div className="mt-8 -mx-6 flex gap-1 overflow-x-auto px-6 md:mx-0 md:grid md:grid-cols-6 md:gap-2 md:px-0">
+        {/* Selector — numbered index, content-width */}
+        <div className="mt-8 max-w-[920px] grid grid-cols-3 gap-2 sm:grid-cols-6">
           {TECH_GROUPS.map((g, i) => {
             const on = i === active;
             return (
@@ -256,7 +246,7 @@ export function TechStack() {
                 onFocus={() => setActive(i)}
                 onClick={() => setActive(i)}
                 aria-pressed={on}
-                className="group flex w-[104px] shrink-0 flex-col items-start border-t-2 pt-2.5 text-left transition-colors md:w-full"
+                className="group flex flex-col items-start border-t-2 pt-2.5 text-left transition-colors"
                 style={{ borderTopColor: on ? "var(--accent)" : "#e6ded6" }}
               >
                 <span

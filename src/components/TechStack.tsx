@@ -177,7 +177,7 @@ export function TechStack() {
         />
 
         {/* Focal — skills hero + compact radar (Projects rhythm) */}
-        <div className="mt-8 grid max-w-[920px] grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.7fr)] lg:gap-12">
+        <div className="mt-8 grid grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-12">
           <div className="relative order-1 min-h-[220px]">
             <AnimatePresence mode="wait">
               <motion.div
@@ -236,7 +236,7 @@ export function TechStack() {
         </div>
 
         {/* Selector — numbered index, content-width */}
-        <div className="mt-8 max-w-[920px] grid grid-cols-3 gap-2 sm:grid-cols-6">
+        <div className="mt-8 grid grid-cols-3 gap-2 sm:grid-cols-6">
           {TECH_GROUPS.map((g, i) => {
             const on = i === active;
             return (

@@ -15,9 +15,9 @@ Skills-first (PipMeter cards as hero). Compact RadarWheel as supporting visual. 
 ## Layout
 
 1. `SectionHeading` — unchanged (`02 / toolbox`, title, blurb).
-2. Focal (`lg+`): `grid` with skills column larger (`1fr`) and radar smaller (`~240px`).
+2. Focal (`lg+`): full `SECTION_INNER` / `max-w-page` width (same as Projects); skills column larger, radar smaller (`~260px`).
 3. Mobile: skills first, then compact radar.
-4. Numbered `01–06` selector under focal, content-width only (no edge-bleed feel).
+4. Numbered `01–06` selector under focal, same full content width.
 
 ## Remove / quiet
 

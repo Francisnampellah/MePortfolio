@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { SectionLabel, SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
 import { Reveal } from "./Reveal";
 import { CAPABILITIES, type CapabilityAction, type EvidencePart } from "@/lib/data";
@@ -10,8 +10,10 @@ import { useFullPageScroll } from "@/lib/fullPageScroll";
 
 /**
  * Toolbox — capability-first. Tabs pick an outcome; tools are chips;
- * evidence is concrete; no self-ratings.
+ * evidence is concrete; no self-ratings. Autoplay advances every 10s.
  */
+
+const AUTOPLAY_MS = 10_000;
 
 function selectProject(projectNo: string) {
   const no = projectNo.padStart(2, "0");
@@ -45,8 +47,19 @@ function EvidenceLines({ lines }: { lines: [EvidencePart[], EvidencePart[]] }) {
 
 export function TechStack() {
   const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const reduced = useReducedMotion();
   const cap = CAPABILITIES[active];
   const { goToId } = useFullPageScroll();
+
+  useEffect(() => {
+    if (paused || reduced || CAPABILITIES.length < 2) return;
+    const t = setInterval(
+      () => setActive((a) => (a + 1) % CAPABILITIES.length),
+      AUTOPLAY_MS
+    );
+    return () => clearInterval(t);
+  }, [paused, reduced]);
 
   const openAction = (action: CapabilityAction) => {
     if (action.kind === "blog") return;
@@ -56,7 +69,11 @@ export function TechStack() {
 
   return (
     <section id="tech" className={`${SECTION_SLIDE_ROOT} border-t border-line bg-surface`}>
-      <div className={SECTION_INNER}>
+      <div
+        className={SECTION_INNER}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
         <Reveal>
           <SectionLabel>02 / toolbox</SectionLabel>
           <p className="mt-2.5 max-w-[540px] text-[15.5px] leading-relaxed text-muted">

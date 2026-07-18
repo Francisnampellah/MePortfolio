@@ -16,6 +16,7 @@ import {
   Spinner,
   StatCard,
   Textarea,
+  ToastProvider,
   useToast,
 } from "namps-ui";
 import {
@@ -573,7 +574,7 @@ function blankFrom(sample: Json): Json {
 
 /* ---------- main client ---------- */
 
-export function AdminClient() {
+function AdminApp() {
   const { toast } = useToast();
   const [active, setActive] = useState(COLLECTIONS[0].key);
   const [data, setData] = useState<unknown>(null);
@@ -879,5 +880,14 @@ export function AdminClient() {
         </div>
       </div>
     </div>
+  );
+}
+
+/** Own ToastProvider so context shares the same client chunk as useToast. */
+export function AdminClient() {
+  return (
+    <ToastProvider>
+      <AdminApp />
+    </ToastProvider>
   );
 }

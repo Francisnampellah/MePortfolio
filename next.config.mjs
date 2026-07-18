@@ -7,6 +7,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: [
+    "namps-ui",
     "namps-native",
     "react-native-web",
     "react-native-reanimated",

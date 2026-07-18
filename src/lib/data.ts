@@ -104,8 +104,8 @@ export const CAPABILITIES: Capability[] = [
     short: "Agents",
     tagline: "AI that runs real operations, not demos",
     evidence: [
-      ["I build AI agents that carry out real business operations end to end."],
-      ["Two live agents: WhatsApp food ordering and pharmacy stock managed by chat."],
+      ["I build AI agents that run real business operations end to end."],
+      ["Live agents for WhatsApp ordering and pharmacy stock by chat."],
     ],
     tools: ["Cloudflare Workers", "WhatsApp API", "Telegram API", "Tool calling", "D1"],
     action: { kind: "project", projectNo: "02" },
@@ -115,8 +115,8 @@ export const CAPABILITIES: Capability[] = [
     short: "Frontend",
     tagline: "Interfaces designed and built, not just styled",
     evidence: [
-      ["I design interfaces and implement them, from design tokens to production code."],
-      ["Two mobile apps and three web apps launched, plus two UI libraries with live docs."],
+      ["I design interfaces and ship them from tokens to production code."],
+      ["Mobile and web apps launched, plus UI libraries with live docs."],
     ],
     tools: ["React", "Next.js", "Flutter", "React Native", "namps-ui", "namps-native", "namps-native-pop"],
     action: { kind: "project", projectNo: "09" },

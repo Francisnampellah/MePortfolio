@@ -292,6 +292,19 @@ function ObjectFields({
   );
 }
 
+function normalizeHero(raw: unknown): HeroData {
+  const o = (raw && typeof raw === "object" ? raw : {}) as Partial<HeroData>;
+  return {
+    stats: Array.isArray(o.stats)
+      ? o.stats.map((s) => ({
+          v: String((s as { v?: unknown })?.v ?? ""),
+          k: String((s as { k?: unknown })?.k ?? ""),
+        }))
+      : [],
+    clients: Array.isArray(o.clients) ? o.clients.map(String) : [],
+  };
+}
+
 function HeroFields({
   obj,
   onChange,
@@ -299,10 +312,13 @@ function HeroFields({
   obj: HeroData;
   onChange: (next: HeroData) => void;
 }) {
+  const stats = obj.stats ?? [];
+  const clients = obj.clients ?? [];
   const setStat = (i: number, patch: Partial<{ v: string; k: string }>) =>
     onChange({
       ...obj,
-      stats: obj.stats.map((s, j) => (i === j ? { ...s, ...patch } : s)),
+      stats: stats.map((s, j) => (i === j ? { ...s, ...patch } : s)),
+      clients,
     });
   return (
     <div className="flex flex-col gap-5">
@@ -310,7 +326,7 @@ function HeroFields({
         <span className="cms-field-label">Hero stats</span>
         <p className="cms-hint mb-3">Shown under the headline on the home section.</p>
         <div className="flex flex-col gap-2">
-          {obj.stats.map((s, i) => (
+          {stats.map((s, i) => (
             <div key={i} className="flex flex-wrap items-center gap-2">
               <Input
                 value={s.v}
@@ -329,7 +345,9 @@ function HeroFields({
                 variant="ghost"
                 size="sm"
                 aria-label="Remove stat"
-                onClick={() => onChange({ ...obj, stats: obj.stats.filter((_, j) => j !== i) })}
+                onClick={() =>
+                  onChange({ ...obj, stats: stats.filter((_, j) => j !== i), clients })
+                }
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
@@ -340,7 +358,9 @@ function HeroFields({
             variant="outline"
             size="sm"
             leftIcon={<Icons.Plus />}
-            onClick={() => onChange({ ...obj, stats: [...obj.stats, { v: "", k: "" }] })}
+            onClick={() =>
+              onChange({ ...obj, stats: [...stats, { v: "", k: "" }], clients })
+            }
           >
             Add stat
           </Button>
@@ -348,8 +368,8 @@ function HeroFields({
       </div>
       <StringListField
         k="clients"
-        value={obj.clients}
-        onChange={(clients) => onChange({ ...obj, clients })}
+        value={clients}
+        onChange={(nextClients) => onChange({ ...obj, stats, clients: nextClients })}
       />
     </div>
   );
@@ -629,7 +649,15 @@ function AdminApp() {
   };
 
   const selectTab = (key: string) => {
+    if (key === active) {
+      setDrawerOpen(false);
+      return;
+    }
     setActive(key);
+    setData(null);
+    setLoading(true);
+    setError("");
+    setQuery("");
     setDrawerOpen(false);
   };
 
@@ -772,11 +800,14 @@ function AdminApp() {
             </div>
           ) : meta.kind === "traffic" && data && !("error" in (data as object)) ? (
             <TrafficPanel stats={data as TrafficStats} />
-          ) : meta.kind === "hero" && data ? (
+          ) : meta.kind === "hero" && data && !("error" in (data as object)) ? (
             <div className="cms-card">
-              <HeroFields obj={data as HeroData} onChange={(n) => setData(n)} />
+              <HeroFields
+                obj={normalizeHero(data)}
+                onChange={(n) => setData(n)}
+              />
             </div>
-          ) : meta.kind === "object" && data ? (
+          ) : meta.kind === "object" && data && !("error" in (data as object)) ? (
             <div className="cms-card">
               <ObjectFields obj={data as Json} onChange={(n) => setData(n)} />
             </div>

@@ -57,82 +57,84 @@ export const NAV_ITEMS = [
 ] as const;
 
 /* ----------------------------------------------------------------
-   Tech stack (accordion) — static
+   Toolbox capabilities — outcome-first (no self-ratings)
 ----------------------------------------------------------------- */
-export type SkillItem = { name: string; level: number; label: string };
-export type TechGroup = {
-  icon: IconName;
+export type CapabilityAction =
+  | { kind: "project"; projectNo: string; label?: string }
+  | { kind: "blog"; href: string; label?: string };
+
+/** Plain text or an inline link inside the evidence line. */
+export type EvidencePart = string | { label: string; href: string };
+
+export type Capability = {
   name: string;
+  short: string;
   tagline: string;
-  items: SkillItem[];
+  evidence: EvidencePart[];
+  tools: string[];
+  action: CapabilityAction;
 };
 
-export const TECH_GROUPS: TechGroup[] = [
+export const CAPABILITIES: Capability[] = [
   {
-    icon: "server",
-    name: "Backend & APIs",
-    tagline: "services built to scale",
-    items: [
-      { name: "NestJS (TypeScript)", level: 90, label: "advanced" },
-      { name: "Django REST", level: 85, label: "advanced" },
-      { name: "Express.js", level: 86, label: "advanced" },
-      { name: "RBAC & Auth", level: 88, label: "advanced" },
+    name: "APIs & Microservices",
+    short: "APIs",
+    tagline: "Services designed to grow without rewrites",
+    evidence: [
+      "Six services live in production, with role-based access across the APIs — ",
+      { label: "how I approach that", href: "/blog/rbac" },
     ],
+    tools: ["NestJS", "Express", "Django REST", "JWT/RBAC", "PostgreSQL"],
+    action: { kind: "project", projectNo: "06" },
   },
   {
-    icon: "code",
-    name: "Frontend",
-    tagline: "clean, reusable UI",
-    items: [
-      { name: "React.js", level: 92, label: "expert" },
-      { name: "Next.js", level: 88, label: "advanced" },
-      { name: "Tailwind CSS", level: 90, label: "advanced" },
-      { name: "Redux / Context", level: 85, label: "advanced" },
+    name: "Payment Integration",
+    short: "Payments",
+    tagline: "Mobile money flows built for real Tanzanian transaction data",
+    evidence: [
+      "Live subscription and payment flows built around Tanzanian mobile money",
     ],
+    tools: ["M-Pesa", "SMS parsing", "Webhooks", "Payment windows"],
+    action: { kind: "project", projectNo: "03" },
   },
   {
-    icon: "smartphone",
-    name: "Mobile",
-    tagline: "cross platform apps",
-    items: [
-      { name: "Flutter", level: 86, label: "advanced" },
-      { name: "React Native", level: 88, label: "advanced" },
-      { name: "Responsive UI", level: 90, label: "advanced" },
-      { name: "App delivery", level: 82, label: "proficient" },
+    name: "Agentic AI",
+    short: "Agents",
+    tagline: "Agents that run business workflows end to end",
+    evidence: [
+      "Chat agents that manage stock, take food orders over WhatsApp, and handle bookings end to end ",
     ],
+    tools: ["Claude/LLM APIs", "Telegram Bot API", "WhatsApp API", "n8n", "Cloudflare Workers"],
+    action: { kind: "project", projectNo: "02" },
   },
   {
-    icon: "database",
-    name: "Databases",
-    tagline: "modeled & optimized",
-    items: [
-      { name: "PostgreSQL", level: 88, label: "advanced" },
-      { name: "MySQL", level: 82, label: "proficient" },
-      { name: "Django ORM", level: 85, label: "advanced" },
-      { name: "Query tuning", level: 80, label: "proficient" },
+    name: "Data & Infrastructure",
+    short: "Data",
+    tagline: "Databases designed well, deployments that ship themselves",
+    evidence: [
+      "Production databases for multi-tenant apps, with automated deploy, test, and security checks on every push",
     ],
+    tools: [
+      "PostgreSQL",
+      "Docker",
+      "Kubernetes",
+      "CI/CD (GitHub Actions)",
+      "AWS",
+      "Cloudflare Workers",
+      "Nginx",
+    ],
+    action: { kind: "project", projectNo: "06" },
   },
   {
-    icon: "cloud",
-    name: "Cloud & DevOps",
-    tagline: "ship safely",
-    items: [
-      { name: "AWS (EC2)", level: 80, label: "proficient" },
-      { name: "Docker", level: 85, label: "advanced" },
-      { name: "CI/CD", level: 85, label: "advanced" },
-      { name: "Git & Postman", level: 92, label: "expert" },
+    name: "Management Systems",
+    short: "Systems",
+    tagline: "Complete operational systems for real businesses mobile, POS, and dashboards",
+    evidence: [
+      "Full ops systems spanning mobile apps, POS, owner dashboards, and booking over chat including apps that keep working offline — ",
+      { label: "notes from the field", href: "/blog/flutter" },
     ],
-  },
-  {
-    icon: "sparkles",
-    name: "Emerging Tech",
-    tagline: "always learning",
-    items: [
-      { name: "Agentic AI", level: 74, label: "foundations" },
-      { name: "Hyperledger Fabric", level: 72, label: "proficient" },
-      { name: "Three.js", level: 76, label: "proficient" },
-      { name: "Workflow automation", level: 80, label: "proficient" },
-    ],
+    tools: ["Flutter", "React Native", "React", "NestJS", "Offline-first sync"],
+    action: { kind: "project", projectNo: "03" },
   },
 ];
 

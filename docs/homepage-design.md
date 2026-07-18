@@ -302,14 +302,11 @@ own experience — a game settings menu at `md+`, a native app below.
   availability badge). No stats grid or long bio — Hero carries the stats.
   Two-column at `lg+`, stacked below. (An accent-orange-panel variant with a
   circular/white-disc portrait was tried and reverted on request.)
-- **Tech Stack** — abstract focal+selector (§5), redesigned 2026-07-18 to
-  match Projects' composed rhythm (skills-first). Focal: active class
-  **level-meter cards** (`PipMeter`) as the hero — header with class name +
-  accent score/tier + quieter ghost name — with a **compact** `RadarWheel`
-  as supporting visual (axes still select a class). Selector: numbered
-  index (01–06) under the focal, content-width. Meta pills
-  (`AVG / CLASSES / SKILLS`) removed as clutter. Spec:
-  `docs/superpowers/specs/2026-07-18-toolbox-redesign.md`.
+- **Tech Stack** — capability-first toolbox (updated 2026-07-18). Five
+  outcome tabs (APIs, Payments, Agents, Data, Systems): title, tagline,
+  evidence with optional inline blog links, tool chips (no scores), and
+  "See it in action →" to a project or blog. Data: `CAPABILITIES` in
+  `src/lib/data.ts`.
 - **Projects** — abstract focal+selector (§5), redesigned 2026-07-05 from a
   denser carousel card (which had a blurb + problem/outcome grid + inline
   list). Focal display: a big **image hero** beside the project number

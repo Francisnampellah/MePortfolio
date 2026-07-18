@@ -1,171 +1,53 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { SectionHeading, SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
-import { TECH_GROUPS } from "@/lib/data";
+import { CAPABILITIES, type CapabilityAction, type EvidencePart } from "@/lib/data";
+import { useFullPageScroll } from "@/lib/fullPageScroll";
 
 /**
- * Toolbox — Projects-mirrored composition: skills meters as the focal hero,
- * a compact radar as supporting visual, numbered class index underneath.
+ * Toolbox — capability-first. Tabs pick an outcome; tools are chips;
+ * evidence is concrete; no self-ratings.
  */
 
-const SHORT_NAME: Record<string, string> = {
-  "Backend & APIs": "Backend",
-  Frontend: "Frontend",
-  Mobile: "Mobile",
-  Databases: "Databases",
-  "Cloud & DevOps": "Cloud",
-  "Emerging Tech": "Emerging",
-};
-
-const overallOf = (items: { level: number }[]) =>
-  Math.round(items.reduce((s, t) => s + t.level, 0) / items.length);
-
-function tierOf(score: number) {
-  if (score >= 90) return "S";
-  if (score >= 85) return "A";
-  if (score >= 80) return "B";
-  return "C";
+function selectProject(projectNo: string) {
+  const no = projectNo.padStart(2, "0");
+  window.history.replaceState(null, "", `#project-${no}`);
+  window.dispatchEvent(new CustomEvent("select-project", { detail: { no } }));
 }
 
-/** Compact hexagon radar; active axis lit; labels select a class. */
-function RadarWheel({
-  groups,
-  active,
-  onSelect,
-}: {
-  groups: { short: string; score: number }[];
-  active: number;
-  onSelect: (i: number) => void;
-}) {
-  const n = groups.length;
-  const R = 88;
-  const cx = 130;
-  const cy = 120;
-  const angleFor = (i: number) => (Math.PI * 2 * i) / n - Math.PI / 2;
-  const pointAt = (i: number, r: number) => {
-    const a = angleFor(i);
-    return [cx + r * Math.cos(a), cy + r * Math.sin(a)] as const;
-  };
-  const scorePoints = groups.map((g, i) => pointAt(i, (Math.max(g.score, 4) / 100) * R));
-
+function EvidenceLine({ parts }: { parts: EvidencePart[] }) {
   return (
-    <div className="mx-auto w-[260px] max-w-full lg:mx-0">
-      <svg width="100%" viewBox="0 0 260 240" className="overflow-visible">
-        {[0.25, 0.5, 0.75, 1].map((r) => (
-          <polygon
-            key={r}
-            points={groups.map((_, i) => pointAt(i, R * r).join(",")).join(" ")}
-            fill="none"
-            stroke="#eae3db"
-            strokeWidth="1"
-          />
-        ))}
-
-        {groups.map((_, i) => {
-          const [x, y] = pointAt(i, R);
-          const on = i === active;
-          return (
-            <line
-              key={i}
-              x1={cx}
-              y1={cy}
-              x2={x}
-              y2={y}
-              stroke={on ? "var(--accent)" : "#eae3db"}
-              strokeWidth={on ? 1.5 : 1}
-              style={{ transition: "stroke .3s ease" }}
-            />
-          );
-        })}
-
-        <polygon
-          points={scorePoints.map((p) => p.join(",")).join(" ")}
-          fill="color-mix(in srgb, var(--accent) 20%, transparent)"
-          stroke="var(--accent)"
-          strokeWidth="2"
-          strokeLinejoin="round"
-        />
-
-        {scorePoints.map(([x, y], i) => {
-          const on = i === active;
-          return (
-            <circle
-              key={i}
-              cx={x}
-              cy={y}
-              r={on ? 5 : 3}
-              fill="var(--accent)"
-              opacity={on ? 1 : 0.7}
-              style={{ transition: "r .3s ease" }}
-            />
-          );
-        })}
-
-        {groups.map((g, i) => {
-          const [x, y] = pointAt(i, R + 24);
-          const on = i === active;
-          return (
-            <g
-              key={g.short}
-              role="button"
-              aria-label={g.short}
-              onMouseEnter={() => onSelect(i)}
-              onFocus={() => onSelect(i)}
-              onClick={() => onSelect(i)}
-              tabIndex={0}
-              style={{ cursor: "pointer" }}
-            >
-              <rect x={x - 36} y={y - 12} width="72" height="24" fill="transparent" />
-              <text
-                x={x}
-                y={y}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                className="font-mono"
-                fontSize={on ? 11.5 : 10.5}
-                fontWeight={on ? 700 : 500}
-                fill={on ? "var(--accent)" : "#8a857e"}
-                style={{ transition: "fill .3s ease" }}
-              >
-                {g.short}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
-    </div>
-  );
-}
-
-/** Segmented level meter — ten pips, filled proportional to the score. */
-function PipMeter({ level }: { level: number }) {
-  const N = 10;
-  const filled = Math.round(level / 10);
-  return (
-    <div className="flex gap-[3px]">
-      {Array.from({ length: N }).map((_, i) => (
-        <motion.span
-          key={i}
-          initial={{ scale: 0.4, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.1 + i * 0.03, duration: 0.2 }}
-          className={`h-2 w-2 rounded-[3px] ${i < filled ? "bg-accent" : "bg-[#e4dcd4]"}`}
-        />
-      ))}
-    </div>
+    <p className="mt-5 max-w-[560px] text-[15px] leading-relaxed text-muted text-pretty">
+      {parts.map((part, i) =>
+        typeof part === "string" ? (
+          <span key={i}>{part}</span>
+        ) : (
+          <Link
+            key={i}
+            href={part.href}
+            className="font-medium text-accent underline decoration-accent/30 underline-offset-2 transition-colors hover:text-ink hover:decoration-ink/40"
+          >
+            {part.label}
+          </Link>
+        )
+      )}
+    </p>
   );
 }
 
 export function TechStack() {
   const [active, setActive] = useState(0);
-  const group = TECH_GROUPS[active];
-  const score = overallOf(group.items);
-  const radarGroups = TECH_GROUPS.map((g) => ({
-    short: SHORT_NAME[g.name] ?? g.name,
-    score: overallOf(g.items),
-  }));
+  const cap = CAPABILITIES[active];
+  const { goToId } = useFullPageScroll();
+
+  const openAction = (action: CapabilityAction) => {
+    if (action.kind === "blog") return;
+    selectProject(action.projectNo);
+    goToId("projects");
+  };
 
   return (
     <section id="tech" className={`${SECTION_SLIDE_ROOT} border-t border-line bg-surface`}>
@@ -173,71 +55,74 @@ export function TechStack() {
         <SectionHeading
           label="02 / toolbox"
           title="A modern, full-stack toolkit"
-          blurb="Pick a class to see its strengths."
+          blurb="Pick a capability to see the work behind it."
         />
 
-        {/* Focal — skills hero + compact radar (Projects rhythm) */}
-        <div className="mt-8 grid grid-cols-1 items-center gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-12">
-          <div className="relative order-1 min-h-[220px]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={active}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.26, ease: [0.22, 0.7, 0.2, 1] }}
-                className="relative"
+        <div className="relative mt-8 min-h-[240px] max-w-[720px]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={active}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.26, ease: [0.22, 0.7, 0.2, 1] }}
+              className="relative"
+            >
+              <span
+                aria-hidden
+                className="pointer-events-none absolute -top-6 left-0 z-0 hidden select-none whitespace-nowrap font-extrabold uppercase leading-none tracking-[-0.04em] text-[clamp(48px,7vw,88px)] md:block"
+                style={{ color: "color-mix(in srgb, var(--accent) 5%, transparent)" }}
               >
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute -top-6 left-0 z-0 hidden select-none whitespace-nowrap font-extrabold uppercase leading-none tracking-[-0.04em] text-[clamp(48px,7vw,88px)] md:block"
-                  style={{ color: "color-mix(in srgb, var(--accent) 5%, transparent)" }}
-                >
-                  {SHORT_NAME[group.name] ?? group.name}
-                </span>
+                {cap.short}
+              </span>
 
-                <div className="relative z-10">
-                  <div className="flex items-end justify-between gap-4 border-b border-line pb-4">
-                    <div>
-                      <h3 className="text-[clamp(22px,2.6vw,32px)] font-extrabold leading-[1.05] tracking-[-0.03em] text-ink">
-                        {group.name}
-                      </h3>
-                      <div className="mt-1 font-mono text-[12.5px] text-muted2">{group.tagline}</div>
-                    </div>
-                    <div className="flex shrink-0 items-baseline gap-1.5">
-                      <span className="font-mono text-[clamp(28px,3.4vw,40px)] font-extrabold leading-none tabular-nums text-accent">
-                        {score}
-                      </span>
-                      <span className="font-mono text-[12px] font-semibold text-muted2">/ {tierOf(score)}</span>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                    {group.items.map((it) => (
-                      <div key={it.name} className="rounded-xl border border-line bg-white p-3.5">
-                        <div className="flex items-baseline justify-between gap-2">
-                          <span className="truncate text-[13px] font-semibold text-ink">{it.name}</span>
-                          <span className="font-mono text-[12px] tabular-nums text-accent">{it.level}</span>
-                        </div>
-                        <div className="mt-2.5">
-                          <PipMeter level={it.level} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+              <div className="relative z-10">
+                <div className="border-b border-line pb-4">
+                  <h3 className="text-[clamp(22px,2.6vw,32px)] font-extrabold leading-[1.05] tracking-[-0.03em] text-ink">
+                    {cap.name}
+                  </h3>
+                  <p className="mt-1.5 font-mono text-[12.5px] text-muted2">{cap.tagline}</p>
                 </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
 
-          <div className="order-2 flex justify-center lg:justify-end">
-            <RadarWheel groups={radarGroups} active={active} onSelect={setActive} />
-          </div>
+                <EvidenceLine parts={cap.evidence} />
+
+                <div className="mt-5 flex flex-wrap gap-1.5">
+                  {cap.tools.map((t) => (
+                    <span
+                      key={t}
+                      className="rounded-full border border-line bg-white px-2.5 py-1 font-mono text-[10.5px] text-[#7c776f]"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                <div className="mt-6">
+                  {cap.action.kind === "blog" ? (
+                    <Link
+                      href={cap.action.href}
+                      className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-accent transition-colors hover:text-ink"
+                    >
+                      See it in action →
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => openAction(cap.action)}
+                      className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-accent transition-colors hover:text-ink"
+                    >
+                      See it in action →
+                    </button>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
-        {/* Selector — numbered index, content-width */}
-        <div className="mt-8 grid grid-cols-3 gap-2 sm:grid-cols-6">
-          {TECH_GROUPS.map((g, i) => {
+        {/* Selector — numbered index (horizontal scroll on small screens) */}
+        <div className="mt-8 -mx-6 flex gap-1 overflow-x-auto px-6 sm:mx-0 sm:grid sm:grid-cols-5 sm:gap-2 sm:overflow-visible sm:px-0">
+          {CAPABILITIES.map((g, i) => {
             const on = i === active;
             return (
               <button
@@ -246,7 +131,7 @@ export function TechStack() {
                 onFocus={() => setActive(i)}
                 onClick={() => setActive(i)}
                 aria-pressed={on}
-                className="group flex flex-col items-start border-t-2 pt-2.5 text-left transition-colors"
+                className="group flex w-[110px] shrink-0 flex-col items-start border-t-2 pt-2.5 text-left transition-colors sm:w-full"
                 style={{ borderTopColor: on ? "var(--accent)" : "#e6ded6" }}
               >
                 <span
@@ -261,7 +146,7 @@ export function TechStack() {
                     on ? "font-semibold text-ink" : "font-medium text-muted3 group-hover:text-muted"
                   }`}
                 >
-                  {SHORT_NAME[g.name] ?? g.name}
+                  {g.short}
                 </span>
               </button>
             );

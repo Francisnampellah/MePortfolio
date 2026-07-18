@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Github, X } from "lucide-react";
@@ -25,6 +25,7 @@ export function Projects() {
   const [paused, setPaused] = useState(false);
   const [preview, setPreview] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const pendingProject = useRef<string | null>(null);
   const reduced = useReducedMotion();
 
   const visible = PROJECTS.filter((p) => filter === "All" || p.tags.includes(filter));
@@ -35,7 +36,46 @@ export function Projects() {
   }, []);
 
   useEffect(() => {
-    setActive(0);
+    if (pendingProject.current) {
+      const no = pendingProject.current;
+      pendingProject.current = null;
+      const idx = PROJECTS.findIndex((p) => p.no === no);
+      setActive(idx >= 0 ? idx : 0);
+    } else {
+      setActive(0);
+    }
+  }, [filter]);
+
+  useEffect(() => {
+    const applyProject = (raw: string) => {
+      const no = raw.padStart(2, "0");
+      if (!PROJECTS.some((p) => p.no === no)) return;
+      if (filter !== "All") {
+        pendingProject.current = no;
+        setFilter("All");
+      } else {
+        const idx = PROJECTS.findIndex((p) => p.no === no);
+        if (idx >= 0) setActive(idx);
+      }
+    };
+
+    const fromHash = () => {
+      const m = window.location.hash.match(/^#project-(\d+)/i);
+      if (m) applyProject(m[1]);
+    };
+
+    const onSelect = (e: Event) => {
+      const detail = (e as CustomEvent<{ no: string }>).detail;
+      if (detail?.no) applyProject(detail.no);
+    };
+
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    window.addEventListener("select-project", onSelect);
+    return () => {
+      window.removeEventListener("hashchange", fromHash);
+      window.removeEventListener("select-project", onSelect);
+    };
   }, [filter]);
 
   useEffect(() => {

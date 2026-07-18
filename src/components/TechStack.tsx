@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { SectionHeading, SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
+import { SectionLabel, SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
+import { Reveal } from "./Reveal";
 import { CAPABILITIES, type CapabilityAction, type EvidencePart } from "@/lib/data";
 import { useFullPageScroll } from "@/lib/fullPageScroll";
 
@@ -56,11 +57,12 @@ export function TechStack() {
   return (
     <section id="tech" className={`${SECTION_SLIDE_ROOT} border-t border-line bg-surface`}>
       <div className={SECTION_INNER}>
-        <SectionHeading
-          label="02 / toolbox"
-          title="A modern, full stack toolkit"
-          blurb="Pick a capability to see the work behind it."
-        />
+        <Reveal>
+          <SectionLabel>02 / toolbox</SectionLabel>
+          <p className="mt-2.5 max-w-[540px] text-[15.5px] leading-relaxed text-muted">
+            Pick a capability to see the work behind it.
+          </p>
+        </Reveal>
 
         <div className="relative mt-8 min-h-[240px] max-w-[720px]">
           <AnimatePresence mode="wait">
@@ -82,9 +84,9 @@ export function TechStack() {
 
               <div className="relative z-10">
                 <div className="border-b border-line pb-4">
-                  <h3 className="text-[clamp(22px,2.6vw,32px)] font-extrabold leading-[1.05] tracking-[-0.03em] text-ink">
+                  <h2 className="text-[clamp(22px,2.6vw,32px)] font-extrabold leading-[1.05] tracking-[-0.03em] text-ink">
                     {cap.name}
-                  </h3>
+                  </h2>
                   <p className="mt-1.5 font-mono text-[12.5px] text-muted2">{cap.tagline}</p>
                 </div>
 
@@ -125,7 +127,7 @@ export function TechStack() {
         </div>
 
         {/* Selector — numbered index (horizontal scroll on small screens) */}
-        <div className="mt-8 -mx-6 flex gap-1 overflow-x-auto px-6 sm:mx-0 sm:grid sm:grid-cols-6 sm:gap-2 sm:overflow-visible sm:px-0">
+        <div className="mt-8 -mx-6 flex gap-1 overflow-x-auto px-6 sm:mx-0 sm:grid sm:grid-cols-7 sm:gap-2 sm:overflow-visible sm:px-0">
           {CAPABILITIES.map((g, i) => {
             const on = i === active;
             return (

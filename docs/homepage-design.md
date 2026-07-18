@@ -302,10 +302,18 @@ own experience — a game settings menu at `md+`, a native app below.
   availability badge). No stats grid or long bio — Hero carries the stats.
   Two-column at `lg+`, stacked below. (An accent-orange-panel variant with a
   circular/white-disc portrait was tried and reverted on request.)
-- **Tech Stack** — capability-first toolbox (updated 2026-07-18). Five
-  outcome tabs (APIs, Payments, Agents, Data, Systems): title, tagline,
-  evidence with optional inline blog links, tool chips (no scores), and
-  "See it in action →" to a project or blog. Data: `CAPABILITIES` in
+- **Tech Stack** — capability-first toolbox (updated 2026-07-18). Seven
+  numbered tabs (Design, APIs, Agents, Frontend, Payments, Data,
+  Emerging): title,
+  tagline, evidence, tool chips (no scores), and "See it in action →" to a
+  project or blog. No section title — just the `02 / toolbox` label and
+  blurb; the active capability name is the slide's `h2`. Every capability follows one **claim + proof** formula:
+  evidence line 1 is a first-person capability claim ("I design/build/ship
+  …"), line 2 is concrete production proof (six services live, two AI
+  agents in production, M-Pesa flows in the field, 50-item Three.js
+  catalog) with
+  optional inline blog links; the single chip row lists the exact
+  tools/concepts backing that claim. Data: `CAPABILITIES` in
   `src/lib/data.ts`.
 - **Projects** — abstract focal+selector (§5), redesigned 2026-07-05 from a
   denser carousel card (which had a blurb + problem/outcome grid + inline

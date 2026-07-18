@@ -85,7 +85,7 @@ export const CAPABILITIES: Capability[] = [
       ["I design for scale, reliability, and clear failure modes before code exists."],
       ["Architected a six service platform that keeps adding features without rewrites."],
     ],
-    tools: ["Microservices", "Serverless", "Caching", "Consistency", "Tradeoffs"],
+    tools: ["Microservices", "Distributed systems", "Serverless", "Caching", "Consistency", "Tradeoffs"],
     action: { kind: "project", projectNo: "06" },
   },
   {

@@ -33,14 +33,14 @@ export function Hero() {
           {/* Headline */}
           <Reveal as="div">
             <h1 className="max-w-[600px] text-[clamp(32px,5vw,54px)] font-extrabold leading-[1.08] tracking-[-0.03em] text-ink text-pretty">
-              Good software should feel simple,{" "}
+              Good product should feel simple,{" "}
               <span style={{ color: "var(--accent)" }}>even when the engineering isn&apos;t</span>.
             </h1>
           </Reveal>
 
           <Reveal delay={0.12} as="div">
             <p className="mt-5 max-w-[500px] text-[16px] leading-relaxed text-muted text-pretty">
-              A software engineer who believes good design and simple solutions are how we solve real
+             I am a software engineer who believes good design and simple solutions are how we solve real
               problems.
             </p>
           </Reveal>

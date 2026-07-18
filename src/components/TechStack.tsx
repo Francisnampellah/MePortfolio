@@ -18,23 +18,27 @@ function selectProject(projectNo: string) {
   window.dispatchEvent(new CustomEvent("select-project", { detail: { no } }));
 }
 
-function EvidenceLine({ parts }: { parts: EvidencePart[] }) {
+function EvidenceLines({ lines }: { lines: [EvidencePart[], EvidencePart[]] }) {
   return (
-    <p className="mt-5 max-w-[560px] text-[15px] leading-relaxed text-muted text-pretty">
-      {parts.map((part, i) =>
-        typeof part === "string" ? (
-          <span key={i}>{part}</span>
-        ) : (
-          <Link
-            key={i}
-            href={part.href}
-            className="font-medium text-accent underline decoration-accent/30 underline-offset-2 transition-colors hover:text-ink hover:decoration-ink/40"
-          >
-            {part.label}
-          </Link>
-        )
-      )}
-    </p>
+    <div className="mt-5 max-w-[560px] space-y-1 text-[15px] leading-snug text-muted">
+      {lines.map((parts, lineIdx) => (
+        <p key={lineIdx} className="text-pretty">
+          {parts.map((part, i) =>
+            typeof part === "string" ? (
+              <span key={i}>{part}</span>
+            ) : (
+              <Link
+                key={i}
+                href={part.href}
+                className="font-medium text-accent underline decoration-accent/30 underline-offset-2 transition-colors hover:text-ink hover:decoration-ink/40"
+              >
+                {part.label}
+              </Link>
+            )
+          )}
+        </p>
+      ))}
+    </div>
   );
 }
 
@@ -54,7 +58,7 @@ export function TechStack() {
       <div className={SECTION_INNER}>
         <SectionHeading
           label="02 / toolbox"
-          title="A modern, full-stack toolkit"
+          title="A modern, full stack toolkit"
           blurb="Pick a capability to see the work behind it."
         />
 
@@ -84,13 +88,13 @@ export function TechStack() {
                   <p className="mt-1.5 font-mono text-[12.5px] text-muted2">{cap.tagline}</p>
                 </div>
 
-                <EvidenceLine parts={cap.evidence} />
+                <EvidenceLines lines={cap.evidence} />
 
-                <div className="mt-5 flex flex-wrap gap-1.5">
+                <div className="mt-5 flex flex-nowrap gap-1.5 overflow-x-auto whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {cap.tools.map((t) => (
                     <span
                       key={t}
-                      className="rounded-full border border-line bg-white px-2.5 py-1 font-mono text-[10.5px] text-[#7c776f]"
+                      className="shrink-0 rounded-full border border-line bg-white px-2.5 py-1 font-mono text-[10.5px] text-[#7c776f]"
                     >
                       {t}
                     </span>
@@ -121,7 +125,7 @@ export function TechStack() {
         </div>
 
         {/* Selector — numbered index (horizontal scroll on small screens) */}
-        <div className="mt-8 -mx-6 flex gap-1 overflow-x-auto px-6 sm:mx-0 sm:grid sm:grid-cols-5 sm:gap-2 sm:overflow-visible sm:px-0">
+        <div className="mt-8 -mx-6 flex gap-1 overflow-x-auto px-6 sm:mx-0 sm:grid sm:grid-cols-6 sm:gap-2 sm:overflow-visible sm:px-0">
           {CAPABILITIES.map((g, i) => {
             const on = i === active;
             return (
@@ -131,7 +135,7 @@ export function TechStack() {
                 onFocus={() => setActive(i)}
                 onClick={() => setActive(i)}
                 aria-pressed={on}
-                className="group flex w-[110px] shrink-0 flex-col items-start border-t-2 pt-2.5 text-left transition-colors sm:w-full"
+                className="group flex w-[104px] shrink-0 flex-col items-start border-t-2 pt-2.5 text-left transition-colors sm:w-full"
                 style={{ borderTopColor: on ? "var(--accent)" : "#e6ded6" }}
               >
                 <span

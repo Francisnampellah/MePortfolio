@@ -63,78 +63,85 @@ export type CapabilityAction =
   | { kind: "project"; projectNo: string; label?: string }
   | { kind: "blog"; href: string; label?: string };
 
-/** Plain text or an inline link inside the evidence line. */
+/** Plain text or an inline link inside an evidence line. */
 export type EvidencePart = string | { label: string; href: string };
 
 export type Capability = {
   name: string;
   short: string;
   tagline: string;
-  evidence: EvidencePart[];
+  /** Exactly two display lines. */
+  evidence: [EvidencePart[], EvidencePart[]];
   tools: string[];
   action: CapabilityAction;
 };
 
 export const CAPABILITIES: Capability[] = [
   {
+    name: "System Design",
+    short: "Design",
+    tagline: "Shaping how the whole product fits together",
+    evidence: [
+      ["I design for scale, reliability, and clarity before the first line of code."],
+      ["Every choice is a tradeoff I can explain, not a stack I default to."],
+    ],
+    tools: ["CAP", "Scalability", "Availability", "Consistency", "Caching", "Tradeoffs"],
+    action: { kind: "project", projectNo: "03" },
+  },
+  {
     name: "APIs & Microservices",
     short: "APIs",
     tagline: "Services designed to grow without rewrites",
     evidence: [
-      "Six services live in production, with role-based access across the APIs — ",
-      { label: "how I approach that", href: "/blog/rbac" },
+      ["Six services live in production and stay open to change."],
+      ["Built so new features do not force a rewrite."],
     ],
-    tools: ["NestJS", "Express", "Django REST", "JWT/RBAC", "PostgreSQL"],
+    tools: ["NestJS", "Express", "Django REST", "PostgreSQL"],
     action: { kind: "project", projectNo: "06" },
+  },
+  {
+    name: "Identity",
+    short: "Identity",
+    tagline: "Access that stays clear as the product grows",
+    evidence: [
+      ["Role based access across APIs so the right people see the right things."],
+      ["Patterns I use day to day ", { label: "on the blog", href: "/blog/rbac" }, "."],
+    ],
+    tools: ["JWT", "RBAC", "OAuth", "Sessions", "Guards"],
+    action: { kind: "blog", href: "/blog/rbac" },
   },
   {
     name: "Payment Integration",
     short: "Payments",
-    tagline: "Mobile money flows built for real Tanzanian transaction data",
+    tagline: "Mobile money flows for real Tanzanian transactions",
     evidence: [
-      "Live subscription and payment flows built around Tanzanian mobile money",
+      ["Subscription and payment flows built around Tanzanian mobile money."],
+      ["Checkout and recurring billing that match how people actually pay."],
     ],
-    tools: ["M-Pesa", "SMS parsing", "Webhooks", "Payment windows"],
+    tools: ["M-Pesa", "Webhooks", "Payment windows"],
     action: { kind: "project", projectNo: "03" },
-  },
-  {
-    name: "Agentic AI",
-    short: "Agents",
-    tagline: "Agents that run business workflows end to end",
-    evidence: [
-      "Chat agents that manage stock, take food orders over WhatsApp, and handle bookings end to end ",
-    ],
-    tools: ["Claude/LLM APIs", "Telegram Bot API", "WhatsApp API", "n8n", "Cloudflare Workers"],
-    action: { kind: "project", projectNo: "02" },
   },
   {
     name: "Data & Infrastructure",
     short: "Data",
     tagline: "Databases designed well, deployments that ship themselves",
     evidence: [
-      "Production databases for multi-tenant apps, with automated deploy, test, and security checks on every push",
+      ["Relational and non relational stores for apps that need to grow."],
+      ["Automated deploy, test, and security checks on every push."],
     ],
-    tools: [
-      "PostgreSQL",
-      "Docker",
-      "Kubernetes",
-      "CI/CD (GitHub Actions)",
-      "AWS",
-      "Cloudflare Workers",
-      "Nginx",
-    ],
+    tools: ["PostgreSQL", "MySQL", "MongoDB", "Docker", "AWS EC2", "Azure", "Nginx"],
     action: { kind: "project", projectNo: "06" },
   },
   {
-    name: "Management Systems",
-    short: "Systems",
-    tagline: "Complete operational systems for real businesses mobile, POS, and dashboards",
+    name: "Emerging Tech",
+    short: "Emerging",
+    tagline: "Exploring what comes next, carefully, in real projects",
     evidence: [
-      "Full ops systems spanning mobile apps, POS, owner dashboards, and booking over chat including apps that keep working offline — ",
-      { label: "notes from the field", href: "/blog/flutter" },
+      ["Blockchain ledgers, smart contracts, and 3D web experiences."],
+      ["Used when the problem calls for them ", { label: "chaincode notes", href: "/blog/chaincode" }, "."],
     ],
-    tools: ["Flutter", "React Native", "React", "NestJS", "Offline-first sync"],
-    action: { kind: "project", projectNo: "03" },
+    tools: ["Hyperledger Fabric", "Three.js", "Blockchain"],
+    action: { kind: "blog", href: "/blog/chaincode" },
   },
 ];
 

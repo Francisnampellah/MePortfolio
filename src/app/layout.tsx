@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,8 +16,6 @@ const mono = JetBrains_Mono({
   variable: "--font-mono",
   display: "swap",
 });
-
-const SITE_URL = "https://baraka-nampellah.dev";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -55,6 +54,7 @@ export const metadata: Metadata = {
       "Building scalable backends, mobile apps, and AI-ready systems.",
   },
   robots: { index: true, follow: true },
+  alternates: { canonical: SITE_URL },
 };
 
 export default function RootLayout({

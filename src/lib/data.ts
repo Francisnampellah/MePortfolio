@@ -32,8 +32,8 @@ export const PROFILE = profile as Profile;
 
 export const HERO_STATS = [
   { v: "2+", k: "years experience" },
-  { v: "6", k: "microservices" },
-  { v: "200+", k: "profiles synced" },
+  { v: "6", k: "microservices shipped" },
+  { v: "200+", k: "livestock records synced" },
 ];
 
 export const CLIENTS = [

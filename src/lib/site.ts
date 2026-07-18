@@ -11,7 +11,7 @@ import { PROFILE } from "./data";
 export const SITE_URL = (
   process.env.NEXT_PUBLIC_SITE_URL ||
   PROFILE.website ||
-  "https://baraka-nampellah.dev"
+  "https://nampellah.site"
 ).replace(/\/$/, "");
 
 export const SITE_NAME = PROFILE.shortName; // "Baraka Nampellah"

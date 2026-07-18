@@ -32,7 +32,7 @@
     "tags": ["Mobile"],
     "desc": "Flutter app for livestock health tracking: subscriptions, notifications, and a refreshed UI for field use.",
     "problem": "Animal health tracked on paper.",
-    "outcome": "200+ profiles synced",
+    "outcome": "200+ livestock records synced",
     "tech": ["Flutter", "REST", "Notifications"],
     "github": "https://github.com/Francisnampellah",
     "demo": "#"

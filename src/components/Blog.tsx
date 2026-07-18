@@ -5,7 +5,6 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { Reveal } from "./Reveal";
 import { SectionLabel, SECTION_INNER, SECTION_SLIDE_ROOT } from "./Section";
-import { ImageSlot } from "./ImageSlot";
 import { POSTS, BLOG_CATS } from "@/lib/data";
 
 const CARD_W = 300; // px — also the arrow-scroll step
@@ -104,9 +103,6 @@ export function Blog() {
                 delay={(i % 3) * 0.05}
                 className="flex w-[300px] shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-line bg-white transition-colors hover:border-[#d6d1ca]"
               >
-                <div className="relative aspect-video border-b border-line bg-surface2">
-                  <ImageSlot id={`blog-${b.id}`} placeholder="Drop cover" alt={b.title} />
-                </div>
                 <Link href={`/blog/${b.id}`} className="flex flex-1 flex-col gap-2.5 p-[18px]">
                   <div className="flex items-center gap-2.5 font-mono text-[10.5px] text-muted3">
                     <span className="rounded-md bg-[#faf2ee] px-2 py-[3px] font-medium text-accent">{b.cat}</span>

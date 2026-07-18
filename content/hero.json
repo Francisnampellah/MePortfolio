@@ -1,0 +1,14 @@
+{
+  "stats": [
+    { "v": "2+", "k": "years experience" },
+    { "v": "6", "k": "microservices shipped" },
+    { "v": "200+", "k": "livestock records synced" }
+  ],
+  "clients": [
+    "Afya Ya Mnyama",
+    "SmartINNO",
+    "BeginnerTech",
+    "Amani Land",
+    "Freelance"
+  ]
+}

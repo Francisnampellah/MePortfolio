@@ -31,15 +31,19 @@ npm start
 
 ## Content management (`/admin`)
 
-The site reads all of its editable content from JSON files in **`content/`**. A simple
-CMS lets you edit them in the browser — no code, no redeploy for content tweaks.
+The site reads editable content from JSON files in **`content/`** (plus SQLite for
+inbox + traffic). A simple CMS lets you edit them in the browser.
 
 1. Go to **`/admin`** and sign in.
-2. Pick a collection tab (Profile, Projects, Experience, Education, Certifications,
-   Testimonials, Blog posts).
-3. Edit fields inline. For lists you can **add, delete, and reorder** items; blog posts
-   include the full article body (lede + sections).
-4. Click **Save changes** — the matching `content/*.json` file is written on the server.
+2. Tabs are grouped:
+   - **Overview** — anonymous **Traffic** (unique visitors / pageviews)
+   - **Site content** — Profile, **Hero** (stats + clients), **Toolbox** (capabilities),
+     Projects, Experience, Education, Certifications, Testimonials, Blog posts, Assistant
+   - **Inbox** — Leads, Submissions, Chat contacts (emails from chat), Chat logs
+3. Edit fields inline. Lists support **add, delete, and reorder**. Toolbox has dedicated
+   fields for evidence lines, tools, and “See it in action” links.
+4. Click **Save changes** — JSON collections write to `content/*.json`; inbox rows update
+   SQLite. Traffic is read-only.
 
 ### Password
 
@@ -64,17 +68,15 @@ the dashboard still loads and lets you edit, but **Save** will fail. Options the
 
 ## AI assistant (floating chat)
 
-A floating button (bottom-right) opens an assistant that **speaks as Baraka**, answers
-from your live content, and **captures collaboration leads**.
+A floating button (bottom-right) opens an assistant that answers from your live content
+and **captures collaboration leads**.
 
-- **Knowledge base** is built at request time from your `content/*.json` (profile,
-  projects, experience, education, certifications) — so editing content in `/admin`
-  updates what the assistant knows, no redeploy.
-- **Personality is editable in `/admin` → Assistant**: display name, tone
-  (Friendly / Professional / Witty), greeting, and free-form personality notes.
-- **Lead capture**: when a visitor wants to collaborate, the assistant collects their
-  name, email, and a note, then appends the lead to `content/leads.json`. View them in
-  **`/admin` → Leads**.
+- **Knowledge base** is built at request time from `content/*.json` (profile, Toolbox
+  capabilities, projects, experience, education, certifications) — editing in `/admin`
+  updates what the assistant knows.
+- **Personality is editable in `/admin` → Assistant**: display name, tone, greeting, and notes.
+- **Lead capture** stores name / email / note in **SQLite** (`data/app.db`). View in
+  **`/admin` → Leads**. Submissions and chat contacts live there too.
 - Powered by the Anthropic API via `POST /api/chat` (server-side; your key stays secret).
 
 Set your key in `.env.local`:
@@ -85,32 +87,34 @@ ANTHROPIC_API_KEY=sk-ant-...
 ANTHROPIC_MODEL=claude-3-5-haiku-latest
 ```
 
-Without a key the widget still works but returns a friendly fallback message. As with the
-CMS, **saving leads needs a writable filesystem** (local / VPS / Docker / Render / Railway
-/ Fly) — on Vercel, point `readCollection`/`writeCollection` in `src/lib/cms.ts` at a DB
-or send leads to email/Slack from `src/app/api/chat/route.ts` instead.
+Without a key the widget still works but returns a friendly fallback message. Leads and
+traffic need a **writable** host (local / VPS / Docker / Render / Railway / Fly) — not a
+read-only serverless filesystem alone.
 
 ## Project structure
 
 ```
-content/                # ← editable JSON (the CMS reads & writes these)
-  profile.json projects.json experience.json education.json
-  certifications.json testimonials.json posts.json
+content/                # ← editable JSON (CMS reads & writes these)
+  profile.json hero.json capabilities.json projects.json …
+  experience.json education.json certifications.json
+  testimonials.json posts.json bot.json
+data/app.db             # SQLite — leads, submissions, chat contacts, traffic
 src/
   app/
-    layout.tsx          # fonts (Inter + JetBrains Mono), SEO metadata
+    layout.tsx          # fonts, SEO metadata, VisitBeacon
     page.tsx            # composes every section
     globals.css         # theme tokens + resets
-    blog/[id]/page.tsx  # article reader pages (funny write-ups)
+    blog/[id]/page.tsx  # article reader pages
     admin/              # CMS dashboard (login + editor)
-    api/admin/          # login / logout / [collection] read+write
-  components/           # one component per section + shared (Reveal, ImageSlot…)
+    api/admin/          # login / logout / [collection] / traffic
+    api/visit/          # anonymous visit beacon
+  components/           # one component per section + shared UI
   lib/
-    data.ts             # typed exports that import the content/*.json files
+    data.ts             # typed exports from content/*.json
     articles.ts         # article bodies derived from posts.json
     cms.ts              # collection read/write + auth helpers
-    icons.ts            # lucide icon map
-    useScroll.ts        # active-section hook + smooth scroll
+    db.ts               # SQLite helpers (inbox + traffic)
+    bot.ts              # assistant knowledge + prompts
 ```
 
 ## Customising

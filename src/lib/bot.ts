@@ -104,14 +104,15 @@ export async function getBotConfig(): Promise<BotConfig> {
 
 /** Builds a compact factual knowledge base from the live content files. */
 export async function buildKnowledge(): Promise<string> {
-  const [profile, projects, experience, education, certifications] =
+  const [profile, projects, experience, education, certifications, capabilities] =
     (await Promise.all([
       readCollection("profile"),
       readCollection("projects"),
       readCollection("experience"),
       readCollection("education"),
       readCollection("certifications"),
-    ])) as [any, any[], any[], any[], any[]];
+      readCollection("capabilities"),
+    ])) as [any, any[], any[], any[], any[], any[]];
 
   const lines: string[] = [];
   lines.push(
@@ -121,6 +122,15 @@ export async function buildKnowledge(): Promise<string> {
     `CONTACT: email ${profile.email}; GitHub ${profile.github}; LinkedIn ${profile.linkedin}; website ${profile.website}. (Share email/GitHub/LinkedIn freely; do NOT volunteer his phone number — route serious contact through lead capture.)`
   );
   lines.push(`FOCUS: ${profile.tagline}. ${profile.intro}`);
+  lines.push(
+    "TOOLBOX (capability areas — outcome-first, no self-ratings): " +
+      capabilities
+        .map(
+          (c) =>
+            `${c.name} (${c.short}): ${c.tagline}. Evidence: ${(c.evidence || []).join(" ")} Tools: ${(c.tools || []).join(", ")}.`
+        )
+        .join(" | ")
+  );
   lines.push(
     "EXPERIENCE (background only — describe capability, never attribute to a named employer/client): " +
       experience

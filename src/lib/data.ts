@@ -1,5 +1,7 @@
 import type { IconName } from "./icons";
 import profile from "../../content/profile.json";
+import heroJson from "../../content/hero.json";
+import capabilitiesJson from "../../content/capabilities.json";
 import projectsJson from "../../content/projects.json";
 import experienceJson from "../../content/experience.json";
 import educationJson from "../../content/education.json";
@@ -30,19 +32,14 @@ export type Profile = {
 
 export const PROFILE = profile as Profile;
 
-export const HERO_STATS = [
-  { v: "2+", k: "years experience" },
-  { v: "6", k: "microservices shipped" },
-  { v: "200+", k: "livestock records synced" },
-];
+type HeroContent = {
+  stats: { v: string; k: string }[];
+  clients: string[];
+};
 
-export const CLIENTS = [
-  "Afya Ya Mnyama",
-  "SmartINNO",
-  "BeginnerTech",
-  "Amani Land",
-  "Freelance",
-];
+const hero = heroJson as HeroContent;
+export const HERO_STATS = hero.stats;
+export const CLIENTS = hero.clients;
 
 /* ----------------------------------------------------------------
    Navigation
@@ -57,7 +54,7 @@ export const NAV_ITEMS = [
 ] as const;
 
 /* ----------------------------------------------------------------
-   Toolbox capabilities — outcome-first (no self-ratings)
+   Toolbox capabilities — content/capabilities.json (editable in /admin)
 ----------------------------------------------------------------- */
 export type CapabilityAction =
   | { kind: "project"; projectNo: string; label?: string }
@@ -65,6 +62,17 @@ export type CapabilityAction =
 
 /** Plain text or an inline link inside an evidence line. */
 export type EvidencePart = string | { label: string; href: string };
+
+/** CMS shape: two plain evidence strings + optional inline link on line 2. */
+export type CapabilitySource = {
+  name: string;
+  short: string;
+  tagline: string;
+  evidence: [string, string];
+  evidenceLink?: { label: string; href: string } | null;
+  tools: string[];
+  action: CapabilityAction;
+};
 
 export type Capability = {
   name: string;
@@ -76,85 +84,37 @@ export type Capability = {
   action: CapabilityAction;
 };
 
-export const CAPABILITIES: Capability[] = [
-  {
-    name: "System Design",
-    short: "Design",
-    tagline: "Shaping how the whole product fits together",
-    evidence: [
-      ["I design for scale, reliability, and clear failure modes before code exists."],
-      ["Architected a six service platform that keeps adding features without rewrites."],
-    ],
-    tools: ["Microservices", "Distributed systems", "Serverless", "Caching", "Consistency", "Tradeoffs"],
-    action: { kind: "project", projectNo: "06" },
-  },
-  {
-    name: "APIs & Microservices",
-    short: "APIs",
-    tagline: "Backends that stay open to change",
-    evidence: [
-      ["I build REST APIs and services that new features never force a rewrite of."],
-      ["Six NestJS and Django services live in production, 15+ role guarded endpoints."],
-    ],
-    tools: ["NestJS", "Express", "Django REST", "PostgreSQL"],
-    action: { kind: "project", projectNo: "06" },
-  },
-  {
-    name: "Agentic AI",
-    short: "Agents",
-    tagline: "AI that runs real operations, not demos",
-    evidence: [
-      ["I build AI agents that run real business operations end to end."],
-      ["Live agents for WhatsApp ordering and pharmacy stock by chat."],
-    ],
-    tools: ["Cloudflare Workers", "WhatsApp API", "Telegram API", "Tool calling", "D1"],
-    action: { kind: "project", projectNo: "02" },
-  },
-  {
-    name: "Frontend & Design",
-    short: "Frontend",
-    tagline: "Interfaces designed and built, not just styled",
-    evidence: [
-      ["I design interfaces and ship them from tokens to production code."],
-      ["Mobile and web apps launched, plus UI libraries with live docs."],
-    ],
-    tools: ["React", "Next.js", "Flutter", "React Native", "namps-ui", "namps-native", "namps-native-pop"],
-    action: { kind: "project", projectNo: "09" },
-  },
-  {
-    name: "Payment Integration",
-    short: "Payments",
-    tagline: "Mobile money and card rails for real transactions",
-    evidence: [
-      ["I integrate checkout and recurring billing around how people actually pay."],
-      ["Mobile money subscriptions live in the field, from M-Pesa to Stripe checkout."],
-    ],
-    tools: ["FastHub", "AzamPesa", "Stripe", "M-Pesa", "Webhooks"],
-    action: { kind: "project", projectNo: "03" },
-  },
-  {
-    name: "Data & Infrastructure",
-    short: "Data",
-    tagline: "Databases designed well, deployments that ship themselves",
-    evidence: [
-      ["I model relational and document stores for apps that need to grow."],
-      ["Every push is built, tested, security checked, and deployed automatically."],
-    ],
-    tools: ["PostgreSQL", "MySQL", "MongoDB", "Docker", "AWS EC2", "Nginx"],
-    action: { kind: "project", projectNo: "06" },
-  },
-  {
-    name: "Emerging Tech",
-    short: "Emerging",
-    tagline: "Exploring what comes next, carefully, in real projects",
-    evidence: [
-      ["I take on blockchain and 3D web when the problem truly calls for them."],
-      ["A 50 item Three.js catalog shipped; Hyperledger ", { label: "chaincode notes", href: "/blog/chaincode" }, " on the blog."],
-    ],
-    tools: ["Hyperledger Fabric", "Three.js", "WebGL"],
-    action: { kind: "blog", href: "/blog/chaincode" },
-  },
-];
+function evidenceLineWithLink(
+  text: string,
+  link?: { label: string; href: string } | null
+): EvidencePart[] {
+  if (!link?.label || !link.href) return [text];
+  const idx = text.indexOf(link.label);
+  if (idx < 0) return [text, " ", { label: link.label, href: link.href }];
+  const before = text.slice(0, idx);
+  const after = text.slice(idx + link.label.length);
+  return [
+    ...(before ? [before] : []),
+    { label: link.label, href: link.href },
+    ...(after ? [after] : []),
+  ];
+}
+
+function normalizeCapability(raw: CapabilitySource): Capability {
+  const [line1, line2] = raw.evidence;
+  return {
+    name: raw.name,
+    short: raw.short,
+    tagline: raw.tagline,
+    evidence: [[line1], evidenceLineWithLink(line2, raw.evidenceLink)],
+    tools: raw.tools,
+    action: raw.action,
+  };
+}
+
+export const CAPABILITIES: Capability[] = (capabilitiesJson as CapabilitySource[]).map(
+  normalizeCapability
+);
 
 /* ----------------------------------------------------------------
    Projects  (content/projects.json — editable in /admin)

@@ -6,6 +6,8 @@ import * as sqldb from "./db";
 /** Collections that the CMS can read/write. Each maps to content/<name>.json */
 export const COLLECTIONS = [
   "profile",
+  "hero",
+  "capabilities",
   "projects",
   "experience",
   "education",

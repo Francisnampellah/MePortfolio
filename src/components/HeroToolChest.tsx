@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ContactShadows, Environment, useGLTF, useProgress } from "@react-three/drei";
 import {
@@ -10,9 +10,11 @@ import {
   MeshStandardMaterial,
   Sphere,
   Texture,
+  Vector3,
   type Object3D,
 } from "three";
 import { HeroModelWait } from "./HeroModelWait";
+import { useFullPageScroll } from "@/lib/fullPageScroll";
 
 const MODEL_URL = "/models/alarm_clock/alarm_clock_4k.gltf";
 const FOV = 40;
@@ -187,7 +189,7 @@ function fixClockGlass(root: Object3D) {
 }
 
 function AlarmClock({ onReady }: { onReady: () => void }) {
-  const group = useRef<Group>(null);
+  const spin = useRef<Group>(null);
   const { scene } = useGLTF(MODEL_URL);
   const camera = useThree((s) => s.camera);
   const size = useThree((s) => s.size);
@@ -198,18 +200,22 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
     return c;
   }, [scene]);
   const [shadowY, setShadowY] = useState(-0.4);
+  /** Offset so spin axis runs through model center (never mutate clone.position repeatedly). */
+  const [pivot, setPivot] = useState<[number, number, number]>([0, 0, 0]);
   const readySent = useRef(false);
+  const onReadyRef = useRef(onReady);
+  onReadyRef.current = onReady;
 
   useLayoutEffect(() => {
     const box = new Box3().setFromObject(clone);
+    const center = new Vector3();
     const sphere = new Sphere();
+    box.getCenter(center);
     box.getBoundingSphere(sphere);
 
-    // Center only — layout shift is handled by the container CSS.
-    clone.position.sub(sphere.center);
-
-    const after = new Box3().setFromObject(clone);
-    setShadowY(after.min.y - 0.02);
+    // Fresh pivot each time — do not accumulate on clone.position.
+    setPivot([-center.x, -center.y, -center.z]);
+    setShadowY(box.min.y - center.y - 0.02);
 
     const aspect = size.width / Math.max(size.height, 1);
     const vFov = (FOV * Math.PI) / 180;
@@ -226,18 +232,22 @@ function AlarmClock({ onReady }: { onReady: () => void }) {
 
     if (!readySent.current) {
       readySent.current = true;
-      requestAnimationFrame(() => onReady());
+      requestAnimationFrame(() => onReadyRef.current());
     }
-  }, [clone, camera, size.width, size.height, onReady]);
+  }, [clone, camera, size.width, size.height]);
 
   useFrame((_, delta) => {
-    if (group.current) group.current.rotation.y += delta * 0.4;
+    // Cap delta so a long background pause doesn't yank the spin.
+    const dt = Math.min(delta, 1 / 30);
+    if (spin.current) spin.current.rotation.y += dt * 0.4;
   });
 
   return (
     <>
-      <group ref={group}>
-        <primitive object={clone} />
+      <group ref={spin}>
+        <group position={pivot}>
+          <primitive object={clone} />
+        </group>
       </group>
       <ContactShadows
         position={[0, shadowY, 0]}
@@ -265,6 +275,9 @@ export function HeroToolChest() {
   const [ready, setReady] = useState(false);
   const [progress, setProgress] = useState(0);
   const [lineIdx, setLineIdx] = useState(0);
+  const { activeId } = useFullPageScroll();
+  const onHero = activeId === "home";
+  const markReady = useCallback(() => setReady(true), []);
 
   useEffect(() => {
     if (ready) return;
@@ -301,7 +314,8 @@ export function HeroToolChest() {
         <Canvas
           camera={{ fov: FOV, position: [1.2, 0.9, 3.2], near: 0.01, far: 100 }}
           dpr={[1, 1.75]}
-          gl={{ antialias: true, alpha: true }}
+          gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+          frameloop={onHero ? "always" : "never"}
           style={{ width: "100%", height: "100%" }}
         >
           <ambientLight intensity={0.7} />
@@ -309,7 +323,7 @@ export function HeroToolChest() {
           <directionalLight position={[-3, 2, -2]} intensity={0.4} />
           <ProgressBridge onProgress={setProgress} />
           <Suspense fallback={null}>
-            <AlarmClock onReady={() => setReady(true)} />
+            <AlarmClock onReady={markReady} />
             <Environment preset="apartment" />
           </Suspense>
         </Canvas>

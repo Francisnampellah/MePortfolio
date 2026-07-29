@@ -5,6 +5,7 @@ import { PROFILE } from "@/lib/data";
 import { WAIT_LINES, WAIT_LINE_ROTATE_MS } from "@/lib/heroWaitLines";
 import { useSiteReady } from "@/lib/siteReady";
 
+/** Duration for overlay fade — must match the Tailwind duration-500 class on the container. */
 const FADE_MS = 500;
 
 /** Keys that scroll the page — blocked while the loader is up. */
@@ -47,11 +48,12 @@ export function SiteLoader() {
     return () => window.clearTimeout(id);
   }, [revealed]);
 
-  // Hold the page still. FullPageScrollProvider binds its wheel/touch/key
-  // handlers on window without capture, so intercepting in the capture phase
-  // starves it without touching that file.
+  // Hold the page still while loading. FullPageScrollProvider binds its
+  // wheel/touch/key handlers on window without capture, so intercepting in
+  // the capture phase starves it without touching that file. Release the lock
+  // immediately when revealed, not when the overlay finishes fading.
   useEffect(() => {
-    if (!mounted) return;
+    if (revealed) return;
 
     const stop = (e: Event) => {
       e.stopPropagation();
@@ -76,7 +78,7 @@ export function SiteLoader() {
       window.removeEventListener("keydown", stopScrollKeys, opts);
       document.body.style.overflow = previousOverflow;
     };
-  }, [mounted]);
+  }, [revealed]);
 
   if (!mounted) return null;
 

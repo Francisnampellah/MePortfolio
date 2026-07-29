@@ -22,6 +22,17 @@ function Probe() {
   );
 }
 
+/**
+ * Stands in for the hero column, which is a `dynamic(ssr:false)` import and
+ * therefore attaches long after the provider mounts. Renders nothing — it
+ * exists only to call `useGateReporter` on its own delayed schedule so tests
+ * can tell "gate reserved upfront" apart from "gate created on first use."
+ */
+function LateHeroProbe() {
+  useGateReporter(HERO_3D_GATE);
+  return null;
+}
+
 const progressText = () => screen.getByTestId("progress").textContent;
 const revealedText = () => screen.getByTestId("revealed").textContent;
 
@@ -184,6 +195,43 @@ describe("SiteReadyProvider", () => {
     await flushFonts();
     expect(Number(progressText())).toBeLessThan(100);
   });
+
+  it("reserves the hero gate before the hero component ever mounts, so a late mount changes nothing", async () => {
+    // expectHero3d must be a stable reference across the rerender below —
+    // a fresh closure each render would re-trigger the reserving effect and
+    // reset the gates we're trying to observe settle.
+    const expectHero3d = () => true;
+
+    const { rerender } = render(
+      <SiteReadyProvider expectHero3d={expectHero3d} minDisplayMs={0}>
+        <Probe />
+      </SiteReadyProvider>
+    );
+
+    // Fonts settle while the hero column has not mounted at all yet. If the
+    // hero gate were only created when its own reporter first registered
+    // (rather than reserved upfront by the provider), this is exactly the
+    // moment fonts-alone would drive progress to 100.
+    await flushFonts();
+    const afterFonts = Number(progressText());
+    expect(afterFonts).toBeLessThan(100);
+    expect(afterFonts).toBe(10); // fonts ready (10) + hero reserved-but-pending (0) => 10
+
+    // Now the hero column attaches, late, exactly like the real dynamic(ssr:false) import.
+    await act(async () => {
+      rerender(
+        <SiteReadyProvider expectHero3d={expectHero3d} minDisplayMs={0}>
+          <Probe />
+          <LateHeroProbe />
+        </SiteReadyProvider>
+      );
+    });
+
+    // The slot was already reserved at mount, so a component attaching to it
+    // later must not move the aggregate at all — there is nothing to "join."
+    expect(Number(progressText())).toBe(afterFonts);
+    expect(revealedText()).toBe("false");
+  });
 });
 
 describe("useGateReporter", () => {
@@ -192,10 +240,42 @@ describe("useGateReporter", () => {
       const reporter = useGateReporter(HERO_3D_GATE);
       reporter.setProgress(50);
       reporter.markReady();
+      reporter.markFailed();
       return <span data-testid="ok">ok</span>;
     }
     render(<Bare />);
     expect(screen.getByTestId("ok").textContent).toBe("ok");
+  });
+
+  it("no-ops when the gate was never reserved", async () => {
+    render(
+      <SiteReadyProvider expectHero3d={() => false} minDisplayMs={0}>
+        <Probe />
+      </SiteReadyProvider>
+    );
+
+    await flushFonts();
+
+    // hero-3d was never reserved (expectHero3d() is false here), so calling
+    // through the Probe's hero reporter must not throw, must not resurrect
+    // the gate, and must not perturb the aggregate.
+    await act(async () => {
+      screen.getByTestId("hero-half").click();
+    });
+    await act(async () => {
+      screen.getByTestId("hero-ready").click();
+    });
+    await act(async () => {
+      screen.getByTestId("hero-failed").click();
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(1);
+    });
+
+    // Progress is driven solely by the fonts gate; the unreserved hero-3d
+    // calls left no trace, and the provider still reveals normally.
+    expect(progressText()).toBe("100");
+    expect(revealedText()).toBe("true");
   });
 });
 

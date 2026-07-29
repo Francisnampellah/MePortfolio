@@ -23,14 +23,32 @@ function Probe() {
 }
 
 /**
+ * Reads only the aggregate readiness — deliberately does NOT call
+ * `useGateReporter`. Used where a test needs to prove something about the
+ * gate map's initial shape before any hero-gate consumer has ever mounted;
+ * `Probe` cannot be used for that because it calls `useGateReporter` itself
+ * in the same render pass, which would mask lazy/self-registration bugs.
+ */
+function SiteReadyOnlyProbe() {
+  const { progress, revealed } = useSiteReady();
+  return (
+    <div>
+      <span data-testid="progress">{progress}</span>
+      <span data-testid="revealed">{String(revealed)}</span>
+    </div>
+  );
+}
+
+/**
  * Stands in for the hero column, which is a `dynamic(ssr:false)` import and
- * therefore attaches long after the provider mounts. Renders nothing — it
- * exists only to call `useGateReporter` on its own delayed schedule so tests
- * can tell "gate reserved upfront" apart from "gate created on first use."
+ * therefore attaches long after the provider mounts. Exposes only a
+ * `markReady` control so a test can drive the reserved slot from a
+ * consumer that mounted late, and confirm the slot behaves normally once it
+ * finally has an owner.
  */
 function LateHeroProbe() {
-  useGateReporter(HERO_3D_GATE);
-  return null;
+  const hero = useGateReporter(HERO_3D_GATE);
+  return <button data-testid="late-hero-ready" onClick={() => hero.markReady()} />;
 }
 
 const progressText = () => screen.getByTestId("progress").textContent;
@@ -232,6 +250,58 @@ describe("SiteReadyProvider", () => {
     expect(Number(progressText())).toBe(afterFonts);
     expect(revealedText()).toBe("false");
   });
+
+  it("reserves the hero-3d slot even when no hero-gate consumer has ever mounted", async () => {
+    // Stable across the rerender below, so it doesn't re-key the reserving effect.
+    const expectHero3d = () => true;
+
+    // Discriminator: the ONLY component mounted here calls useSiteReady().
+    // Nothing anywhere in this render calls useGateReporter(HERO_3D_GATE) —
+    // not even transiently. Under reserve-upfront the provider's own mount
+    // effect creates the hero-3d slot regardless of whether any consumer
+    // exists; under a self-registering design there is nothing to create it,
+    // since RTL's render() flushes passive effects before returning and no
+    // hero consumer was part of that render.
+    const { rerender } = render(
+      <SiteReadyProvider expectHero3d={expectHero3d} minDisplayMs={0}>
+        <SiteReadyOnlyProbe />
+      </SiteReadyProvider>
+    );
+
+    await flushFonts();
+
+    // Reserve-upfront: fonts ready (10) + hero-3d reserved-but-pending (0) => 10.
+    // Self-registering: gate map is {fonts: ready} alone => 100. This is the
+    // assertion that fails under the broken design; "less than 100" would not.
+    expect(progressText()).toBe("10");
+
+    // A hero-gate consumer now mounts late, exactly like the real
+    // dynamic(ssr:false) hero column would.
+    await act(async () => {
+      rerender(
+        <SiteReadyProvider expectHero3d={expectHero3d} minDisplayMs={0}>
+          <SiteReadyOnlyProbe />
+          <LateHeroProbe />
+        </SiteReadyProvider>
+      );
+    });
+
+    // The slot already existed, so a consumer merely attaching to it must
+    // not move the aggregate.
+    expect(progressText()).toBe("10");
+    expect(revealedText()).toBe("false");
+
+    // Once that late consumer reports ready, the reserved slot settles like
+    // any other gate.
+    await act(async () => {
+      screen.getByTestId("late-hero-ready").click();
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(1);
+    });
+    expect(progressText()).toBe("100");
+    expect(revealedText()).toBe("true");
+  });
 });
 
 describe("useGateReporter", () => {
@@ -274,6 +344,45 @@ describe("useGateReporter", () => {
 
     // Progress is driven solely by the fonts gate; the unreserved hero-3d
     // calls left no trace, and the provider still reveals normally.
+    expect(progressText()).toBe("100");
+    expect(revealedText()).toBe("true");
+  });
+
+  it("setProgress alone does not resurrect an unreserved hero gate", async () => {
+    render(
+      <SiteReadyProvider expectHero3d={() => false} minDisplayMs={0}>
+        <Probe />
+      </SiteReadyProvider>
+    );
+
+    await flushFonts();
+
+    // Discriminator: call ONLY setProgress(50), nothing else, then check
+    // immediately. hero-3d was never reserved (expectHero3d() is false), so
+    // under the correct no-op design the aggregate is driven solely by fonts:
+    // "100". If setProgress instead lazily created the gate (weight 90,
+    // progress 50, status pending), the aggregate would read "55" — the same
+    // arithmetic the "blends reported hero progress" test above pins for a
+    // gate that IS reserved. Checking only after markReady/markFailed would
+    // be too late: both settle any existing entry to 100 regardless of the
+    // weight it was created with, so the phantom-gate bug would be invisible
+    // by then.
+    await act(async () => {
+      screen.getByTestId("hero-half").click();
+    });
+    expect(progressText()).toBe("100");
+
+    // Now exhaust the rest of the reporter surface and confirm it's inert
+    // throughout, not just on this one call.
+    await act(async () => {
+      screen.getByTestId("hero-ready").click();
+    });
+    await act(async () => {
+      screen.getByTestId("hero-failed").click();
+    });
+    await act(async () => {
+      vi.advanceTimersByTime(1);
+    });
     expect(progressText()).toBe("100");
     expect(revealedText()).toBe("true");
   });

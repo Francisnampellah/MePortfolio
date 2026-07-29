@@ -27,9 +27,15 @@ const config: Config = {
           "0%,100%": { opacity: "1" },
           "50%": { opacity: "0" },
         },
+        /* Entry for each rotating wait line, so the copy swaps softly. */
+        "wait-line": {
+          "0%": { opacity: "0", transform: "translateY(4px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         blink: "blink 1.1s step-end infinite",
+        "wait-line": "wait-line 420ms ease-out both",
       },
     },
   },

@@ -1,6 +1,16 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  Component,
+  Suspense,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { ContactShadows, Environment, useGLTF, useProgress } from "@react-three/drei";
 import {
@@ -15,8 +25,10 @@ import {
 } from "three";
 import { HeroModelWait } from "./HeroModelWait";
 import { useFullPageScroll } from "@/lib/fullPageScroll";
+import { WAIT_LINES, WAIT_LINE_ROTATE_MS } from "@/lib/heroWaitLines";
+import { HERO_3D_GATE, useGateReporter } from "@/lib/siteReady";
 
-const MODEL_URL = "/models/alarm_clock/alarm_clock_4k.gltf";
+const MODEL_URL = "/models/alarm_clock/alarm_clock_2k.gltf";
 const FOV = 40;
 /** Padding around the bounding sphere. 1.43 ≈ 20% larger than the prior 1.72 framing. */
 const FIT_MARGIN = 1.43;
@@ -25,12 +37,28 @@ const ACCENT_FALLBACK = "#c2613f";
 /** Shift the whole model container in layout — not the 3D scene origin. */
 const CONTAINER_SHIFT = "translate(-12%, -10%)"; // little left, 10% up
 
-const WAIT_LINES = [
-  "Almost there…",
-  "Still worth the wait…",
-  "Bringing the clock in…",
-  "Just a second more…",
-];
+/**
+ * Catches a failed GLTF/texture load so it degrades into "the site reveals
+ * without the model" rather than crashing the page.
+ */
+class ModelErrorBoundary extends Component<
+  { onError: () => void; children: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch() {
+    this.props.onError();
+  }
+
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
 
 function readAccentHex(): string {
   if (typeof window === "undefined") return ACCENT_FALLBACK;
@@ -277,11 +305,31 @@ export function HeroToolChest() {
   const [lineIdx, setLineIdx] = useState(0);
   const { activeId } = useFullPageScroll();
   const onHero = activeId === "home";
-  const markReady = useCallback(() => setReady(true), []);
+
+  // No-ops when the provider did not reserve this gate (mobile / no WebGL),
+  // so this component never needs to know whether it is gating the site.
+  const gate = useGateReporter(HERO_3D_GATE);
+
+  const markReady = useCallback(() => {
+    setReady(true);
+    gate.markReady();
+  }, [gate]);
+
+  const handleProgress = useCallback(
+    (n: number) => {
+      setProgress(n);
+      gate.setProgress(n);
+    },
+    [gate]
+  );
+
+  const handleModelError = useCallback(() => {
+    gate.markFailed();
+  }, [gate]);
 
   useEffect(() => {
     if (ready) return;
-    const id = setInterval(() => setLineIdx((i) => (i + 1) % WAIT_LINES.length), 2200);
+    const id = setInterval(() => setLineIdx((i) => (i + 1) % WAIT_LINES.length), WAIT_LINE_ROTATE_MS);
     return () => clearInterval(id);
   }, [ready]);
 
@@ -321,11 +369,13 @@ export function HeroToolChest() {
           <ambientLight intensity={0.7} />
           <directionalLight position={[2, 4, 5]} intensity={1.6} />
           <directionalLight position={[-3, 2, -2]} intensity={0.4} />
-          <ProgressBridge onProgress={setProgress} />
-          <Suspense fallback={null}>
-            <AlarmClock onReady={markReady} />
-            <Environment preset="apartment" />
-          </Suspense>
+          <ProgressBridge onProgress={handleProgress} />
+          <ModelErrorBoundary onError={handleModelError}>
+            <Suspense fallback={null}>
+              <AlarmClock onReady={markReady} />
+              <Environment preset="apartment" />
+            </Suspense>
+          </ModelErrorBoundary>
         </Canvas>
         <p className="pointer-events-none -mt-2 text-center font-mono text-[11px] tracking-[0.04em] text-muted2">
           A Product Like <span className="text-accent">An Alarm Clock</span>

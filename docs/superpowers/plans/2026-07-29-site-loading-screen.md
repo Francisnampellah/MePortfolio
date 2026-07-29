@@ -10,6 +10,8 @@
 
 ## Global Constraints
 
+- **`npm run lint` is not usable in this repo** — ESLint was never configured and the script opens an interactive prompt. Verification is `npx tsc --noEmit` (+ `npm run build` where the plan says so). Never run `npm run lint`.
+
 - Scope is the homepage (`/`) only. **Do not modify `src/app/layout.tsx`** — blog, `/namps-ui`, `/namps-native`, and `/admin` must be unaffected.
 - **Do not modify `src/lib/fullPageScroll.tsx`.** The input lock lives entirely in the loader.
 - Minimum loader display: **400 ms**. Failure net: **25 000 ms**.
@@ -1032,9 +1034,9 @@ export function SiteLoader() {
 }
 ```
 
-- [ ] **Step 3: Typecheck and lint**
+- [ ] **Step 3: Typecheck**
 
-Run: `npx tsc --noEmit && npm run lint`
+Run: `npx tsc --noEmit`
 Expected: no errors.
 
 - [ ] **Step 4: Commit**
@@ -1214,10 +1216,10 @@ with:
           </ModelErrorBoundary>
 ```
 
-- [ ] **Step 6: Typecheck and lint**
+- [ ] **Step 6: Typecheck**
 
-Run: `npx tsc --noEmit && npm run lint`
-Expected: no errors. If lint complains that `Component` or `ReactNode` is unused, the import edit in Step 3 was not applied.
+Run: `npx tsc --noEmit`
+Expected: no errors. If `tsc` reports `Component` or `ReactNode` as unresolved, the import edit in Step 3 was not applied.
 
 - [ ] **Step 7: Commit**
 
@@ -1284,8 +1286,8 @@ export default function Home() {
 
 - [ ] **Step 2: Confirm the whole suite, types, lint, and build**
 
-Run: `npx vitest run && npx tsc --noEmit && npm run lint && npm run build`
-Expected: all tests PASS, no type errors, no lint errors, build succeeds.
+Run: `npx vitest run && npx tsc --noEmit && npm run build`
+Expected: all tests PASS, no type errors, build succeeds.
 
 - [ ] **Step 3: Verify the loader is in the server HTML (the no-flash requirement)**
 

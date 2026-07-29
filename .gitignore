@@ -16,3 +16,6 @@ next-env.d.ts.bak
 # Local SQLite database (captured leads / submissions / visitors)
 /data/*.db
 /data/*.db-*
+
+# Subagent-driven development scratch (ledgers, briefs, review packages)
+/.superpowers

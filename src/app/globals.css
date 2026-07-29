@@ -7,6 +7,25 @@
   --accent: #c2613f;
 }
 
+/*
+ * Homepage typography — Satoshi + IBM Plex Mono, applied by page.tsx.
+ *
+ * Re-points the two family variables Tailwind's font-sans / font-mono read, so
+ * every descendant inherits the pairing without a single component changing.
+ * The rest of the site (blog, both doc sites, admin) keeps Inter + JetBrains.
+ */
+.type-homepage {
+  --font-sans: var(--font-satoshi);
+  --font-mono: var(--font-plex-mono);
+
+  /*
+   * Re-declaring font-family here is required, not redundant: `font-sans` sits
+   * on <body>, an ancestor, so descendants inherit an already-computed Inter.
+   * Overriding the variable alone would never reach them.
+   */
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
 * {
   box-sizing: border-box;
 }

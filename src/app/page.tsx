@@ -16,6 +16,8 @@ import { SlideHud } from "@/components/SlideHud";
 import { TabBar } from "@/components/TabBar";
 import { CONTACT_SLIDE_ROOT } from "@/components/Section";
 import { FullPageScrollProvider, FullPageStage } from "@/lib/fullPageScroll";
+import { SiteLoader } from "@/components/SiteLoader";
+import { SiteReadyProvider } from "@/lib/siteReady";
 
 const SECTION_IDS = [
   "home",
@@ -31,29 +33,32 @@ const SECTION_IDS = [
 
 export default function Home() {
   return (
-    <FullPageScrollProvider sectionIds={SECTION_IDS}>
-      <ScrollProgress />
-      <Nav />
-      <FullPageStage>
-        <main className="contents">
-          <Hero />
-          <About />
-          <TechStack />
-          <Projects />
-          <Experience />
-          <Testimonials />
-          <GithubActivity />
-          <Blog />
-          <div className={CONTACT_SLIDE_ROOT}>
-            <Contact />
-            <Footer />
-          </div>
-        </main>
-      </FullPageStage>
-      <SlideHud />
-      <TabBar />
-      <BackToTop />
-      <ChatWidget />
-    </FullPageScrollProvider>
+    <SiteReadyProvider>
+      <SiteLoader />
+      <FullPageScrollProvider sectionIds={SECTION_IDS}>
+        <ScrollProgress />
+        <Nav />
+        <FullPageStage>
+          <main className="contents">
+            <Hero />
+            <About />
+            <TechStack />
+            <Projects />
+            <Experience />
+            <Testimonials />
+            <GithubActivity />
+            <Blog />
+            <div className={CONTACT_SLIDE_ROOT}>
+              <Contact />
+              <Footer />
+            </div>
+          </main>
+        </FullPageStage>
+        <SlideHud />
+        <TabBar />
+        <BackToTop />
+        <ChatWidget />
+      </FullPageScrollProvider>
+    </SiteReadyProvider>
   );
 }

@@ -163,7 +163,7 @@ export function Projects() {
                           className="h-full w-full object-cover object-top"
                         />
                       ) : (
-                        <ImageSlot id={`proj-${current.no}`} placeholder="Drop project image" alt={current.title} />
+                        <ImageSlot id={`proj-${current.no}`} placeholder="project image not available" alt={current.title} />
                       )}
                     </div>
                     <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-1.5">

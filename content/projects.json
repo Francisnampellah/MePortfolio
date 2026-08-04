@@ -47,7 +47,8 @@
     "outcome": "One place to explore TZ safaris",
     "tech": ["React", "TypeScript", "Node.js", "PostgreSQL"],
     "github": "https://github.com/Francisnampellah",
-    "demo": "https://safari-tz.com"
+    "demo": "https://safari-tz.com",
+    "image": "/projects/safari-hero.png"
   },
   {
     "no": "05",
@@ -59,7 +60,8 @@
     "outcome": "33 documented components",
     "tech": ["React", "TypeScript", "Next.js", "CSS tokens"],
     "github": "https://github.com/Francisnampellah",
-    "demo": "/namps-ui"
+    "demo": "/namps-ui",
+    "image": "/projects/namps-ui-hero.png"
   },
   {
     "no": "06",
@@ -71,6 +73,7 @@
     "outcome": "9 components, live docs",
     "tech": ["React Native", "TypeScript", "Reanimated", "react-native-web"],
     "github": "https://github.com/Francisnampellah",
-    "demo": "/namps-native"
+    "demo": "/namps-native",
+    "image": "/projects/namps-native-hero.png"
   }
 ]

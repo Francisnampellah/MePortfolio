@@ -6,11 +6,15 @@ const STORAGE_KEY = "meportfolio:viewport-sig";
 const DEBOUNCE_MS = 450;
 
 function viewportSignature() {
-  return `${window.innerWidth}x${window.innerHeight}`;
+  // Width only: every layout-mode breakpoint in this app (`md`, `lg`) is a
+  // min-width query. Mobile browsers grow/shrink innerHeight on their own as
+  // the address bar collapses or reappears during scroll, with no resize or
+  // rotation involved — keying on height as well turned that into a reload loop.
+  return `${window.innerWidth}`;
 }
 
 /**
- * Hard-refresh when the viewport settles on a new size (resize / rotate).
+ * Hard-refresh when the viewport settles on a new width (resize / rotate).
  * Keeps full-page scroll and layout modes from getting stuck mid-breakpoint.
  */
 export function ViewportRefresh() {
